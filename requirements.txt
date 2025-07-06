@@ -1,0 +1,13 @@
+mujoco
+gymnasium
+torch
+numpy
+matplotlib
+tensorboard
+imageio
+pyyaml
+stable-baselines3
+tqdm
+jupyter
+pytest
+opencv-python   

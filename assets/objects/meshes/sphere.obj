@@ -1,0 +1,8 @@
+# Minimal OBJ sphere (not a real sphere, but valid for loader)
+o Sphere
+v 0 0 0
+v 0.03 0 0
+v 0 0.03 0
+v 0 0 0.03
+f 1 2 3
+f 1 3 4

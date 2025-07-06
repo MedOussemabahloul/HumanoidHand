@@ -1,0 +1,21 @@
+<mujoco model="complete_scene">
+  <include file="../hands/humanoid_hand.xml"/>
+  <!-- plus de cube ni de table -->
+
+  <option timestep="0.002" gravity="0 0 -9.81"/>
+  
+  <asset>
+    <texture name="skin" type="2d" file="../textures/skin.png"/>
+  </asset>
+
+  <worldbody>
+    <!-- Caméra au-dessus qui regarde le centre -->
+    <camera name="main_cam" pos="0 0 1.5" quat="1 0 0 0"/>
+    <light name="sun" directional="true" pos="0 0 2" dir="0 0 -1" diffuse="1 1 1"/>
+
+    <!-- Main seule, bien au centre et en hauteur -->
+    <body name="hand_anchor" pos="0 0 0.6">
+      <body name="humanoid_hand" pos="0 0 0"/>
+    </body>
+  </worldbody>
+</mujoco>

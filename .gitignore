@@ -1,0 +1,17 @@
+#Dire à Git quels fichiers et dossiers il ne doit pas versionner (ex: fichiers temporaires, binaires, outputs, venv...).
+
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+env/
+venv/
+build/
+dist/
+*.egg-info/
+logs/
+models/
+videos/
+.DS_Store
+.ipynb_checkpoints/
+
