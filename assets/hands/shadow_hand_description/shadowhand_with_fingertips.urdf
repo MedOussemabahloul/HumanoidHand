@@ -1,0 +1,1375 @@
+<?xml version="1.0"?>
+<robot xmlns:ns0="http://playerstage.sourceforge.net/gazebo/xmlschema/#controller" xmlns:ns1="http://playerstage.sourceforge.net/gazebo/xmlschema/#sensor" xmlns:ns2="http://playerstage.sourceforge.net/gazebo/xmlschema/#interface" name="shadowhand_motor">
+  <link name="virtual_root"><inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="1.0" />
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001" />
+    </inertial><visual><geometry><box size="0.01 0.01 0.01" /></geometry></visual></link><joint name="forearm_to_virtual_root" type="fixed"><parent link="virtual_root" /><child link="forearm" /></joint><joint name="dummy_root_link_to_virtual_root" type="fixed"><parent link="virtual_root" /><child link="dummy_root_link" /></joint><link name="dummy_root_link"><inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="1.0" />
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001" />
+    </inertial><visual><geometry><box size="0.01 0.01 0.01" /></geometry></visual></link><joint name="fix_thtip_to_dummy" type="fixed"><parent link="dummy_root_link" /><child link="thtip" /></joint><joint name="fix_rftip_to_dummy" type="fixed"><parent link="dummy_root_link" /><child link="rftip" /></joint><joint name="fix_mftip_to_dummy" type="fixed"><parent link="dummy_root_link" /><child link="mftip" /></joint><joint name="fix_lftip_to_dummy" type="fixed"><parent link="dummy_root_link" /><child link="lftip" /></joint><joint name="fix_fftip_to_dummy" type="fixed"><parent link="dummy_root_link" /><child link="fftip" /></joint><material name="Blue">
+    <color rgba="0.0 0.0 0.8 1.0" />
+  </material>
+  <material name="Green">
+    <color rgba="0.0 0.8 0.0 1.0" />
+  </material>
+  <material name="BiotacGreen">
+    <color rgba="0.31 0.85 0.42 1.0" />
+  </material>
+  <material name="Grey">
+    <color rgba="0.2 0.2 0.2 1.0" />
+  </material>
+  <material name="LightGrey">
+    <color rgba="0.6 0.6 0.6 1.0" />
+  </material>
+  <material name="Red">
+    <color rgba="0.8 0.0 0.0 1.0" />
+  </material>
+  <material name="White">
+    <color rgba="1.0 1.0 1.0 1.0" />
+  </material>
+  <gazebo>
+    <ns0:sr_gazebo_ros_controller_manager name="sr_gazebo_ros_controller_manager" plugin="libsr_gazebo_ros_controller_manager.so">
+      <alwaysOn>true</alwaysOn>
+      <updateRate>1000.0</updateRate>
+    </ns0:sr_gazebo_ros_controller_manager>
+  </gazebo>
+  <link name="forearm">
+    
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0" />
+      <geometry name="shadow_forearm_geom">
+        <mesh filename="meshes/forearm.obj" />
+      </geometry>
+      <material name="Grey" />
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0.09" />
+      <geometry name="shadow_forearm_collision">
+        <cylinder length="0.180" radius="0.06" />
+      </geometry>
+    </collision>
+  
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="1.0" />
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001" />
+    </inertial>
+</link>
+  <gazebo reference="forearm">
+    <material>Gazebo/Grey</material>
+    <selfCollide>false</selfCollide>
+  </gazebo>
+  <link name="wrist">
+    
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0" />
+      <geometry name="wrist_visual">
+        <mesh filename="meshes/wrist.obj" />
+      </geometry>
+      <material name="LightGrey" />
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0" />
+      <geometry name="wrist_collision_geom">
+        <box size="0.02 0.02 0.02" />
+      </geometry>
+    </collision>
+  
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="1.0" />
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001" />
+    </inertial>
+</link>
+  <gazebo reference="wrist">
+    <material>PR2/Grey2</material>
+    <selfCollide>false</selfCollide>
+  </gazebo>
+  <joint name="WRJ2" type="revolute">
+    <parent link="forearm" />
+    <child link="wrist" />
+    
+    <origin rpy="0 0 0" xyz="0 -0.010 0.213" />
+    <axis xyz="0 1 0" />
+    <limit effort="5" lower="-0.52359877559829882" upper="0.17453292519943295" velocity="1.0" />
+    <dynamics damping="100.5" />
+  </joint>
+  <transmission name="wrist_transmission" type="sr_mechanism_meshes/SimpleTransmission">
+    <actuator name="WRJ2" />
+    <joint name="WRJ2" />
+    <mechanicalReduction>1</mechanicalReduction>
+    <motorTorqueConstant>1</motorTorqueConstant>
+    <pulsesPerRevolution>90000</pulsesPerRevolution>
+  </transmission>
+  <link name="palm">
+    
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0" />
+      <geometry name="palm_visual">
+        <mesh filename="meshes/palm.obj" />
+      </geometry>
+      <material name="Grey" />
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0.005 0 0.035" />
+      <geometry name="palm_collision_geom">
+        <box size="0.05 0.02 0.07" />
+      </geometry>
+    </collision>
+  
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="1.0" />
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001" />
+    </inertial>
+</link>
+  <gazebo reference="palm">
+    <ns1:contact name="palm_contact_sensor">
+      <geom>palm_geom</geom>
+      <updateRate>100.0</updateRate>
+      <ns0:gazebo_ros_bumper name="palm_gazebo_ros_bumper_controller" plugin="libgazebo_ros_bumper.so">
+        <alwaysOn>true</alwaysOn>
+        <updateRate>100.0</updateRate>
+        <frameName>palm</frameName>
+        <bumperTopicName>palm_bumper</bumperTopicName>
+        <ns2:bumper name="palm_gazebo_ros_bumper_iface" />
+      </ns0:gazebo_ros_bumper>
+    </ns1:contact>
+    <material>Gazebo/Grey</material>
+  </gazebo>
+  <joint name="WRJ1" type="revolute">
+    <parent link="wrist" />
+    <child link="palm" />
+    <origin rpy="0 0 0" xyz="0 0 0.034" />
+    <axis xyz="1 0 0" />
+    <limit effort="5" lower="-0.78539816339744828" upper="0.6108652381980153" velocity="1.0" />
+    <dynamics damping="100.5" />
+  </joint>
+  <transmission name="palm_transmission" type="sr_mechanism_meshes/SimpleTransmission">
+    <actuator name="WRJ1" />
+    <joint name="WRJ1" />
+    <mechanicalReduction>1</mechanicalReduction>
+    <motorTorqueConstant>1</motorTorqueConstant>
+    <pulsesPerRevolution>90000</pulsesPerRevolution>
+  </transmission>
+  <link name="ffknuckle">
+    
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0.0005" />
+      <geometry name="knuckle_visual">
+        <mesh filename="meshes/knuckle.obj" />
+      </geometry>
+      <material name="LightGrey" />
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0" />
+      <geometry name="knuckle_collision_geom">
+        <box size="0.005 0.005 0.005" />
+      </geometry>
+    </collision>
+  
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="1.0" />
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001" />
+    </inertial>
+</link>
+  <gazebo reference="ffknuckle">
+    <ns1:contact name="ffknuckle_contact_sensor">
+      <geom>ffknuckle_geom</geom>
+      <updateRate>100.0</updateRate>
+      <ns0:gazebo_ros_bumper name="ffknuckle_gazebo_ros_bumper_controller" plugin="libgazebo_ros_bumper.so">
+        <alwaysOn>true</alwaysOn>
+        <updateRate>100.0</updateRate>
+        <frameName>ffknuckle</frameName>
+        <bumperTopicName>ffknuckle_bumper</bumperTopicName>
+        <ns2:bumper name="ffknuckle_gazebo_ros_bumper_iface" />
+      </ns0:gazebo_ros_bumper>
+    </ns1:contact>
+    <material>PR2/Grey2</material>
+  </gazebo>
+  <joint name="FFJ4" type="revolute">
+    <parent link="palm" />
+    <child link="ffknuckle" />
+    
+    <origin rpy="0 0 0" xyz="0.033 0 0.095" />
+    <axis xyz="0 -1 0" />
+    <limit effort="10" lower="-0.43633231299858238" upper="0.43633231299858238" velocity="1.0" />
+    <dynamics damping="50.5" />
+  </joint>
+  <transmission name="ffknuckle_transmission" type="sr_mechanism_meshes/SimpleTransmission">
+    <actuator name="FFJ4" />
+    <joint name="FFJ4" />
+    <mechanicalReduction>1</mechanicalReduction>
+    <motorTorqueConstant>1</motorTorqueConstant>
+    <pulsesPerRevolution>90000</pulsesPerRevolution>
+  </transmission>
+  <link name="ffproximal">
+    
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0" />
+      <geometry name="proximal_visual">
+        <mesh filename="meshes/F3.obj" />
+      </geometry>
+      <material name="Grey" />
+    </visual>
+    <collision>
+      <origin rpy="0 0 0 " xyz="0 0 0.025" />
+      <geometry name="proximal_collision_geom">
+        <box size="0.008 0.008 0.04" />
+      </geometry>
+    </collision>
+  
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="1.0" />
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001" />
+    </inertial>
+</link>
+  <gazebo reference="ffproximal">
+    <ns1:contact name="ffproximal_contact_sensor">
+      <geom>ffproximal_geom</geom>
+      <updateRate>100.0</updateRate>
+      <ns0:gazebo_ros_bumper name="ffproximal_gazebo_ros_bumper_controller" plugin="libgazebo_ros_bumper.so">
+        <alwaysOn>true</alwaysOn>
+        <updateRate>100.0</updateRate>
+        <frameName>ffproximal</frameName>
+        <bumperTopicName>ffproximal_bumper</bumperTopicName>
+        <ns2:bumper name="ffproximal_gazebo_ros_bumper_iface" />
+      </ns0:gazebo_ros_bumper>
+    </ns1:contact>
+    <material>Gazebo/Grey</material>
+    <selfCollide>true</selfCollide>
+  </gazebo>
+  <joint name="FFJ3" type="revolute">
+    <parent link="ffknuckle" />
+    <child link="ffproximal" />
+    <origin rpy="0 0 0" xyz="0 0 0" />
+    <axis xyz="1 0 0" />
+    <limit effort="10" lower="0" upper="1.57079632679" velocity="1.0" />
+    <dynamics damping="50.5" />
+  </joint>
+  <transmission name="ffproximal_transmission" type="sr_mechanism_meshes/SimpleTransmission">
+    <actuator name="FFJ3" />
+    <joint name="FFJ3" />
+    <mechanicalReduction>1</mechanicalReduction>
+    <motorTorqueConstant>1</motorTorqueConstant>
+    <pulsesPerRevolution>90000</pulsesPerRevolution>
+  </transmission>
+  <link name="ffmiddle">
+    
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0" />
+      <geometry name="middle_visual">
+        <mesh filename="meshes/F2.obj" />
+      </geometry>
+      <material name="Grey" />
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0.0125" />
+      <geometry name="middle_collision_geom">
+        <box size="0.008 0.008 0.015" />
+      </geometry>
+    </collision>
+  
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="1.0" />
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001" />
+    </inertial>
+</link>
+  <gazebo reference="ffmiddle">
+    <ns1:contact name="ffmiddle_contact_sensor">
+      <geom>ffmiddle_geom</geom>
+      <updateRate>100.0</updateRate>
+      <ns0:gazebo_ros_bumper name="ffmiddle_gazebo_ros_bumper_controller" plugin="libgazebo_ros_bumper.so">
+        <alwaysOn>true</alwaysOn>
+        <updateRate>100.0</updateRate>
+        <frameName>ffmiddle</frameName>
+        <bumperTopicName>ffmiddle_bumper</bumperTopicName>
+        <ns2:bumper name="ffmiddle_gazebo_ros_bumper_iface" />
+      </ns0:gazebo_ros_bumper>
+    </ns1:contact>
+    <material>Gazebo/Grey</material>
+    <selfCollide>true</selfCollide>
+  </gazebo>
+  <joint name="FFJ2" type="revolute">
+    <parent link="ffproximal" />
+    <child link="ffmiddle" />
+    <origin rpy="0 0 0" xyz="0 0 0.045" />
+    <axis xyz="1 0 0" />
+    <limit effort="10" lower="0" upper="1.57079632679" velocity="1.0" />
+    <dynamics damping="50.5" />
+  </joint>
+  <transmission name="ffmiddle_transmission" type="sr_mechanism_meshes/J0Transmission">
+    <actuator name="FFJ0" />
+    <joint1 name="FFJ1" />
+    <joint2 name="FFJ2" />
+    <mechanicalReduction>1</mechanicalReduction>
+    <motorTorqueConstant>1</motorTorqueConstant>
+    <pulsesPerRevolution>90000</pulsesPerRevolution>
+  </transmission>
+  <link name="ffdistal">
+    
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0" />
+      <geometry name="distal_visual">
+        <mesh filename="meshes/distal_ellipsoid.obj" />
+      </geometry>
+      <material name="Grey" />
+    </visual>
+    
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0" />
+      <geometry name="distal_collision_geom">
+        <mesh filename="meshes/distal_ellipsoid.obj" />
+      </geometry>
+    </collision>
+  
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="1.0" />
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001" />
+    </inertial>
+</link>
+  <gazebo reference="ffdistal">
+    <ns1:contact name="ffdistal_contact_sensor">
+      <geom>ffdistal_geom</geom>
+      <updateRate>100.0</updateRate>
+      <ns0:gazebo_ros_bumper name="ffdistal_gazebo_ros_bumper_controller" plugin="libgazebo_ros_bumper.so">
+        <alwaysOn>true</alwaysOn>
+        <updateRate>100.0</updateRate>
+        <frameName>ffdistal</frameName>
+        <bumperTopicName>ffdistal_bumper</bumperTopicName>
+        <ns2:bumper name="ffdistal_gazebo_ros_bumper_iface" />
+      </ns0:gazebo_ros_bumper>
+    </ns1:contact>
+    <mu1 value="500.0" />
+    <mu2 value="500.0" />
+    <kp value="10000000.0" />
+    <kd value="1.0" />
+    <material>Gazebo/Grey</material>
+    <selfCollide>true</selfCollide>
+  </gazebo>
+  <joint name="FFJ1" type="revolute">
+    <parent link="ffmiddle" />
+    <child link="ffdistal" />
+    <origin rpy="0 0 0" xyz="0 0 0.025" />
+    <axis xyz="1 0 0" />
+    <limit effort="10" lower="0" upper="1.57079632679" velocity="1.0" />
+    <dynamics damping="50.5" />
+  </joint>
+  <link name="fftip">
+    
+  
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="1.0" />
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001" />
+    </inertial>
+<visual><geometry><box size="0.01 0.01 0.01" /></geometry></visual></link>
+  <joint name="FFtip" type="fixed">
+    <parent link="ffdistal" />
+    <child link="fftip" />
+    <origin rpy="0 0 0" xyz="0 0 0.026" />
+  </joint>
+  <link name="mfknuckle">
+    
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0.0005" />
+      <geometry name="knuckle_visual">
+        <mesh filename="meshes/knuckle.obj" />
+      </geometry>
+      <material name="LightGrey" />
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0" />
+      <geometry name="knuckle_collision_geom">
+        <box size="0.005 0.005 0.005" />
+      </geometry>
+    </collision>
+  
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="1.0" />
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001" />
+    </inertial>
+</link>
+  <gazebo reference="mfknuckle">
+    <ns1:contact name="mfknuckle_contact_sensor">
+      <geom>mfknuckle_geom</geom>
+      <updateRate>100.0</updateRate>
+      <ns0:gazebo_ros_bumper name="mfknuckle_gazebo_ros_bumper_controller" plugin="libgazebo_ros_bumper.so">
+        <alwaysOn>true</alwaysOn>
+        <updateRate>100.0</updateRate>
+        <frameName>mfknuckle</frameName>
+        <bumperTopicName>mfknuckle_bumper</bumperTopicName>
+        <ns2:bumper name="mfknuckle_gazebo_ros_bumper_iface" />
+      </ns0:gazebo_ros_bumper>
+    </ns1:contact>
+    <material>PR2/Grey2</material>
+  </gazebo>
+  <joint name="MFJ4" type="revolute">
+    <parent link="palm" />
+    <child link="mfknuckle" />
+    
+    <origin rpy="0 0 0" xyz="0.011 0 0.099" />
+    <axis xyz="0 -1 0" />
+    <limit effort="10" lower="-0.43633231299858238" upper="0.43633231299858238" velocity="1.0" />
+    <dynamics damping="50.5" />
+  </joint>
+  <transmission name="mfknuckle_transmission" type="sr_mechanism_meshes/SimpleTransmission">
+    <actuator name="MFJ4" />
+    <joint name="MFJ4" />
+    <mechanicalReduction>1</mechanicalReduction>
+    <motorTorqueConstant>1</motorTorqueConstant>
+    <pulsesPerRevolution>90000</pulsesPerRevolution>
+  </transmission>
+  <link name="mfproximal">
+    
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0" />
+      <geometry name="proximal_visual">
+        <mesh filename="meshes/F3.obj" />
+      </geometry>
+      <material name="Grey" />
+    </visual>
+    <collision>
+      <origin rpy="0 0 0 " xyz="0 0 0.025" />
+      <geometry name="proximal_collision_geom">
+        <box size="0.008 0.008 0.04" />
+      </geometry>
+    </collision>
+  
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="1.0" />
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001" />
+    </inertial>
+</link>
+  <gazebo reference="mfproximal">
+    <ns1:contact name="mfproximal_contact_sensor">
+      <geom>mfproximal_geom</geom>
+      <updateRate>100.0</updateRate>
+      <ns0:gazebo_ros_bumper name="mfproximal_gazebo_ros_bumper_controller" plugin="libgazebo_ros_bumper.so">
+        <alwaysOn>true</alwaysOn>
+        <updateRate>100.0</updateRate>
+        <frameName>mfproximal</frameName>
+        <bumperTopicName>mfproximal_bumper</bumperTopicName>
+        <ns2:bumper name="mfproximal_gazebo_ros_bumper_iface" />
+      </ns0:gazebo_ros_bumper>
+    </ns1:contact>
+    <material>Gazebo/Grey</material>
+    <selfCollide>true</selfCollide>
+  </gazebo>
+  <joint name="MFJ3" type="revolute">
+    <parent link="mfknuckle" />
+    <child link="mfproximal" />
+    <origin rpy="0 0 0" xyz="0 0 0" />
+    <axis xyz="1 0 0" />
+    <limit effort="10" lower="0" upper="1.57079632679" velocity="1.0" />
+    <dynamics damping="50.5" />
+  </joint>
+  <transmission name="mfproximal_transmission" type="sr_mechanism_meshes/SimpleTransmission">
+    <actuator name="MFJ3" />
+    <joint name="MFJ3" />
+    <mechanicalReduction>1</mechanicalReduction>
+    <motorTorqueConstant>1</motorTorqueConstant>
+    <pulsesPerRevolution>90000</pulsesPerRevolution>
+  </transmission>
+  <link name="mfmiddle">
+    
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0" />
+      <geometry name="middle_visual">
+        <mesh filename="meshes/F2.obj" />
+      </geometry>
+      <material name="Grey" />
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0.0125" />
+      <geometry name="middle_collision_geom">
+        <box size="0.008 0.008 0.015" />
+      </geometry>
+    </collision>
+  
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="1.0" />
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001" />
+    </inertial>
+</link>
+  <gazebo reference="mfmiddle">
+    <ns1:contact name="mfmiddle_contact_sensor">
+      <geom>mfmiddle_geom</geom>
+      <updateRate>100.0</updateRate>
+      <ns0:gazebo_ros_bumper name="mfmiddle_gazebo_ros_bumper_controller" plugin="libgazebo_ros_bumper.so">
+        <alwaysOn>true</alwaysOn>
+        <updateRate>100.0</updateRate>
+        <frameName>mfmiddle</frameName>
+        <bumperTopicName>mfmiddle_bumper</bumperTopicName>
+        <ns2:bumper name="mfmiddle_gazebo_ros_bumper_iface" />
+      </ns0:gazebo_ros_bumper>
+    </ns1:contact>
+    <material>Gazebo/Grey</material>
+    <selfCollide>true</selfCollide>
+  </gazebo>
+  <joint name="MFJ2" type="revolute">
+    <parent link="mfproximal" />
+    <child link="mfmiddle" />
+    <origin rpy="0 0 0" xyz="0 0 0.045" />
+    <axis xyz="1 0 0" />
+    <limit effort="10" lower="0" upper="1.57079632679" velocity="1.0" />
+    <dynamics damping="50.5" />
+  </joint>
+  <transmission name="mfmiddle_transmission" type="sr_mechanism_meshes/J0Transmission">
+    <actuator name="MFJ0" />
+    <joint1 name="MFJ1" />
+    <joint2 name="MFJ2" />
+    <mechanicalReduction>1</mechanicalReduction>
+    <motorTorqueConstant>1</motorTorqueConstant>
+    <pulsesPerRevolution>90000</pulsesPerRevolution>
+  </transmission>
+  <link name="mfdistal">
+    
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0" />
+      <geometry name="distal_visual">
+        <mesh filename="meshes/distal_ellipsoid.obj" />
+      </geometry>
+      <material name="Grey" />
+    </visual>
+    
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0" />
+      <geometry name="distal_collision_geom">
+        <mesh filename="meshes/distal_ellipsoid.obj" />
+      </geometry>
+    </collision>
+  
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="1.0" />
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001" />
+    </inertial>
+</link>
+  <gazebo reference="mfdistal">
+    <ns1:contact name="mfdistal_contact_sensor">
+      <geom>mfdistal_geom</geom>
+      <updateRate>100.0</updateRate>
+      <ns0:gazebo_ros_bumper name="mfdistal_gazebo_ros_bumper_controller" plugin="libgazebo_ros_bumper.so">
+        <alwaysOn>true</alwaysOn>
+        <updateRate>100.0</updateRate>
+        <frameName>mfdistal</frameName>
+        <bumperTopicName>mfdistal_bumper</bumperTopicName>
+        <ns2:bumper name="mfdistal_gazebo_ros_bumper_iface" />
+      </ns0:gazebo_ros_bumper>
+    </ns1:contact>
+    <mu1 value="500.0" />
+    <mu2 value="500.0" />
+    <kp value="10000000.0" />
+    <kd value="1.0" />
+    <material>Gazebo/Grey</material>
+    <selfCollide>true</selfCollide>
+  </gazebo>
+  <joint name="MFJ1" type="revolute">
+    <parent link="mfmiddle" />
+    <child link="mfdistal" />
+    <origin rpy="0 0 0" xyz="0 0 0.025" />
+    <axis xyz="1 0 0" />
+    <limit effort="10" lower="0" upper="1.57079632679" velocity="1.0" />
+    <dynamics damping="50.5" />
+  </joint>
+  <link name="mftip">
+    
+  
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="1.0" />
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001" />
+    </inertial>
+<visual><geometry><box size="0.01 0.01 0.01" /></geometry></visual></link>
+  <joint name="MFtip" type="fixed">
+    <parent link="mfdistal" />
+    <child link="mftip" />
+    <origin rpy="0 0 0" xyz="0 0 0.026" />
+  </joint>
+  <link name="rfknuckle">
+    
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0.0005" />
+      <geometry name="knuckle_visual">
+        <mesh filename="meshes/knuckle.obj" />
+      </geometry>
+      <material name="LightGrey" />
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0" />
+      <geometry name="knuckle_collision_geom">
+        <box size="0.005 0.005 0.005" />
+      </geometry>
+    </collision>
+  
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="1.0" />
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001" />
+    </inertial>
+</link>
+  <gazebo reference="rfknuckle">
+    <ns1:contact name="rfknuckle_contact_sensor">
+      <geom>rfknuckle_geom</geom>
+      <updateRate>100.0</updateRate>
+      <ns0:gazebo_ros_bumper name="rfknuckle_gazebo_ros_bumper_controller" plugin="libgazebo_ros_bumper.so">
+        <alwaysOn>true</alwaysOn>
+        <updateRate>100.0</updateRate>
+        <frameName>rfknuckle</frameName>
+        <bumperTopicName>rfknuckle_bumper</bumperTopicName>
+        <ns2:bumper name="rfknuckle_gazebo_ros_bumper_iface" />
+      </ns0:gazebo_ros_bumper>
+    </ns1:contact>
+    <material>PR2/Grey2</material>
+  </gazebo>
+  <joint name="RFJ4" type="revolute">
+    <parent link="palm" />
+    <child link="rfknuckle" />
+    
+    <origin rpy="0 0 0" xyz="-0.011 0 0.095" />
+    <axis xyz="0 1 0" />
+    <limit effort="10" lower="-0.43633231299858238" upper="0.43633231299858238" velocity="1.0" />
+    <dynamics damping="50.5" />
+  </joint>
+  <transmission name="rfknuckle_transmission" type="sr_mechanism_meshes/SimpleTransmission">
+    <actuator name="RFJ4" />
+    <joint name="RFJ4" />
+    <mechanicalReduction>1</mechanicalReduction>
+    <motorTorqueConstant>1</motorTorqueConstant>
+    <pulsesPerRevolution>90000</pulsesPerRevolution>
+  </transmission>
+  <link name="rfproximal">
+    
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0" />
+      <geometry name="proximal_visual">
+        <mesh filename="meshes/F3.obj" />
+      </geometry>
+      <material name="Grey" />
+    </visual>
+    <collision>
+      <origin rpy="0 0 0 " xyz="0 0 0.025" />
+      <geometry name="proximal_collision_geom">
+        <box size="0.008 0.008 0.04" />
+      </geometry>
+    </collision>
+  
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="1.0" />
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001" />
+    </inertial>
+</link>
+  <gazebo reference="rfproximal">
+    <ns1:contact name="rfproximal_contact_sensor">
+      <geom>rfproximal_geom</geom>
+      <updateRate>100.0</updateRate>
+      <ns0:gazebo_ros_bumper name="rfproximal_gazebo_ros_bumper_controller" plugin="libgazebo_ros_bumper.so">
+        <alwaysOn>true</alwaysOn>
+        <updateRate>100.0</updateRate>
+        <frameName>rfproximal</frameName>
+        <bumperTopicName>rfproximal_bumper</bumperTopicName>
+        <ns2:bumper name="rfproximal_gazebo_ros_bumper_iface" />
+      </ns0:gazebo_ros_bumper>
+    </ns1:contact>
+    <material>Gazebo/Grey</material>
+    <selfCollide>true</selfCollide>
+  </gazebo>
+  <joint name="RFJ3" type="revolute">
+    <parent link="rfknuckle" />
+    <child link="rfproximal" />
+    <origin rpy="0 0 0" xyz="0 0 0" />
+    <axis xyz="1 0 0" />
+    <limit effort="10" lower="0" upper="1.57079632679" velocity="1.0" />
+    <dynamics damping="50.5" />
+  </joint>
+  <transmission name="rfproximal_transmission" type="sr_mechanism_meshes/SimpleTransmission">
+    <actuator name="RFJ3" />
+    <joint name="RFJ3" />
+    <mechanicalReduction>1</mechanicalReduction>
+    <motorTorqueConstant>1</motorTorqueConstant>
+    <pulsesPerRevolution>90000</pulsesPerRevolution>
+  </transmission>
+  <link name="rfmiddle">
+    
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0" />
+      <geometry name="middle_visual">
+        <mesh filename="meshes/F2.obj" />
+      </geometry>
+      <material name="Grey" />
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0.0125" />
+      <geometry name="middle_collision_geom">
+        <box size="0.008 0.008 0.015" />
+      </geometry>
+    </collision>
+  
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="1.0" />
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001" />
+    </inertial>
+</link>
+  <gazebo reference="rfmiddle">
+    <ns1:contact name="rfmiddle_contact_sensor">
+      <geom>rfmiddle_geom</geom>
+      <updateRate>100.0</updateRate>
+      <ns0:gazebo_ros_bumper name="rfmiddle_gazebo_ros_bumper_controller" plugin="libgazebo_ros_bumper.so">
+        <alwaysOn>true</alwaysOn>
+        <updateRate>100.0</updateRate>
+        <frameName>rfmiddle</frameName>
+        <bumperTopicName>rfmiddle_bumper</bumperTopicName>
+        <ns2:bumper name="rfmiddle_gazebo_ros_bumper_iface" />
+      </ns0:gazebo_ros_bumper>
+    </ns1:contact>
+    <material>Gazebo/Grey</material>
+    <selfCollide>true</selfCollide>
+  </gazebo>
+  <joint name="RFJ2" type="revolute">
+    <parent link="rfproximal" />
+    <child link="rfmiddle" />
+    <origin rpy="0 0 0" xyz="0 0 0.045" />
+    <axis xyz="1 0 0" />
+    <limit effort="10" lower="0" upper="1.57079632679" velocity="1.0" />
+    <dynamics damping="50.5" />
+  </joint>
+  <transmission name="rfmiddle_transmission" type="sr_mechanism_meshes/J0Transmission">
+    <actuator name="RFJ0" />
+    <joint1 name="RFJ1" />
+    <joint2 name="RFJ2" />
+    <mechanicalReduction>1</mechanicalReduction>
+    <motorTorqueConstant>1</motorTorqueConstant>
+    <pulsesPerRevolution>90000</pulsesPerRevolution>
+  </transmission>
+  <link name="rfdistal">
+    
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0" />
+      <geometry name="distal_visual">
+        <mesh filename="meshes/distal_ellipsoid.obj" />
+      </geometry>
+      <material name="Grey" />
+    </visual>
+    
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0" />
+      <geometry name="distal_collision_geom">
+        <mesh filename="meshes/distal_ellipsoid.obj" />
+      </geometry>
+    </collision>
+  
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="1.0" />
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001" />
+    </inertial>
+</link>
+  <gazebo reference="rfdistal">
+    <ns1:contact name="rfdistal_contact_sensor">
+      <geom>rfdistal_geom</geom>
+      <updateRate>100.0</updateRate>
+      <ns0:gazebo_ros_bumper name="rfdistal_gazebo_ros_bumper_controller" plugin="libgazebo_ros_bumper.so">
+        <alwaysOn>true</alwaysOn>
+        <updateRate>100.0</updateRate>
+        <frameName>rfdistal</frameName>
+        <bumperTopicName>rfdistal_bumper</bumperTopicName>
+        <ns2:bumper name="rfdistal_gazebo_ros_bumper_iface" />
+      </ns0:gazebo_ros_bumper>
+    </ns1:contact>
+    <mu1 value="500.0" />
+    <mu2 value="500.0" />
+    <kp value="10000000.0" />
+    <kd value="1.0" />
+    <material>Gazebo/Grey</material>
+    <selfCollide>true</selfCollide>
+  </gazebo>
+  <joint name="RFJ1" type="revolute">
+    <parent link="rfmiddle" />
+    <child link="rfdistal" />
+    <origin rpy="0 0 0" xyz="0 0 0.025" />
+    <axis xyz="1 0 0" />
+    <limit effort="10" lower="0" upper="1.57079632679" velocity="1.0" />
+    <dynamics damping="50.5" />
+  </joint>
+  <link name="rftip">
+    
+  
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="1.0" />
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001" />
+    </inertial>
+<visual><geometry><box size="0.01 0.01 0.01" /></geometry></visual></link>
+  <joint name="RFtip" type="fixed">
+    <parent link="rfdistal" />
+    <child link="rftip" />
+    <origin rpy="0 0 0" xyz="0 0 0.026" />
+  </joint>
+  <link name="lfmetacarpal">
+    
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0" />
+      <geometry name="lfmetacarpal_visual">
+        <mesh filename="meshes/lfmetacarpal.obj" />
+      </geometry>
+      <material name="Grey" />
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0.04" />
+      <geometry name="lfmetacarpal_collision_geom">
+        <box size="0.008 0.008 0.03" />
+      </geometry>
+    </collision>
+  
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="1.0" />
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001" />
+    </inertial>
+</link>
+  <gazebo reference="lfmetacarpal">
+    <ns1:contact name="lfmetacarpal_contact_sensor">
+      <geom>lfmetacarpal_geom</geom>
+      <updateRate>100.0</updateRate>
+      <ns0:gazebo_ros_bumper name="lfmetacarpal_gazebo_ros_bumper_controller" plugin="libgazebo_ros_bumper.so">
+        <alwaysOn>true</alwaysOn>
+        <updateRate>100.0</updateRate>
+        <frameName>lfmetacarpal</frameName>
+        <bumperTopicName>lfmetacarpal_bumper</bumperTopicName>
+        <ns2:bumper name="lfmetacarpal_gazebo_ros_bumper_iface" />
+      </ns0:gazebo_ros_bumper>
+    </ns1:contact>
+    <material>Gazebo/Grey</material>
+  </gazebo>
+  <joint name="LFJ5" type="revolute">
+    <parent link="palm" />
+    <child link="lfmetacarpal" />
+    <origin rpy="0 0 0" xyz="-0.033 0 0.02071" />
+    <axis xyz="0.573576436 0 0.819152044" />
+    <limit effort="10" lower="0" upper="0.69813170079773179" velocity="1.0" />
+    <dynamics damping="50.5" />
+  </joint>
+  <transmission name="lfmetacarpal_transmission" type="sr_mechanism_meshes/SimpleTransmission">
+    <actuator name="LFJ5" />
+    <joint name="LFJ5" />
+    <mechanicalReduction>1</mechanicalReduction>
+    <motorTorqueConstant>1</motorTorqueConstant>
+    <pulsesPerRevolution>90000</pulsesPerRevolution>
+  </transmission>
+  <link name="lfknuckle">
+    
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0" />
+      <geometry name="knuckle_visual">
+        <mesh filename="meshes/knuckle.obj" />
+      </geometry>
+      <material name="LightGrey" />
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0" />
+      <geometry name="knuckle_collision_geom">
+        <box size="0.005 0.005 0.005" />
+      </geometry>
+    </collision>
+  
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="1.0" />
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001" />
+    </inertial>
+</link>
+  <gazebo reference="lfknuckle">
+    <ns1:contact name="lfknuckle_contact_sensor">
+      <geom>lfknuckle_geom</geom>
+      <updateRate>100.0</updateRate>
+      <ns0:gazebo_ros_bumper name="lfknuckle_gazebo_ros_bumper_controller" plugin="libgazebo_ros_bumper.so">
+        <alwaysOn>true</alwaysOn>
+        <updateRate>100.0</updateRate>
+        <frameName>lfknuckle</frameName>
+        <bumperTopicName>lfknuckle_bumper</bumperTopicName>
+        <ns2:bumper name="lfknuckle_gazebo_ros_bumper_iface" />
+      </ns0:gazebo_ros_bumper>
+    </ns1:contact>
+    <material>PR2/Grey2</material>
+  </gazebo>
+  <joint name="LFJ4" type="revolute">
+    <parent link="lfmetacarpal" />
+    <child link="lfknuckle" />
+    <origin rpy="0 0 0" xyz="0 0 0.06579" />
+    <axis xyz="0 1 0" />
+    <limit effort="10" lower="-0.43633231299858238" upper="0.43633231299858238" velocity="1.0" />
+    <dynamics damping="50.5" />
+  </joint>
+  <transmission name="lfknuckle_transmission" type="sr_mechanism_meshes/SimpleTransmission">
+    <actuator name="LFJ4" />
+    <joint name="LFJ4" />
+    <mechanicalReduction>1</mechanicalReduction>
+    <motorTorqueConstant>1</motorTorqueConstant>
+    <pulsesPerRevolution>90000</pulsesPerRevolution>
+  </transmission>
+  <link name="lfproximal">
+    
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0" />
+      <geometry name="proximal_visual">
+        <mesh filename="meshes/F3.obj" />
+      </geometry>
+      <material name="Grey" />
+    </visual>
+    <collision>
+      <origin rpy="0 0 0 " xyz="0 0 0.025" />
+      <geometry name="proximal_collision_geom">
+        <box size="0.008 0.008 0.04" />
+      </geometry>
+    </collision>
+  
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="1.0" />
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001" />
+    </inertial>
+</link>
+  <gazebo reference="lfproximal">
+    <ns1:contact name="lfproximal_contact_sensor">
+      <geom>lfproximal_geom</geom>
+      <updateRate>100.0</updateRate>
+      <ns0:gazebo_ros_bumper name="lfproximal_gazebo_ros_bumper_controller" plugin="libgazebo_ros_bumper.so">
+        <alwaysOn>true</alwaysOn>
+        <updateRate>100.0</updateRate>
+        <frameName>lfproximal</frameName>
+        <bumperTopicName>lfproximal_bumper</bumperTopicName>
+        <ns2:bumper name="lfproximal_gazebo_ros_bumper_iface" />
+      </ns0:gazebo_ros_bumper>
+    </ns1:contact>
+    <material>Gazebo/Grey</material>
+    <selfCollide>true</selfCollide>
+  </gazebo>
+  <joint name="LFJ3" type="revolute">
+    <parent link="lfknuckle" />
+    <child link="lfproximal" />
+    <origin rpy="0 0 0" xyz="0 0 0" />
+    <axis xyz="1 0 0" />
+    <limit effort="10" lower="0" upper="1.57079632679" velocity="1.0" />
+    <dynamics damping="50.5" />
+  </joint>
+  <transmission name="lfproximal_transmission" type="sr_mechanism_meshes/SimpleTransmission">
+    <actuator name="LFJ3" />
+    <joint name="LFJ3" />
+    <mechanicalReduction>1</mechanicalReduction>
+    <motorTorqueConstant>1</motorTorqueConstant>
+    <pulsesPerRevolution>90000</pulsesPerRevolution>
+  </transmission>
+  <link name="lfmiddle">
+    
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0" />
+      <geometry name="middle_visual">
+        <mesh filename="meshes/F2.obj" />
+      </geometry>
+      <material name="Grey" />
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0.0125" />
+      <geometry name="middle_collision_geom">
+        <box size="0.008 0.008 0.015" />
+      </geometry>
+    </collision>
+  
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="1.0" />
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001" />
+    </inertial>
+</link>
+  <gazebo reference="lfmiddle">
+    <ns1:contact name="lfmiddle_contact_sensor">
+      <geom>lfmiddle_geom</geom>
+      <updateRate>100.0</updateRate>
+      <ns0:gazebo_ros_bumper name="lfmiddle_gazebo_ros_bumper_controller" plugin="libgazebo_ros_bumper.so">
+        <alwaysOn>true</alwaysOn>
+        <updateRate>100.0</updateRate>
+        <frameName>lfmiddle</frameName>
+        <bumperTopicName>lfmiddle_bumper</bumperTopicName>
+        <ns2:bumper name="lfmiddle_gazebo_ros_bumper_iface" />
+      </ns0:gazebo_ros_bumper>
+    </ns1:contact>
+    <material>Gazebo/Grey</material>
+    <selfCollide>true</selfCollide>
+  </gazebo>
+  <joint name="LFJ2" type="revolute">
+    <parent link="lfproximal" />
+    <child link="lfmiddle" />
+    <origin rpy="0 0 0" xyz="0 0 0.045" />
+    <axis xyz="1 0 0" />
+    <limit effort="10" lower="0" upper="1.57079632679" velocity="1.0" />
+    <dynamics damping="50.5" />
+  </joint>
+  <transmission name="lfmiddle_transmission" type="sr_mechanism_meshes/J0Transmission">
+    <actuator name="LFJ0" />
+    <joint1 name="LFJ1" />
+    <joint2 name="LFJ2" />
+    <mechanicalReduction>1</mechanicalReduction>
+    <motorTorqueConstant>1</motorTorqueConstant>
+    <pulsesPerRevolution>90000</pulsesPerRevolution>
+  </transmission>
+  <link name="lfdistal">
+    
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0" />
+      <geometry name="distal_visual">
+        <mesh filename="meshes/distal_ellipsoid.obj" />
+      </geometry>
+      <material name="Grey" />
+    </visual>
+    
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0" />
+      <geometry name="distal_collision_geom">
+        <mesh filename="meshes/distal_ellipsoid.obj" />
+      </geometry>
+    </collision>
+  
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="1.0" />
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001" />
+    </inertial>
+</link>
+  <gazebo reference="lfdistal">
+    <ns1:contact name="lfdistal_contact_sensor">
+      <geom>lfdistal_geom</geom>
+      <updateRate>100.0</updateRate>
+      <ns0:gazebo_ros_bumper name="lfdistal_gazebo_ros_bumper_controller" plugin="libgazebo_ros_bumper.so">
+        <alwaysOn>true</alwaysOn>
+        <updateRate>100.0</updateRate>
+        <frameName>lfdistal</frameName>
+        <bumperTopicName>lfdistal_bumper</bumperTopicName>
+        <ns2:bumper name="lfdistal_gazebo_ros_bumper_iface" />
+      </ns0:gazebo_ros_bumper>
+    </ns1:contact>
+    <mu1 value="500.0" />
+    <mu2 value="500.0" />
+    <kp value="10000000.0" />
+    <kd value="1.0" />
+    <material>Gazebo/Grey</material>
+    <selfCollide>true</selfCollide>
+  </gazebo>
+  <joint name="LFJ1" type="revolute">
+    <parent link="lfmiddle" />
+    <child link="lfdistal" />
+    <origin rpy="0 0 0" xyz="0 0 0.025" />
+    <axis xyz="1 0 0" />
+    <limit effort="10" lower="0" upper="1.57079632679" velocity="1.0" />
+    <dynamics damping="50.5" />
+  </joint>
+  <link name="lftip">
+    
+  
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="1.0" />
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001" />
+    </inertial>
+<visual><geometry><box size="0.01 0.01 0.01" /></geometry></visual></link>
+  <joint name="LFtip" type="fixed">
+    <parent link="lfdistal" />
+    <child link="lftip" />
+    <origin rpy="0 0 0" xyz="0 0 0.026" />
+  </joint>
+  <link name="thbase">
+    
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0" />
+      <geometry name="thbase_visual">
+        <box size="0.001 0.001 0.001" />
+      </geometry>
+      <material name="shadow_thbase_material">
+        <color rgba="0.5 0.5 0.5 1.0" />
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0 " xyz="0 0 0" />
+      <geometry name="thbase_collision_geom">
+        <box size="0.001 0.001 0.001" />
+      </geometry>
+    </collision>
+  
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="1.0" />
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001" />
+    </inertial>
+</link>
+  <gazebo reference="thbase">
+    <ns1:contact name="thbase_contact_sensor">
+      <geom>thbase_geom</geom>
+      <updateRate>100.0</updateRate>
+      <ns0:gazebo_ros_bumper name="thbase_gazebo_ros_bumper_controller" plugin="libgazebo_ros_bumper.so">
+        <alwaysOn>true</alwaysOn>
+        <updateRate>100.0</updateRate>
+        <frameName>thbase</frameName>
+        <bumperTopicName>thbase_bumper</bumperTopicName>
+        <ns2:bumper name="thbase_gazebo_ros_bumper_iface" />
+      </ns0:gazebo_ros_bumper>
+    </ns1:contact>
+    <material>Gazebo/Grey</material>
+  </gazebo>
+  <joint name="THJ5" type="revolute">
+    <parent link="palm" />
+    <child link="thbase" />
+    <origin rpy="0 0.785398163397 0" xyz="0.034 -0.0085 0.029" />
+    <axis xyz="0 0 -1.0" />
+    <limit effort="10" lower="-1.047" upper="1.047" velocity="1.0" />
+    <dynamics damping="50.5" />
+  </joint>
+  <transmission name="thbase_transmission" type="sr_mechanism_meshes/SimpleTransmission">
+    <actuator name="THJ5" />
+    <joint name="THJ5" />
+    <mechanicalReduction>1</mechanicalReduction>
+    <motorTorqueConstant>1</motorTorqueConstant>
+    <pulsesPerRevolution>90000</pulsesPerRevolution>
+  </transmission>
+  <link name="thproximal">
+    
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0" />
+      <geometry name="thproximal_visual">
+        <mesh filename="meshes/TH3_z.obj" />
+      </geometry>
+      <material name="shadow_thproximal_material">
+        <color rgba="0.2 0.2 0.2 1.0" />
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0.019" />
+      <geometry name="thproximal_collision_geom">
+        <box size="0.008 0.008 0.020" />
+      </geometry>
+    </collision>
+  
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="1.0" />
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001" />
+    </inertial>
+</link>
+  <gazebo reference="thproximal">
+    <ns1:contact name="thproximal_contact_sensor">
+      <geom>thproximal_geom</geom>
+      <updateRate>100.0</updateRate>
+      <ns0:gazebo_ros_bumper name="thproximal_gazebo_ros_bumper_controller" plugin="libgazebo_ros_bumper.so">
+        <alwaysOn>true</alwaysOn>
+        <updateRate>100.0</updateRate>
+        <frameName>thproximal</frameName>
+        <bumperTopicName>thproximal_bumper</bumperTopicName>
+        <ns2:bumper name="thproximal_gazebo_ros_bumper_iface" />
+      </ns0:gazebo_ros_bumper>
+    </ns1:contact>
+    <material>Gazebo/Grey</material>
+  </gazebo>
+  <joint name="THJ4" type="revolute">
+    <parent link="thbase" />
+    <child link="thproximal" />
+    <origin rpy="0 0 0" xyz="0 0 0" />
+    <axis xyz="1.0 0 0" />
+    <limit effort="10" lower="0" upper="1.309" velocity="1.0" />
+    <dynamics damping="50.5" />
+  </joint>
+  <transmission name="thproximal_transmission" type="sr_mechanism_meshes/SimpleTransmission">
+    <actuator name="THJ4" />
+    <joint name="THJ4" />
+    <mechanicalReduction>1</mechanicalReduction>
+    <motorTorqueConstant>1</motorTorqueConstant>
+    <pulsesPerRevolution>90000</pulsesPerRevolution>
+  </transmission>
+  <link name="thhub">
+    
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0" />
+      <geometry name="thhub_visual">
+        <box size="0.001 0.001 0.001" />
+      </geometry>
+      <material name="shadow_thhub_material">
+        <color rgba="0.7 0.7 0.7 1.0" />
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0 " xyz="0 0 0" />
+      <geometry name="thhub_collision_geom">
+        <box size="0.001 0.001 0.001" />
+      </geometry>
+    </collision>
+  
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="1.0" />
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001" />
+    </inertial>
+</link>
+  <gazebo reference="thhub">
+    <ns1:contact name="thhub_contact_sensor">
+      <geom>thhub_geom</geom>
+      <updateRate>100.0</updateRate>
+      <ns0:gazebo_ros_bumper name="thhub_gazebo_ros_bumper_controller" plugin="libgazebo_ros_bumper.so">
+        <alwaysOn>true</alwaysOn>
+        <updateRate>100.0</updateRate>
+        <frameName>thhub</frameName>
+        <bumperTopicName>thhub_bumper</bumperTopicName>
+        <ns2:bumper name="thhub_gazebo_ros_bumper_iface" />
+      </ns0:gazebo_ros_bumper>
+    </ns1:contact>
+    <material>Gazebo/Grey</material>
+  </gazebo>
+  <joint name="THJ3" type="revolute">
+    <parent link="thproximal" />
+    <child link="thhub" />
+    <origin rpy="0 0 0" xyz="0 0 0.038" />
+    <axis xyz="1 0 0" />
+    <limit effort="10" lower="-0.2618" upper="0.2618" velocity="1.0" />
+    <dynamics damping="50.5" />
+  </joint>
+  <transmission name="thhub_transmission" type="sr_mechanism_meshes/SimpleTransmission">
+    <actuator name="THJ3" />
+    <joint name="THJ3" />
+    <mechanicalReduction>1</mechanicalReduction>
+    <motorTorqueConstant>1</motorTorqueConstant>
+    <pulsesPerRevolution>90000</pulsesPerRevolution>
+  </transmission>
+  <link name="thmiddle">
+    
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0" />
+      <geometry name="thmiddle_visual">
+        <mesh filename="meshes/TH2_z.obj" />
+      </geometry>
+      <material name="shadow_thmiddle_material">
+        <color rgba="0.2 0.2 0.2 1.0" />
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0 " xyz="0 0 0.016" />
+      <geometry name="thmiddle_collision_geom">
+        <box size="0.008 0.008 0.015" />
+      </geometry>
+    </collision>
+  
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="1.0" />
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001" />
+    </inertial>
+</link>
+  <gazebo reference="thmiddle">
+    <ns1:contact name="thmiddle_contact_sensor">
+      <geom>thmiddle_geom</geom>
+      <updateRate>100.0</updateRate>
+      <ns0:gazebo_ros_bumper name="thmiddle_gazebo_ros_bumper_controller" plugin="libgazebo_ros_bumper.so">
+        <alwaysOn>true</alwaysOn>
+        <updateRate>100.0</updateRate>
+        <frameName>thmiddle</frameName>
+        <bumperTopicName>thmiddle_bumper</bumperTopicName>
+        <ns2:bumper name="thmiddle_gazebo_ros_bumper_iface" />
+      </ns0:gazebo_ros_bumper>
+    </ns1:contact>
+    <material>Gazebo/Grey</material>
+  </gazebo>
+  <joint name="THJ2" type="revolute">
+    <parent link="thhub" />
+    <child link="thmiddle" />
+    <origin rpy="0 0 0" xyz="0 0 0" />
+    <axis xyz="0 -1 0" />
+    <limit effort="10" lower="-0.5237" upper="0.5237" velocity="1.0" />
+    <dynamics damping="50.5" />
+  </joint>
+  <transmission name="thmiddle_transmission" type="sr_mechanism_meshes/SimpleTransmission">
+    <actuator name="THJ2" />
+    <joint name="THJ2" />
+    <mechanicalReduction>1</mechanicalReduction>
+    <motorTorqueConstant>1</motorTorqueConstant>
+    <pulsesPerRevolution>90000</pulsesPerRevolution>
+  </transmission>
+  <link name="thdistal">
+    
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0.002 0.0025" />
+      <geometry name="thdistal_visual">
+        <mesh filename="meshes/distal_ellipsoid.obj" />
+      </geometry>
+      <material name="shadow_thmiddle_material">
+        <color rgba="0.2 0.2 0.2 1.0" />
+      </material>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0 " xyz="0 0.002 0.0025" />
+      <geometry name="thmiddle_collision_geom">
+        <mesh filename="meshes/distal_ellipsoid.obj" />
+      </geometry>
+    </collision>
+  
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="1.0" />
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001" />
+    </inertial>
+</link>
+  <gazebo reference="thdistal">
+    <ns1:contact name="thdistal_contact_sensor">
+      <geom>thdistal_geom</geom>
+      <updateRate>100.0</updateRate>
+      <ns0:gazebo_ros_bumper name="thdistal_gazebo_ros_bumper_controller" plugin="libgazebo_ros_bumper.so">
+        <alwaysOn>true</alwaysOn>
+        <updateRate>100.0</updateRate>
+        <frameName>thdistal</frameName>
+        <bumperTopicName>thdistal_bumper</bumperTopicName>
+        <ns2:bumper name="thdistal_gazebo_ros_bumper_iface" />
+      </ns0:gazebo_ros_bumper>
+    </ns1:contact>
+    <mu1 value="500.0" />
+    <mu2 value="500.0" />
+    <kp value="10000000.0" />
+    <kd value="1.0" />
+    <material>Gazebo/Grey</material>
+    <selfCollide>true</selfCollide>
+  </gazebo>
+  <joint name="THJ1" type="revolute">
+    <parent link="thmiddle" />
+    <child link="thdistal" />
+    <origin rpy="0 0 -1.570796327" xyz="0 0 0.032" />
+    <axis xyz="1 0 0" />
+    <limit effort="10" lower="0" upper="1.571" velocity="1.0" />
+    <dynamics damping="50.5" />
+  </joint>
+  <link name="thtip">
+    
+  
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="1.0" />
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001" />
+    </inertial>
+<visual><geometry><box size="0.01 0.01 0.01" /></geometry></visual></link>
+  <joint name="thtip" type="fixed">
+    <parent link="thdistal" />
+    <child link="thtip" />
+    <origin rpy="0 0 0" xyz="0 0 0.0275" />
+  </joint>
+  <transmission name="thdistal_transmission" type="sr_mechanism_meshes/SimpleTransmission">
+    <actuator name="THJ1" />
+    <joint name="THJ1" />
+    <mechanicalReduction>1</mechanicalReduction>
+    <motorTorqueConstant>1</motorTorqueConstant>
+    <pulsesPerRevolution>90000</pulsesPerRevolution>
+  </transmission>
+</robot>

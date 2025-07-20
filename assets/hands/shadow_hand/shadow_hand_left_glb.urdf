@@ -1,0 +1,957 @@
+<?xml version="1.0"?>
+<robot name="shadow_left">
+  <link name="virtual_root"><inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="1.0" />
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001" />
+    </inertial><visual><geometry><box size="0.01 0.01 0.01" /></geometry></visual></link><joint name="dummy_root_link_to_virtual_root" type="fixed"><parent link="virtual_root" /><child link="dummy_root_link" /></joint><joint name="world_to_virtual_root" type="fixed"><parent link="virtual_root" /><child link="world" /></joint><link name="dummy_root_link"><inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="1.0" />
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001" />
+    </inertial><visual><geometry><box size="0.01 0.01 0.01" /></geometry></visual></link><joint name="fix_thtip_to_dummy" type="fixed"><parent link="dummy_root_link" /><child link="thtip" /></joint><joint name="fix_rftip_to_dummy" type="fixed"><parent link="dummy_root_link" /><child link="rftip" /></joint><joint name="fix_mftip_to_dummy" type="fixed"><parent link="dummy_root_link" /><child link="mftip" /></joint><joint name="fix_lftip_to_dummy" type="fixed"><parent link="dummy_root_link" /><child link="lftip" /></joint><joint name="fix_imu_to_dummy" type="fixed"><parent link="dummy_root_link" /><child link="imu" /></joint><joint name="fix_fftip_to_dummy" type="fixed"><parent link="dummy_root_link" /><child link="fftip" /></joint><joint name="fix_ee_link_to_dummy" type="fixed"><parent link="dummy_root_link" /><child link="ee_link" /></joint><link name="world"><inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="1.0" />
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001" />
+    </inertial><visual><geometry><box size="0.01 0.01 0.01" /></geometry></visual></link>
+  <joint name="world_joint" type="fixed">
+    <parent link="world" />
+    <child link="forearm" />
+    <origin rpy="0.0 0.0 1.57079" xyz="0.0 0.0 0.0" />
+  </joint>
+  <link name="forearm">
+    
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0.0" />
+      <geometry name="forearm_visual">
+        <mesh filename="meshes/visual/forearm_E3M5.glb" scale="0.001 0.001 0.001" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0.0" />
+      <geometry name="forearm_collision">
+        <mesh filename="meshes/collision/forearm_E3M5.obj" scale="0.001 0.001 0.001" />
+      </geometry>
+    </collision>
+    
+    <collision>
+      <origin rpy="0 0.785395 0" xyz="0 -0.01 0.165" />
+      <geometry>
+        <box size="0.07 0.07 0.07" />
+      </geometry>
+    </collision>
+  
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="1.0" />
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001" />
+    </inertial>
+</link>
+  <link name="wrist">
+    
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0" />
+      <geometry name="wrist_visual">
+        <mesh filename="meshes/visual/wrist_E3M5.glb" scale="0.001 0.001 0.001" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="1.5708 1.5708 0" xyz="0 0 0" />
+      <geometry name="wrist_collision_geom">
+        <cylinder length="0.030" radius="0.0135" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="0 1.5708 0" xyz="0.026 0 0.034" />
+      <geometry>
+        <cylinder length="0.010" radius="0.011" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="0 1.5708 0" xyz="-0.031 0 0.034" />
+      <geometry>
+        <cylinder length="0.010" radius="0.011" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="0 -0.7854 0" xyz="0.021 0 0.011" />
+      <geometry>
+        <box size="0.027 0.018 0.010" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="0 0.7854 0" xyz="-0.026 0 0.010" />
+      <geometry>
+        <box size="0.027 0.018 0.010" />
+      </geometry>
+    </collision>
+  
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="1.0" />
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001" />
+    </inertial>
+</link>
+  <joint name="WRJ2" type="revolute">
+    <parent link="forearm" />
+    <child link="wrist" />
+    <origin rpy="0 0 0" xyz="0 -0.010 0.21301" />
+    <axis xyz="0 -1 0" />
+    <limit effort="10" lower="-0.523598775598" upper="0.174532925199" velocity="2.0" />
+    <dynamics damping="0.1" />
+  </joint>
+  <link name="palm">
+    
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0" />
+      <geometry name="palm_visual">
+        <mesh filename="meshes/visual/palm_E3M5_left.glb" scale="0.001 0.001 0.001" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="-0.011 0.0085 0.042" />
+      <geometry name="palm_collision_geom">
+        <box size="0.062 0.007 0.090" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="0 0 0" xyz="0.002 -0.0035 0.042" />
+      <geometry>
+        <box size="0.036 0.017 0.090" />
+      </geometry>
+    </collision>
+    
+    <collision>
+      <origin rpy="0 0 0" xyz="-0.029 -0.0035 0.082" />
+      <geometry>
+        <box size="0.026 0.017 0.010" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="0.2 0 -0.25" xyz="-0.0265 -0.001 0.070" />
+      <geometry>
+        <box size="0.026 0.014 0.018" />
+      </geometry>
+    </collision>
+    
+    <collision>
+      <origin rpy="0 0 0" xyz="-0.0315 -0.0085 0.001" />
+      <geometry>
+        <box size="0.021 0.027 0.016" />
+      </geometry>
+    </collision>
+    
+    <collision>
+      <origin rpy="0 0 0.48" xyz="-0.0125 -0.015 0.009" />
+      <geometry>
+        <box size="0.022 0.005 0.032" />
+      </geometry>
+    </collision>
+    
+    <collision>
+      <origin rpy="0 0 0" xyz="-0.011 0 0.089" />
+      <geometry>
+        <box size="0.018 0.024 0.004" />
+      </geometry>
+    </collision>
+    
+    <collision>
+      <origin rpy="0 0 0" xyz="0.03 0 0.009" />
+      <geometry>
+        <box size="0.020 0.024 0.032" />
+      </geometry>
+    </collision>
+  
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="1.0" />
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001" />
+    </inertial>
+</link>
+  <joint name="ee_fixed_joint" type="fixed">
+    <parent link="palm" />
+    <child link="ee_link" />
+    <origin rpy="0.0 0.0 0.0" xyz="0.0 0.0 0.00" />
+  </joint>
+  <link name="ee_link"><inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="1.0" />
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001" />
+    </inertial><visual><geometry><box size="0.01 0.01 0.01" /></geometry></visual></link>
+  <joint name="WRJ1" type="revolute">
+    <parent link="wrist" />
+    <child link="palm" />
+    <origin rpy="0 0 0" xyz="0 0 0.034" />
+    <axis xyz="1 0 0" />
+    <limit effort="30" lower="-0.698131700798" upper="0.488692190558" velocity="2.0" />
+    <dynamics damping="0.1" />
+  </joint>
+  <link name="imu"><inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="1.0" />
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001" />
+    </inertial><visual><geometry><box size="0.01 0.01 0.01" /></geometry></visual></link>
+  <joint name="palm_to_imu" type="fixed">
+    <parent link="palm" />
+    <child link="imu" />
+    <origin rpy="-1.5707963 3.141592 0.0" xyz="0.01785 0.00765 0.049125" />
+  </joint>
+  <link name="ffknuckle">
+    
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0.0005" />
+      <geometry name="ffknuckle_visual">
+        <mesh filename="meshes/visual/f_knuckle_E3M5.glb" scale="0.001 0.001 0.001" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0 1.5708 0" xyz="0 0 0" />
+      <geometry name="lh_ffknuckle_collision_geom">
+        <mesh filename="meshes/collision/f_knuckle_E3M5.obj" />
+      </geometry>
+    </collision>
+  
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="1.0" />
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001" />
+    </inertial>
+</link>
+  <joint name="FFJ4" type="revolute">
+    <parent link="palm" />
+    <child link="ffknuckle" />
+    <origin rpy="0 0 0" xyz="-0.033 0 0.095" />
+    <axis xyz="0 1 0" />
+    <limit effort="2" lower="-0.349065850399" upper="0.349065850399" velocity="2.0" />
+    <dynamics damping="0.1" />
+  </joint>
+  <link name="ffproximal">
+    
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0" />
+      <geometry name="ffproximal_visual">
+        <mesh filename="meshes/visual/f_proximal_E3M5.glb" scale="0.001 0.001 0.001" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0.025" />
+      <geometry name="ffproximal_collision_geom">
+        <cylinder length="0.040" radius="0.007" />
+      </geometry>
+    </collision>
+  
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="1.0" />
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001" />
+    </inertial>
+</link>
+  <joint name="FFJ3" type="revolute">
+    <parent link="ffknuckle" />
+    <child link="ffproximal" />
+    <origin rpy="0 0 0" xyz="0 0 0" />
+    <axis xyz="1 0 0" />
+    <limit effort="2" lower="-0.261799387799" upper="1.57079632679" velocity="2.0" />
+    <dynamics damping="0.1" />
+  </joint>
+  <link name="ffmiddle">
+    
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0" />
+      <geometry name="ffmiddle_visual">
+        <mesh filename="meshes/visual/f_middle_E3M5.obj" scale="0.001 0.001 0.001" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0.0125" />
+      <geometry name="ffmiddle_collision_geom">
+        <cylinder length="0.025" radius="0.007" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0.0" />
+      <geometry>
+        <sphere radius="0.007" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0.025" />
+      <geometry>
+        <sphere radius="0.007" />
+      </geometry>
+    </collision>
+  
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="1.0" />
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001" />
+    </inertial>
+</link>
+  <joint name="FFJ2" type="revolute">
+    <parent link="ffproximal" />
+    <child link="ffmiddle" />
+    <origin rpy="0 0 0" xyz="0 0 0.045" />
+    <axis xyz="1 0 0" />
+    <limit effort="2" lower="0" upper="1.57079632679" velocity="2.0" />
+    <dynamics damping="0.1" />
+  </joint>
+  <link name="ffdistal">
+    
+    
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0" />
+      <geometry name="ffdistal_visual">
+        <mesh filename="meshes/visual/f_distal_pst.glb" scale="0.001 0.001 0.001" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0" />
+      <geometry name="ffdistal_collision_geom">
+        <mesh filename="meshes/collision/f_distal_pst.obj" scale="0.001 0.001 0.001" />
+      </geometry>
+    </collision>
+  
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="1.0" />
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001" />
+    </inertial>
+</link>
+  <joint name="FFJ1" type="revolute">
+    <parent link="ffmiddle" />
+    <child link="ffdistal" />
+    <origin rpy="0 0 0" xyz="0 0 0.025" />
+    <axis xyz="1 0 0" />
+    
+    <limit effort="2" lower="0" upper="1.57079632679" velocity="2.0" />
+    <dynamics damping="0.1" />
+  </joint>
+  <link name="fftip">
+    
+  
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="1.0" />
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001" />
+    </inertial>
+<visual><geometry><box size="0.01 0.01 0.01" /></geometry></visual></link>
+  <joint name="FFtip" type="fixed">
+    <parent link="ffdistal" />
+    <child link="fftip" />
+    <origin rpy="0 0 0" xyz="0 0 0.026" />
+  </joint>
+  <link name="mfknuckle">
+    
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0.0005" />
+      <geometry name="mfknuckle_visual">
+        <mesh filename="meshes/visual/f_knuckle_E3M5.glb" scale="0.001 0.001 0.001" />
+      </geometry>
+    </visual>
+    <collision>
+      <geometry name="ffknuckle_visual">
+        <mesh filename="meshes/collision/f_knuckle_E3M5.obj" />
+      </geometry>
+    </collision>
+  
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="1.0" />
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001" />
+    </inertial>
+</link>
+  <joint name="MFJ4" type="revolute">
+    <parent link="palm" />
+    <child link="mfknuckle" />
+    
+    <origin rpy="0 0 0" xyz="-0.011 0 0.099" />
+    <axis xyz="0 1 0" />
+    <limit effort="2" lower="-0.349065850399" upper="0.349065850399" velocity="2.0" />
+    <dynamics damping="0.1" />
+  </joint>
+  <link name="mfproximal">
+    
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0" />
+      <geometry name="mfproximal_visual">
+        <mesh filename="meshes/visual/f_proximal_E3M5.glb" scale="0.001 0.001 0.001" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0.025" />
+      <geometry name="mfproximal_collision_geom">
+        <cylinder length="0.040" radius="0.007" />
+      </geometry>
+    </collision>
+  
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="1.0" />
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001" />
+    </inertial>
+</link>
+  <joint name="MFJ3" type="revolute">
+    <parent link="mfknuckle" />
+    <child link="mfproximal" />
+    <origin rpy="0 0 0" xyz="0 0 0" />
+    <axis xyz="1 0 0" />
+    <limit effort="2" lower="-0.261799387799" upper="1.57079632679" velocity="2.0" />
+    <dynamics damping="0.1" />
+  </joint>
+  <link name="mfmiddle">
+    
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0" />
+      <geometry name="mfmiddle_visual">
+        <mesh filename="meshes/visual/f_middle_E3M5.glb" scale="0.001 0.001 0.001" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0.0125" />
+      <geometry name="mfmiddle_collision_geom">
+        <cylinder length="0.025" radius="0.007" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0.0" />
+      <geometry>
+        <sphere radius="0.007" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0.025" />
+      <geometry>
+        <sphere radius="0.007" />
+      </geometry>
+    </collision>
+  
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="1.0" />
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001" />
+    </inertial>
+</link>
+  <joint name="MFJ2" type="revolute">
+    <parent link="mfproximal" />
+    <child link="mfmiddle" />
+    <origin rpy="0 0 0" xyz="0 0 0.045" />
+    <axis xyz="1 0 0" />
+    <limit effort="2" lower="0" upper="1.57079632679" velocity="2.0" />
+    <dynamics damping="0.1" />
+  </joint>
+  <link name="mfdistal">
+    
+    
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0" />
+      <geometry name="mfdistal_visual">
+        <mesh filename="meshes/visual/f_distal_pst.glb" scale="0.001 0.001 0.001" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0" />
+      <geometry name="mfdistal_collision_geom">
+        <mesh filename="meshes/collision/f_distal_pst.obj" scale="0.001 0.001 0.001" />
+      </geometry>
+    </collision>
+  
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="1.0" />
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001" />
+    </inertial>
+</link>
+  <joint name="MFJ1" type="revolute">
+    <parent link="mfmiddle" />
+    <child link="mfdistal" />
+    <origin rpy="0 0 0" xyz="0 0 0.025" />
+    <axis xyz="1 0 0" />
+    
+    <limit effort="2" lower="0" upper="1.57079632679" velocity="2.0" />
+    <dynamics damping="0.1" />
+  </joint>
+  <link name="mftip">
+    
+  
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="1.0" />
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001" />
+    </inertial>
+<visual><geometry><box size="0.01 0.01 0.01" /></geometry></visual></link>
+  <joint name="MFtip" type="fixed">
+    <parent link="mfdistal" />
+    <child link="mftip" />
+    <origin rpy="0 0 0" xyz="0 0 0.026" />
+  </joint>
+  <link name="rfknuckle">
+    
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0.0005" />
+      <geometry name="rfknuckle_visual">
+        <mesh filename="meshes/visual/f_knuckle_E3M5.glb" scale="0.001 0.001 0.001" />
+      </geometry>
+    </visual>
+    <collision>
+      <geometry name="ffknuckle_visual">
+        <mesh filename="meshes/collision/f_knuckle_E3M5.obj" />
+      </geometry>
+    </collision>
+  
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="1.0" />
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001" />
+    </inertial>
+</link>
+  <joint name="RFJ4" type="revolute">
+    <parent link="palm" />
+    <child link="rfknuckle" />
+    
+    <origin rpy="0 0 0" xyz="0.011 0 0.095" />
+    <axis xyz="0 -1 0" />
+    <limit effort="2" lower="-0.349065850399" upper="0.349065850399" velocity="2.0" />
+    <dynamics damping="0.1" />
+  </joint>
+  <link name="rfproximal">
+    
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0" />
+      <geometry name="rfproximal_visual">
+        <mesh filename="meshes/visual/f_proximal_E3M5.glb" scale="0.001 0.001 0.001" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0.025" />
+      <geometry name="rfproximal_collision_geom">
+        <cylinder length="0.040" radius="0.007" />
+      </geometry>
+    </collision>
+  
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="1.0" />
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001" />
+    </inertial>
+</link>
+  <joint name="RFJ3" type="revolute">
+    <parent link="rfknuckle" />
+    <child link="rfproximal" />
+    <origin rpy="0 0 0" xyz="0 0 0" />
+    <axis xyz="1 0 0" />
+    <limit effort="2" lower="-0.261799387799" upper="1.57079632679" velocity="2.0" />
+    <dynamics damping="0.1" />
+  </joint>
+  <link name="rfmiddle">
+    
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0" />
+      <geometry name="rfmiddle_visual">
+        <mesh filename="meshes/visual/f_middle_E3M5.glb" scale="0.001 0.001 0.001" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0.0125" />
+      <geometry name="rfmiddle_collision_geom">
+        <cylinder length="0.025" radius="0.007" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0.0" />
+      <geometry>
+        <sphere radius="0.007" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0.025" />
+      <geometry>
+        <sphere radius="0.007" />
+      </geometry>
+    </collision>
+  
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="1.0" />
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001" />
+    </inertial>
+</link>
+  <joint name="RFJ2" type="revolute">
+    <parent link="rfproximal" />
+    <child link="rfmiddle" />
+    <origin rpy="0 0 0" xyz="0 0 0.045" />
+    <axis xyz="1 0 0" />
+    <limit effort="2" lower="0" upper="1.57079632679" velocity="2.0" />
+    <dynamics damping="0.1" />
+  </joint>
+  <link name="rfdistal">
+    
+    
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0" />
+      <geometry name="rfdistal_visual">
+        <mesh filename="meshes/visual/f_distal_pst.glb" scale="0.001 0.001 0.001" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0" />
+      <geometry name="rfdistal_collision_geom">
+        <mesh filename="meshes/collision/f_distal_pst.obj" scale="0.001 0.001 0.001" />
+      </geometry>
+    </collision>
+  
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="1.0" />
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001" />
+    </inertial>
+</link>
+  <joint name="RFJ1" type="revolute">
+    <parent link="rfmiddle" />
+    <child link="rfdistal" />
+    <origin rpy="0 0 0" xyz="0 0 0.025" />
+    <axis xyz="1 0 0" />
+    
+    <limit effort="2" lower="0" upper="1.57079632679" velocity="2.0" />
+    <dynamics damping="0.1" />
+  </joint>
+  <link name="rftip">
+    
+  
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="1.0" />
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001" />
+    </inertial>
+<visual><geometry><box size="0.01 0.01 0.01" /></geometry></visual></link>
+  <joint name="RFtip" type="fixed">
+    <parent link="rfdistal" />
+    <child link="rftip" />
+    <origin rpy="0 0 0" xyz="0 0 0.026" />
+  </joint>
+  <link name="lfmetacarpal">
+    
+    <visual>
+      <origin rpy="0 -0.9599 0" xyz="0 0 0" />
+      <geometry name="lfmetacarpal_visual">
+        <mesh filename="meshes/visual/lf_metacarpal_E3M5_left.glb" scale="0.001 0.001 0.001" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0 -0.9599 0" xyz="-0.026986375 0 0.019" />
+      <geometry name="lfmetacarpal_collision_geom">
+        <box size="0.018 0.024 0.040" />
+      </geometry>
+    </collision>
+  
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="1.0" />
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001" />
+    </inertial>
+</link>
+  <joint name="LFJ5" type="revolute">
+    <parent link="palm" />
+    <child link="lfmetacarpal" />
+    <origin rpy="0 0.9599 0" xyz="0.033 0 0.02071" />
+    <axis xyz="1 0 0" />
+    <limit effort="2" lower="0" upper="0.785398163397" velocity="2.0" />
+    <dynamics damping="0.1" />
+  </joint>
+  <link name="lfknuckle">
+    
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0.0005" />
+      <geometry name="lfknuckle_visual">
+        <mesh filename="meshes/visual/f_knuckle_E3M5.glb" scale="0.001 0.001 0.001" />
+      </geometry>
+    </visual>
+    <collision>
+      <geometry name="ffknuckle_visual">
+        <mesh filename="meshes/collision/f_knuckle_E3M5.obj" />
+      </geometry>
+    </collision>
+  
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="1.0" />
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001" />
+    </inertial>
+</link>
+  <joint name="LFJ4" type="revolute">
+    <parent link="lfmetacarpal" />
+    <child link="lfknuckle" />
+    
+    <origin rpy="0 -0.9599 0" xyz="-0.05397275 0 0.03779463" />
+    <axis xyz="0 -1 0" />
+    <limit effort="2" lower="-0.349065850399" upper="0.349065850399" velocity="2.0" />
+    <dynamics damping="0.1" />
+  </joint>
+  <link name="lfproximal">
+    
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0" />
+      <geometry name="lfproximal_visual">
+        <mesh filename="meshes/visual/f_proximal_E3M5.glb" scale="0.001 0.001 0.001" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0.025" />
+      <geometry name="lfproximal_collision_geom">
+        <cylinder length="0.040" radius="0.007" />
+      </geometry>
+    </collision>
+  
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="1.0" />
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001" />
+    </inertial>
+</link>
+  <joint name="LFJ3" type="revolute">
+    <parent link="lfknuckle" />
+    <child link="lfproximal" />
+    <origin rpy="0 0 0" xyz="0 0 0" />
+    <axis xyz="1 0 0" />
+    <limit effort="2" lower="-0.261799387799" upper="1.57079632679" velocity="2.0" />
+    <dynamics damping="0.1" />
+  </joint>
+  <link name="lfmiddle">
+    
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0" />
+      <geometry name="lfmiddle_visual">
+        <mesh filename="meshes/visual/f_middle_E3M5.glb" scale="0.001 0.001 0.001" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0.0125" />
+      <geometry name="lfmiddle_collision_geom">
+        <cylinder length="0.025" radius="0.007" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0.0" />
+      <geometry>
+        <sphere radius="0.007" />
+      </geometry>
+    </collision>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0.025" />
+      <geometry>
+        <sphere radius="0.007" />
+      </geometry>
+    </collision>
+  
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="1.0" />
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001" />
+    </inertial>
+</link>
+  <joint name="LFJ2" type="revolute">
+    <parent link="lfproximal" />
+    <child link="lfmiddle" />
+    <origin rpy="0 0 0" xyz="0 0 0.045" />
+    <axis xyz="1 0 0" />
+    <limit effort="2" lower="0" upper="1.57079632679" velocity="2.0" />
+    <dynamics damping="0.1" />
+  </joint>
+  <link name="lfdistal">
+    
+    
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0" />
+      <geometry name="lfdistal_visual">
+        <mesh filename="meshes/visual/f_distal_pst.glb" scale="0.001 0.001 0.001" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0" />
+      <geometry name="lfdistal_collision_geom">
+        <mesh filename="meshes/visual/f_distal_pst.obj" scale="0.001 0.001 0.001" />
+      </geometry>
+    </collision>
+  
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="1.0" />
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001" />
+    </inertial>
+</link>
+  <joint name="LFJ1" type="revolute">
+    <parent link="lfmiddle" />
+    <child link="lfdistal" />
+    <origin rpy="0 0 0" xyz="0 0 0.025" />
+    <axis xyz="1 0 0" />
+    
+    <limit effort="2" lower="0" upper="1.57079632679" velocity="2.0" />
+    <dynamics damping="0.1" />
+  </joint>
+  <link name="lftip">
+    
+  
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="1.0" />
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001" />
+    </inertial>
+<visual><geometry><box size="0.01 0.01 0.01" /></geometry></visual></link>
+  <joint name="LFtip" type="fixed">
+    <parent link="lfdistal" />
+    <child link="lftip" />
+    <origin rpy="0 0 0" xyz="0 0 0.026" />
+  </joint>
+  <link name="thbase">
+    
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0" />
+      <geometry name="thbase_visual">
+        <box size="0.001 0.001 0.001" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0" />
+      <geometry name="thbase_collision_geom">
+        <sphere radius="0.011" />
+      </geometry>
+    </collision>
+  
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="1.0" />
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001" />
+    </inertial>
+</link>
+  <joint name="THJ5" type="revolute">
+    <parent link="palm" />
+    <child link="thbase" />
+    <origin rpy="-0.785398163397 0 1.57079632679" xyz="-0.034 -0.00858 0.029" />
+    <axis xyz="0 0 1" />
+    <limit effort="5.0" lower="-1.0471975512" upper="1.0471975512" velocity="4.0" />
+    <dynamics damping="0.2" />
+  </joint>
+  <link name="thproximal">
+    
+    <visual>
+      <origin rpy="0 0 1.57079632679" xyz="0 0 0" />
+      <geometry name="thproximal_visual">
+        <mesh filename="meshes/visual/th_proximal_E3M5.glb" scale="0.001 0.001 0.001" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0 0 1.57079632679" xyz="0 0 0" />
+      <geometry name="thproximal_collision">
+        <mesh filename="meshes/collision/th_proximal_E3M5.obj" scale="0.001 0.001 0.001" />
+      </geometry>
+    </collision>
+  
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="1.0" />
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001" />
+    </inertial>
+</link>
+  <joint name="THJ4" type="revolute">
+    <parent link="thbase" />
+    <child link="thproximal" />
+    <origin rpy="0 0 0" xyz="0 0 0" />
+    <axis xyz="0 -1 0" />
+    <limit effort="3" lower="0.0" upper="1.2217304764" velocity="4.0" />
+    <dynamics damping="0.2" />
+  </joint>
+  <link name="thhub">
+    
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0" />
+      <geometry name="thhub_collision_geom">
+        <sphere radius="0.010" />
+      </geometry>
+    </collision>
+  
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="1.0" />
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001" />
+    </inertial>
+</link>
+  <joint name="THJ3" type="revolute">
+    <parent link="thproximal" />
+    <child link="thhub" />
+    <origin rpy="0 0 0" xyz="0 0 0.038" />
+    <axis xyz="0 -1 0" />
+    <limit effort="2.0" lower="-0.209439510239" upper="0.209439510239" velocity="4.0" />
+    <dynamics damping="0.2" />
+  </joint>
+  <link name="thmiddle">
+    
+    <visual>
+      <origin rpy="0 0 1.57079632679" xyz="0 0 0" />
+      <geometry name="thmiddle_visual">
+        <mesh filename="meshes/visual/th_middle_E3M5.glb" scale="0.001 0.001 0.001" />
+      </geometry>
+    </visual>
+    <collision>
+      <geometry name="thmiddle_collision">
+        <mesh filename="meshes/collision/th_middle_E3M5.obj" scale="0.001 0.001 0.001" />
+      </geometry>
+    </collision>
+  
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="1.0" />
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001" />
+    </inertial>
+</link>
+  <joint name="THJ2" type="revolute">
+    <parent link="thhub" />
+    <child link="thmiddle" />
+    <origin rpy="0 0 0" xyz="0 0 0" />
+    <axis xyz="1 0 0" />
+    <limit effort="2.0" lower="-0.698131700798" upper="0.698131700798" velocity="2.0" />
+    <dynamics damping="0.1" />
+  </joint>
+  
+  <link name="thdistal">
+    
+    
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0" />
+      <geometry name="thdistal_visual">
+        <mesh filename="meshes/visual/th_distal_pst.glb" scale="0.001 0.001 0.001" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0" />
+      <geometry name="thmiddle_collision_geom">
+        <mesh filename="meshes/visual/th_distal_pst.obj" scale="0.001 0.001 0.001" />
+      </geometry>
+    </collision>
+  
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="1.0" />
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001" />
+    </inertial>
+</link>
+  <joint name="THJ1" type="revolute">
+    <parent link="thmiddle" />
+    <child link="thdistal" />
+    <origin rpy="0 0 0" xyz="0 0 0.032" />
+    <axis xyz="1 0 0" />
+    <limit effort="1.0" lower="-0.261799387799" upper="1.57079632679" velocity="4.0" />
+    <dynamics damping="0.2" />
+  </joint>
+  <link name="thtip">
+    
+  
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <mass value="1.0" />
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0" iyy="0.001" iyz="0.0" izz="0.001" />
+    </inertial>
+<visual><geometry><box size="0.01 0.01 0.01" /></geometry></visual></link>
+  <joint name="THtip" type="fixed">
+    <parent link="thdistal" />
+    <child link="thtip" />
+    <origin rpy="0 0 0" xyz="0 0 0.0275" />
+  </joint>
+</robot>

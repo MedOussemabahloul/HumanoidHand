@@ -1,0 +1,20 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mujoco model="realsense.urdf"><compiler meshdir="meshes" angle="radian" /><option timestep="0.005" /><worldbody><link name="realsense.stl">
+    <visual>
+      <origin xyz="0 0 0" />
+      <geometry>
+        <mesh filename="../meshes/visual/d435.dae" scale="1 1 1" />
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" />
+      <geometry>
+        <mesh filename="../meshes/visual/d435.dae" scale="1 1 1" />
+      </geometry>
+    </collision>
+    <inertial>
+      <density value="567.0" />
+    </inertial>
+  </link>
+
+</worldbody></mujoco>

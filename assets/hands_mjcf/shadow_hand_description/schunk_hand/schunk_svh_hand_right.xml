@@ -1,0 +1,268 @@
+<mujoco model="svh">
+  <option iterations="50" timestep="0.001" solver="PGS" gravity="0 0 -9.81" />
+
+  <compiler angle="radian" meshdir="meshes" eulerseq="zyx" autolimits="true" />
+
+  <default>
+    <joint limited="true" damping="0.01" armature="0.01" frictionloss="0.01" />
+    <geom condim="4" contype="1" conaffinity="15" friction="0.9 0.2 0.2" solref="0.001 2" />
+    <motor ctrllimited="true" />
+    <equality solref="0.001 2" />
+    <default class="visualgeom">
+      <geom material="visualgeom" condim="1" contype="0" conaffinity="0" />
+    </default>
+  </default>
+
+  <asset>
+    <mesh name="d11" content_type="model/obj" file="d11.obj" />
+    <mesh name="d12" content_type="model/obj" file="d12.obj" />
+    <mesh name="d13" content_type="model/obj" file="d13.obj" />
+    <mesh name="f11" content_type="model/obj" file="f11.obj" />
+    <mesh name="f12" content_type="model/obj" file="f12.obj" />
+    <mesh name="finger_tip" content_type="model/obj" file="finger_tip.obj" />
+    <mesh name="f21" content_type="model/obj" file="f21.obj" />
+    <mesh name="f22_f32" content_type="model/obj" file="f22_f32.obj" />
+    <mesh name="f31" content_type="model/obj" file="f31.obj" />
+    <mesh name="f41" content_type="model/obj" file="f41.obj" />
+    <mesh name="f42" content_type="model/obj" file="f42.obj" />
+    <texture name="texplane" type="2d" builtin="checker" rgb1=".0 .0 .0" rgb2=".8 .8 .8" width="100" height="100" />
+    <material name="matplane" reflectance="0." texture="texplane" texrepeat="1 1" texuniform="true" />
+    <material name="visualgeom" rgba="0.5 0.9 0.2 1" />
+  </asset>
+
+  <worldbody>
+    <light directional="true" diffuse="0.4 0.4 0.4" specular="0.1 0.1 0.1" pos="0 0 5.0" dir="0 0 -1" castshadow="false" />
+    <light directional="true" diffuse="0.6 0.6 0.6" specular="0.2 0.2 0.2" pos="0 0 4" dir="0 0 -1" />
+    <geom name="ground" type="plane" pos="0 0 0" size="100 100 0.001" quat="1 0 0 0" material="matplane" condim="3" conaffinity="15" />
+    <camera name="fixed" pos="0 -3.0 0.509" xyaxes="1 0 0 0 0 1" />
+    <camera name="track" mode="trackcom" pos="0 -3.0 0.509" xyaxes="1 0 0 0 0 1" />
+    <body name="root" pos="0 0 0.008999999999999998" quat="1 0 0 0">
+      <freejoint name="root" />
+      <site name="imu" size="0.01" pos="0 0 0" />
+      <geom size="0.045 0.0225" pos="0 0 -0.009" quat="0.707109 0 0 -0.707105" type="cylinder" contype="1" conaffinity="0" density="0" group="1" class="visualgeom" />
+      <geom type="cylinder" rgba="" pos="0 0 -0.009" quat="0.707109 0 0 -0.707105" />
+      <geom size="0.025 0.025 0.013" pos="0 0 0.013" quat="0.707109 0 0 -0.707105" type="box" contype="1" conaffinity="0" density="0" group="1" class="visualgeom" />
+      <geom type="box" rgba="" size="0.025 0.025 0.013" pos="0 0 0.013" quat="0.707109 0 0 -0.707105" />
+      <geom size="0.0292 0.019 0.03205" pos="-0.00963004 0.00572994 0.05747" quat="0.707109 0 0 -0.707105" type="box" contype="1" conaffinity="0" density="0" group="1" class="visualgeom" />
+      <geom type="box" rgba="" size="0.0292 0.019 0.03205" pos="-0.00963004 0.00572994 0.05747" quat="0.707109 0 0 -0.707105" />
+      <geom size="0.021 0.019 0.0075" pos="-0.00963006 0.00999994 0.096" quat="0.707109 0 0 -0.707105" type="box" contype="1" conaffinity="0" density="0" group="1" class="visualgeom" />
+      <geom type="box" rgba="" size="0.021 0.019 0.0075" pos="-0.00963006 0.00999994 0.096" quat="0.707109 0 0 -0.707105" />
+      <geom size="0.01" pos="-0.01634 2.05829e-07 0.11" quat="0.707141 -3.18183e-05 -0.707073 -3.18213e-05" contype="1" conaffinity="0" density="0" group="1" class="visualgeom" />
+      <geom type="" rgba="" pos="-0.01634 2.05829e-07 0.11" quat="0.707141 -3.18183e-05 -0.707073 -3.18213e-05" />
+      <body name="right_hand_z" pos="0.0131299 0.0169001 0" quat="0.991445 -1.37053e-05 0.130526 0.000104102">
+        <inertial pos="0 0 0" mass="1" diaginertia="0.001 0.001 0.001" />
+        <joint name="right_hand_Thumb_Opposition" pos="0 0 0" axis="0 0 -1" range="0 0.9879" actuatorfrcrange="-1000 1000" />
+        <geom size="0.012 0.0094 0.004" pos="0 0 0.02842" type="box" contype="1" conaffinity="0" density="0" group="1" class="visualgeom" />
+        <geom type="box" rgba="" size="0.012 0.0094 0.004" pos="0 0 0.02842" />
+        <geom size="0.003 0.012 0.0165" pos="0.0125 0 0.04292" type="box" contype="1" conaffinity="0" density="0" group="1" class="visualgeom" />
+        <geom type="box" rgba="" size="0.003 0.012 0.0165" pos="0.0125 0 0.04292" />
+        <geom size="0.003 0.012 0.0165" pos="-0.0125 0 0.04292" type="box" contype="1" conaffinity="0" density="0" group="1" class="visualgeom" />
+        <geom type="box" rgba="" size="0.003 0.012 0.0165" pos="-0.0125 0 0.04292" />
+        <body name="right_hand_a" pos="0 0 0.04596" quat="0.329787 0.625494 0.329779 0.625494">
+          <inertial pos="0 0 0" mass="1" diaginertia="0.001 0.001 0.001" />
+          <joint name="right_hand_Thumb_Flexion" pos="0 0 0" axis="0 0 1" range="0 0.9704" actuatorfrcrange="-1000 1000" />
+          <geom type="mesh" mesh="d11" contype="1" conaffinity="0" density="0" group="1" class="visualgeom" />
+          <geom type="mesh" rgba="" mesh="d11" />
+          <body name="right_hand_b" pos="0.0485 0 0">
+            <inertial pos="0 0 0" mass="1" diaginertia="0.001 0.001 0.001" />
+            <joint name="right_hand_j3" pos="0 0 0" axis="0 0 1" range="0 0.98506" actuatorfrcrange="-1000 1000" />
+            <geom type="mesh" mesh="d12" contype="1" conaffinity="0" density="0" group="1" class="visualgeom" />
+            <geom type="mesh" rgba="" mesh="d12" />
+            <body name="right_hand_c" pos="0.03 0 0">
+              <inertial pos="0 0 0" mass="1" diaginertia="0.001 0.001 0.001" />
+              <joint name="right_hand_j4" pos="0 0 0" axis="0 0 1" range="0 1.406" actuatorfrcrange="-1000 1000" />
+              <geom type="mesh" mesh="d13" contype="1" conaffinity="0" density="0" group="1" class="visualgeom" />
+              <geom type="mesh" rgba="" mesh="d13" />
+            </body>
+          </body>
+        </body>
+      </body>
+      <body name="right_hand_e2" pos="-0.00712988 -0.0184 0.0375" quat="0.707109 0 0 -0.707105">
+        <inertial pos="0 0 0" mass="1" diaginertia="0.001 0.001 0.001" />
+        <joint name="right_hand_j5" pos="0 0 0" axis="0 0 1" range="0 0.98786" actuatorfrcrange="-1000 1000" />
+        <geom size="0.0123 0.0175 0.0282" pos="0.016 0 0.02" type="box" contype="1" conaffinity="0" density="0" group="1" class="visualgeom" />
+        <geom type="box" rgba="" size="0.0123 0.0175 0.0282" pos="0.016 0 0.02" />
+        <geom size="0.006 0.009 0.0105" pos="0.0032 -0.0083 0.048" type="box" contype="1" conaffinity="0" density="0" group="1" class="visualgeom" />
+        <geom type="box" rgba="" size="0.006 0.009 0.0105" pos="0.0032 -0.0083 0.048" />
+        <body name="right_hand_virtual_j" pos="0.003855 -0.006 0.0655" quat="0.500048 -0.5 -0.5 -0.499952">
+          <inertial pos="0 0 0" mass="1" diaginertia="0.001 0.001 0.001" />
+          <joint name="right_hand_ring_spread" pos="0 0 0" axis="0 0 1" range="0 0.28833" actuatorfrcrange="-1000 1000" />
+          <geom size="0.01" pos="0 0 -0.00321" contype="1" conaffinity="0" density="0" group="1" class="visualgeom" />
+          <geom type="" rgba="" pos="0 0 -0.00321" />
+          <body name="right_hand_j" quat="0.707141 0.707073 0 0">
+            <inertial pos="0 0 0" mass="1" diaginertia="0.001 0.001 0.001" />
+            <joint name="right_hand_Ring_Finger" pos="0 0 0" axis="0 0 1" range="0 0.98175" actuatorfrcrange="-1000 1000" />
+            <geom type="mesh" mesh="f31" contype="1" conaffinity="0" density="0" group="1" class="visualgeom" />
+            <geom type="mesh" rgba="" mesh="f31" />
+            <body name="right_hand_n" pos="0.05004 0 0">
+              <inertial pos="0 0 0" mass="1" diaginertia="0.001 0.001 0.001" />
+              <joint name="right_hand_j12" pos="0 0 0" axis="0 0 1" range="0 1.334" actuatorfrcrange="-1000 1000" />
+              <geom type="mesh" mesh="f22_f32" contype="1" conaffinity="0" density="0" group="1" class="visualgeom" />
+              <geom type="mesh" rgba="" mesh="f22_f32" />
+              <body name="right_hand_r" pos="0.032 0 0">
+                <inertial pos="0 0 0" mass="1" diaginertia="0.001 0.001 0.001" />
+                <joint name="right_hand_j16" pos="0 0 0" axis="0 0 1" range="0 1.395" actuatorfrcrange="-1000 1000" />
+                <geom type="mesh" mesh="finger_tip" contype="1" conaffinity="0" density="0" group="1" class="visualgeom" />
+                <geom type="mesh" rgba="" mesh="finger_tip" />
+              </body>
+            </body>
+          </body>
+        </body>
+        <body name="right_hand_virtual_i" pos="0.025355 -0.006 0.056" quat="0.500048 -0.5 -0.5 -0.499952">
+          <inertial pos="0 0 0" mass="1" diaginertia="0.001 0.001 0.001" />
+          <joint name="right_hand_Finger_Spread" pos="0 0 0" axis="0 0 1" range="0 0.5829" actuatorfrcrange="-1000 1000" />
+          <geom size="0.01" pos="0 0 -0.00321" contype="1" conaffinity="0" density="0" group="1" class="visualgeom" />
+          <geom type="" rgba="" pos="0 0 -0.00321" />
+          <body name="right_hand_i" quat="0.707141 0.707073 0 0">
+            <inertial pos="0 0 0" mass="1" diaginertia="0.001 0.001 0.001" />
+            <joint name="right_hand_Pinky" pos="0 0 0" axis="0 0 1" range="0 0.98175" actuatorfrcrange="-1000 1000" />
+            <geom type="mesh" mesh="f41" contype="1" conaffinity="0" density="0" group="1" class="visualgeom" />
+            <geom type="mesh" rgba="" mesh="f41" />
+            <body name="right_hand_m" pos="0.04454 0 0">
+              <inertial pos="0 0 0" mass="1" diaginertia="0.001 0.001 0.001" />
+              <joint name="right_hand_j13" pos="0 0 0" axis="0 0 1" range="0 1.334" actuatorfrcrange="-1000 1000" />
+              <geom type="mesh" mesh="f42" contype="1" conaffinity="0" density="0" group="1" class="visualgeom" />
+              <geom type="mesh" rgba="" mesh="f42" />
+              <body name="right_hand_q" pos="0.022 0 0">
+                <inertial pos="0 0 0" mass="1" diaginertia="0.001 0.001 0.001" />
+                <joint name="right_hand_j17" pos="0 0 0" axis="0 0 1" range="0 1.3971" actuatorfrcrange="-1000 1000" />
+                <geom type="mesh" mesh="finger_tip" contype="1" conaffinity="0" density="0" group="1" class="visualgeom" />
+                <geom type="mesh" rgba="" mesh="finger_tip" />
+              </body>
+            </body>
+          </body>
+        </body>
+      </body>
+      <body name="right_hand_virtual_l" pos="-0.0131302 0.0249999 0.11" quat="0.707141 -3.18183e-05 -0.707073 -3.18213e-05">
+        <inertial pos="0 0 0" mass="1" diaginertia="0.001 0.001 0.001" />
+        <joint name="right_hand_index_spread" pos="0 0 0" axis="0 0 1" range="0 0.28833" actuatorfrcrange="-1000 1000" />
+        <geom size="0.01" pos="0 0 0.00121" contype="1" conaffinity="0" density="0" group="1" class="visualgeom" />
+        <geom type="" rgba="" pos="0 0 0.00121" />
+        <body name="right_hand_l" quat="0.707141 -0.707073 0 0">
+          <inertial pos="0 0 0" mass="1" diaginertia="0.001 0.001 0.001" />
+          <joint name="right_hand_Index_Finger_Proximal" pos="0 0 0" axis="0 0 1" range="0 0.79849" actuatorfrcrange="-1000 1000" />
+          <geom type="mesh" mesh="f11" contype="1" conaffinity="0" density="0" group="1" class="visualgeom" />
+          <geom type="mesh" rgba="" mesh="f11" />
+          <body name="right_hand_p" pos="0.04804 0 0">
+            <inertial pos="0 0 0" mass="1" diaginertia="0.001 0.001 0.001" />
+            <joint name="right_hand_Index_Finger_Distal" pos="0 0 0" axis="0 0 1" range="0 1.334" actuatorfrcrange="-1000 1000" />
+            <geom type="mesh" mesh="f12" contype="1" conaffinity="0" density="0" group="1" class="visualgeom" />
+            <geom type="mesh" rgba="" mesh="f12" />
+            <body name="right_hand_t" pos="0.026 0 0">
+              <inertial pos="0 0 0" mass="1" diaginertia="0.001 0.001 0.001" />
+              <joint name="right_hand_j14" pos="0 0 0" axis="0 0 1" range="0 1.394" actuatorfrcrange="-1000 1000" />
+              <geom type="mesh" mesh="finger_tip" contype="1" conaffinity="0" density="0" group="1" class="visualgeom" />
+              <geom type="mesh" rgba="" mesh="finger_tip" />
+            </body>
+          </body>
+        </body>
+      </body>
+      <body name="right_hand_k" pos="-0.01313 -8.30708e-08 0.11" quat="0.500026 -0.500022 -0.499977 -0.499974">
+        <inertial pos="0 0 0" mass="1" diaginertia="0.001 0.001 0.001" />
+        <joint name="right_hand_Middle_Finger_Proximal" pos="0 0 0" axis="0 0 1" range="0 0.79849" actuatorfrcrange="-1000 1000" />
+        <geom type="mesh" mesh="f21" contype="1" conaffinity="0" density="0" group="1" class="visualgeom" />
+        <geom type="mesh" rgba="" mesh="f21" />
+        <body name="right_hand_o" pos="0.05004 0 0">
+          <inertial pos="0 0 0" mass="1" diaginertia="0.001 0.001 0.001" />
+          <joint name="right_hand_Middle_Finger_Distal" pos="0 0 0" axis="0 0 1" range="0 1.334" actuatorfrcrange="-1000 1000" />
+          <geom type="mesh" mesh="f22_f32" contype="1" conaffinity="0" density="0" group="1" class="visualgeom" />
+          <geom type="mesh" rgba="" mesh="f22_f32" />
+          <body name="right_hand_s" pos="0.032 0 0">
+            <inertial pos="0 0 0" mass="1" diaginertia="0.001 0.001 0.001" />
+            <joint name="right_hand_j15" pos="0 0 0" axis="0 0 1" range="0 1.334" actuatorfrcrange="-1000 1000" />
+            <geom type="mesh" mesh="finger_tip" contype="1" conaffinity="0" density="0" group="1" class="visualgeom" />
+            <geom type="mesh" rgba="" mesh="finger_tip" />
+          </body>
+        </body>
+      </body>
+    </body>
+  </worldbody>
+
+  <actuator>
+    <motor name="right_hand_Thumb_Opposition" joint="right_hand_Thumb_Opposition" ctrllimited="true" ctrlrange="-1000 1000" gear="1" />
+    <motor name="right_hand_Thumb_Flexion" joint="right_hand_Thumb_Flexion" ctrllimited="true" ctrlrange="-1000 1000" gear="1" />
+    <motor name="right_hand_j3" joint="right_hand_j3" ctrllimited="true" ctrlrange="-1000 1000" gear="1" />
+    <motor name="right_hand_j4" joint="right_hand_j4" ctrllimited="true" ctrlrange="-1000 1000" gear="1" />
+    <motor name="right_hand_j5" joint="right_hand_j5" ctrllimited="true" ctrlrange="-1000 1000" gear="1" />
+    <motor name="right_hand_ring_spread" joint="right_hand_ring_spread" ctrllimited="true" ctrlrange="-1000 1000" gear="1" />
+    <motor name="right_hand_Ring_Finger" joint="right_hand_Ring_Finger" ctrllimited="true" ctrlrange="-1000 1000" gear="1" />
+    <motor name="right_hand_j12" joint="right_hand_j12" ctrllimited="true" ctrlrange="-1000 1000" gear="1" />
+    <motor name="right_hand_j16" joint="right_hand_j16" ctrllimited="true" ctrlrange="-1000 1000" gear="1" />
+    <motor name="right_hand_Finger_Spread" joint="right_hand_Finger_Spread" ctrllimited="true" ctrlrange="-1000 1000" gear="1" />
+    <motor name="right_hand_Pinky" joint="right_hand_Pinky" ctrllimited="true" ctrlrange="-1000 1000" gear="1" />
+    <motor name="right_hand_j13" joint="right_hand_j13" ctrllimited="true" ctrlrange="-1000 1000" gear="1" />
+    <motor name="right_hand_j17" joint="right_hand_j17" ctrllimited="true" ctrlrange="-1000 1000" gear="1" />
+    <motor name="right_hand_index_spread" joint="right_hand_index_spread" ctrllimited="true" ctrlrange="-1000 1000" gear="1" />
+    <motor name="right_hand_Index_Finger_Proximal" joint="right_hand_Index_Finger_Proximal" ctrllimited="true" ctrlrange="-1000 1000" gear="1" />
+    <motor name="right_hand_Index_Finger_Distal" joint="right_hand_Index_Finger_Distal" ctrllimited="true" ctrlrange="-1000 1000" gear="1" />
+    <motor name="right_hand_j14" joint="right_hand_j14" ctrllimited="true" ctrlrange="-1000 1000" gear="1" />
+    <motor name="right_hand_Middle_Finger_Proximal" joint="right_hand_Middle_Finger_Proximal" ctrllimited="true" ctrlrange="-1000 1000" gear="1" />
+    <motor name="right_hand_Middle_Finger_Distal" joint="right_hand_Middle_Finger_Distal" ctrllimited="true" ctrlrange="-1000 1000" gear="1" />
+    <motor name="right_hand_j15" joint="right_hand_j15" ctrllimited="true" ctrlrange="-1000 1000" gear="1" />
+  </actuator>
+
+  <sensor>
+    <actuatorpos name="right_hand_Thumb_Opposition_p" actuator="right_hand_Thumb_Opposition" />
+    <actuatorvel name="right_hand_Thumb_Opposition_v" actuator="right_hand_Thumb_Opposition" />
+    <actuatorfrc name="right_hand_Thumb_Opposition_f" actuator="right_hand_Thumb_Opposition" noise="0.001" />
+    <actuatorpos name="right_hand_Thumb_Flexion_p" actuator="right_hand_Thumb_Flexion" />
+    <actuatorvel name="right_hand_Thumb_Flexion_v" actuator="right_hand_Thumb_Flexion" />
+    <actuatorfrc name="right_hand_Thumb_Flexion_f" actuator="right_hand_Thumb_Flexion" noise="0.001" />
+    <actuatorpos name="right_hand_j3_p" actuator="right_hand_j3" />
+    <actuatorvel name="right_hand_j3_v" actuator="right_hand_j3" />
+    <actuatorfrc name="right_hand_j3_f" actuator="right_hand_j3" noise="0.001" />
+    <actuatorpos name="right_hand_j4_p" actuator="right_hand_j4" />
+    <actuatorvel name="right_hand_j4_v" actuator="right_hand_j4" />
+    <actuatorfrc name="right_hand_j4_f" actuator="right_hand_j4" noise="0.001" />
+    <actuatorpos name="right_hand_j5_p" actuator="right_hand_j5" />
+    <actuatorvel name="right_hand_j5_v" actuator="right_hand_j5" />
+    <actuatorfrc name="right_hand_j5_f" actuator="right_hand_j5" noise="0.001" />
+    <actuatorpos name="right_hand_ring_spread_p" actuator="right_hand_ring_spread" />
+    <actuatorvel name="right_hand_ring_spread_v" actuator="right_hand_ring_spread" />
+    <actuatorfrc name="right_hand_ring_spread_f" actuator="right_hand_ring_spread" noise="0.001" />
+    <actuatorpos name="right_hand_Ring_Finger_p" actuator="right_hand_Ring_Finger" />
+    <actuatorvel name="right_hand_Ring_Finger_v" actuator="right_hand_Ring_Finger" />
+    <actuatorfrc name="right_hand_Ring_Finger_f" actuator="right_hand_Ring_Finger" noise="0.001" />
+    <actuatorpos name="right_hand_j12_p" actuator="right_hand_j12" />
+    <actuatorvel name="right_hand_j12_v" actuator="right_hand_j12" />
+    <actuatorfrc name="right_hand_j12_f" actuator="right_hand_j12" noise="0.001" />
+    <actuatorpos name="right_hand_j16_p" actuator="right_hand_j16" />
+    <actuatorvel name="right_hand_j16_v" actuator="right_hand_j16" />
+    <actuatorfrc name="right_hand_j16_f" actuator="right_hand_j16" noise="0.001" />
+    <actuatorpos name="right_hand_Finger_Spread_p" actuator="right_hand_Finger_Spread" />
+    <actuatorvel name="right_hand_Finger_Spread_v" actuator="right_hand_Finger_Spread" />
+    <actuatorfrc name="right_hand_Finger_Spread_f" actuator="right_hand_Finger_Spread" noise="0.001" />
+    <actuatorpos name="right_hand_Pinky_p" actuator="right_hand_Pinky" />
+    <actuatorvel name="right_hand_Pinky_v" actuator="right_hand_Pinky" />
+    <actuatorfrc name="right_hand_Pinky_f" actuator="right_hand_Pinky" noise="0.001" />
+    <actuatorpos name="right_hand_j13_p" actuator="right_hand_j13" />
+    <actuatorvel name="right_hand_j13_v" actuator="right_hand_j13" />
+    <actuatorfrc name="right_hand_j13_f" actuator="right_hand_j13" noise="0.001" />
+    <actuatorpos name="right_hand_j17_p" actuator="right_hand_j17" />
+    <actuatorvel name="right_hand_j17_v" actuator="right_hand_j17" />
+    <actuatorfrc name="right_hand_j17_f" actuator="right_hand_j17" noise="0.001" />
+    <actuatorpos name="right_hand_index_spread_p" actuator="right_hand_index_spread" />
+    <actuatorvel name="right_hand_index_spread_v" actuator="right_hand_index_spread" />
+    <actuatorfrc name="right_hand_index_spread_f" actuator="right_hand_index_spread" noise="0.001" />
+    <actuatorpos name="right_hand_Index_Finger_Proximal_p" actuator="right_hand_Index_Finger_Proximal" />
+    <actuatorvel name="right_hand_Index_Finger_Proximal_v" actuator="right_hand_Index_Finger_Proximal" />
+    <actuatorfrc name="right_hand_Index_Finger_Proximal_f" actuator="right_hand_Index_Finger_Proximal" noise="0.001" />
+    <actuatorpos name="right_hand_Index_Finger_Distal_p" actuator="right_hand_Index_Finger_Distal" />
+    <actuatorvel name="right_hand_Index_Finger_Distal_v" actuator="right_hand_Index_Finger_Distal" />
+    <actuatorfrc name="right_hand_Index_Finger_Distal_f" actuator="right_hand_Index_Finger_Distal" noise="0.001" />
+    <actuatorpos name="right_hand_j14_p" actuator="right_hand_j14" />
+    <actuatorvel name="right_hand_j14_v" actuator="right_hand_j14" />
+    <actuatorfrc name="right_hand_j14_f" actuator="right_hand_j14" noise="0.001" />
+    <actuatorpos name="right_hand_Middle_Finger_Proximal_p" actuator="right_hand_Middle_Finger_Proximal" />
+    <actuatorvel name="right_hand_Middle_Finger_Proximal_v" actuator="right_hand_Middle_Finger_Proximal" />
+    <actuatorfrc name="right_hand_Middle_Finger_Proximal_f" actuator="right_hand_Middle_Finger_Proximal" noise="0.001" />
+    <actuatorpos name="right_hand_Middle_Finger_Distal_p" actuator="right_hand_Middle_Finger_Distal" />
+    <actuatorvel name="right_hand_Middle_Finger_Distal_v" actuator="right_hand_Middle_Finger_Distal" />
+    <actuatorfrc name="right_hand_Middle_Finger_Distal_f" actuator="right_hand_Middle_Finger_Distal" noise="0.001" />
+    <actuatorpos name="right_hand_j15_p" actuator="right_hand_j15" />
+    <actuatorvel name="right_hand_j15_v" actuator="right_hand_j15" />
+    <actuatorfrc name="right_hand_j15_f" actuator="right_hand_j15" noise="0.001" />
+    <framequat name="orientation" objtype="site" noise="0.001" objname="imu" />
+    <gyro name="angular-velocity" site="imu" noise="0.005" cutoff="34.9" />
+  </sensor>
+</mujoco>
