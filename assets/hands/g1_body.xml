@@ -1,28 +1,28 @@
 <mujoco model="g1_dual_arm">
 
   <asset>
-    <mesh name="waist_yaw_link" file="/home/oussema/Documents/project/assets/hands/meshes/waist_yaw_link.STL"/>
-    <mesh name="waist_roll_link" file="/home/oussema/Documents/project/assets/hands/meshes/waist_roll_link.STL"/>
-    <mesh name="torso_link" file="/home/oussema/Documents/project/assets/hands/meshes/torso_link.STL"/>
-    <mesh name="logo_link" file="/home/oussema/Documents/project/assets/hands/meshes/logo_link.STL"/>
-    <mesh name="head_link" file="/home/oussema/Documents/project/assets/hands/meshes/head_link.STL"/>
-    <mesh name="waist_support_link" file="/home/oussema/Documents/project/assets/hands/meshes/waist_support_link.STL"/>
-    <mesh name="left_shoulder_pitch_link" file="/home/oussema/Documents/project/assets/hands/meshes/left_shoulder_pitch_link.STL"/>
-    <mesh name="left_shoulder_roll_link" file="/home/oussema/Documents/project/assets/hands/meshes/left_shoulder_roll_link.STL"/>
-    <mesh name="left_shoulder_yaw_link" file="/home/oussema/Documents/project/assets/hands/meshes/left_shoulder_yaw_link.STL"/>
-    <mesh name="left_elbow_link" file="/home/oussema/Documents/project/assets/hands/meshes/left_elbow_link.STL"/>
-    <mesh name="left_wrist_roll_link" file="/home/oussema/Documents/project/assets/hands/meshes/left_wrist_roll_link.STL"/>
-    <mesh name="left_wrist_pitch_link" file="/home/oussema/Documents/project/assets/hands/meshes/left_wrist_pitch_link.STL"/>
-    <mesh name="left_wrist_yaw_link" file="/home/oussema/Documents/project/assets/hands/meshes/left_wrist_yaw_link.STL"/>
-    <mesh name="left_rubber_hand" file="/home/oussema/Documents/project/assets/hands/meshes/left_rubber_hand.STL"/>
-    <mesh name="right_shoulder_pitch_link" file="/home/oussema/Documents/project/assets/hands/meshes/right_shoulder_pitch_link.STL"/>
-    <mesh name="right_shoulder_roll_link" file="/home/oussema/Documents/project/assets/hands/meshes/right_shoulder_roll_link.STL"/>
-    <mesh name="right_shoulder_yaw_link" file="/home/oussema/Documents/project/assets/hands/meshes/right_shoulder_yaw_link.STL"/>
-    <mesh name="right_elbow_link" file="/home/oussema/Documents/project/assets/hands/meshes/right_elbow_link.STL"/>
-    <mesh name="right_wrist_roll_link" file="/home/oussema/Documents/project/assets/hands/meshes/right_wrist_roll_link.STL"/>
-    <mesh name="right_wrist_pitch_link" file="/home/oussema/Documents/project/assets/hands/meshes/right_wrist_pitch_link.STL"/>
-    <mesh name="right_wrist_yaw_link" file="/home/oussema/Documents/project/assets/hands/meshes/right_wrist_yaw_link.STL"/>
-    <mesh name="right_rubber_hand" file="/home/oussema/Documents/project/assets/hands/meshes/right_rubber_hand.STL"/>
+    <mesh name="waist_yaw_link" file="/content/HumanoidHand/assets/hands/meshes/waist_yaw_link.STL"/>
+    <mesh name="waist_roll_link" file="/content/HumanoidHand/assets/hands/meshes/waist_roll_link.STL"/>
+    <mesh name="torso_link" file="/content/HumanoidHand/assets/hands/meshes/torso_link.STL"/>
+    <mesh name="logo_link" file="/content/HumanoidHand/assets/hands/meshes/logo_link.STL"/>
+    <mesh name="head_link" file="/content/HumanoidHand/assets/hands/meshes/head_link.STL"/>
+    <mesh name="waist_support_link" file="/content/HumanoidHand/assets/hands/meshes/waist_support_link.STL"/>
+    <mesh name="left_shoulder_pitch_link" file="/content/HumanoidHand/assets/hands/meshes/left_shoulder_pitch_link.STL"/>
+    <mesh name="left_shoulder_roll_link" file="/content/HumanoidHand/assets/hands/meshes/left_shoulder_roll_link.STL"/>
+    <mesh name="left_shoulder_yaw_link" file="/content/HumanoidHand/assets/hands/meshes/left_shoulder_yaw_link.STL"/>
+    <mesh name="left_elbow_link" file="/content/HumanoidHand/assets/hands/meshes/left_elbow_link.STL"/>
+    <mesh name="left_wrist_roll_link" file="/content/HumanoidHand/assets/hands/meshes/left_wrist_roll_link.STL"/>
+    <mesh name="left_wrist_pitch_link" file="/content/HumanoidHand/assets/hands/meshes/left_wrist_pitch_link.STL"/>
+    <mesh name="left_wrist_yaw_link" file="/content/HumanoidHand/assets/hands/meshes/left_wrist_yaw_link.STL"/>
+    <mesh name="left_rubber_hand" file="/content/HumanoidHand/assets/hands/meshes/left_rubber_hand.STL"/>
+    <mesh name="right_shoulder_pitch_link" file="/content/HumanoidHand/assets/hands/meshes/right_shoulder_pitch_link.STL"/>
+    <mesh name="right_shoulder_roll_link" file="/content/HumanoidHand/assets/hands/meshes/right_shoulder_roll_link.STL"/>
+    <mesh name="right_shoulder_yaw_link" file="/content/HumanoidHand/assets/hands/meshes/right_shoulder_yaw_link.STL"/>
+    <mesh name="right_elbow_link" file="/content/HumanoidHand/assets/hands/meshes/right_elbow_link.STL"/>
+    <mesh name="right_wrist_roll_link" file="/content/HumanoidHand/assets/hands/meshes/right_wrist_roll_link.STL"/>
+    <mesh name="right_wrist_pitch_link" file="/content/HumanoidHand/assets/hands/meshes/right_wrist_pitch_link.STL"/>
+    <mesh name="right_wrist_yaw_link" file="/content/HumanoidHand/assets/hands/meshes/right_wrist_yaw_link.STL"/>
+    <mesh name="right_rubber_hand" file="/content/HumanoidHand/assets/hands/meshes/right_rubber_hand.STL"/>
   </asset>
 
   <worldbody>
