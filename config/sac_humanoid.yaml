@@ -1,0 +1,47 @@
+algorithm:
+  name: sac_continuous           # SAC adapté aux espaces d'action continus
+  device: auto                   # auto => GPU si dispo, sinon CPU
+
+model:
+  name: continuous_sac_logstd    # Head SAC avec log-std pour contrôle stochastique
+  log_std_bounds:                # Stabilisation des valeurs sigma
+    min: -20
+    max: 2
+
+network:
+  shared: true                   # Actor et critic partagent le même MLP
+  hidden_sizes: [1024, 512, 256] # Architecture profonde pour complexité motrice
+  activation: elu                # Fonction d’activation recommandée pour contrôle
+  initializer:
+    name: orthogonal             # Initialisation robuste pour SAC
+    gain: 0.01
+  regularizer:
+    name: l2
+    weight: 1e-4
+
+hyperparams:
+  gamma: 0.99                    # Facteur de discount
+  tau: 0.005                     # Soft update du critic target
+  alpha: auto                    # Entropie adaptative (renforce exploration)
+  buffer_size: 1_000_000         # Capacité du replay buffer
+  batch_size: 256                # Taille des mini-batchs
+  start_steps: 20_000            # Pas initiaux purement aléatoires
+  update_after: 5_000            # Steps avant premières updates
+  update_every: 50               # Fréquence d’update du SAC
+
+training:
+  total_steps: 1_500_000         # Nombre total d’interactions
+  max_episode_length: 1_000      # Longueur max d’un épisode
+  eval_interval: 50_000          # Intervalle d’évaluation
+  save_interval: 100_000         # Intervalle de sauvegarde du checkpoint
+
+logging:
+  log_dir: logs/sac_humanoid     # Dossier principal des logs
+  experiment_name: pick_place_1  # Nom du run (identifiant unique)
+  tensorboard: true              # Active TensorBoard
+  video:
+    enable: true
+    record_interval: 100_000     # Génération vidéo every N steps
+    size: [640, 480]
+
+seed: 42                         # Reproductibilité pour NumPy, PyTorch, Mujoco

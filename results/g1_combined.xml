@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<mujoco model="g1_combined">
+  <include file="/home/oussema/Documents/project/assets/hands/g1_body.xml"/>
+  <include file="/home/oussema/Documents/project/assets/hands/g1_fingers.xml"/>
+
+  <actuator>
+    <position name="act_left_elbow_joint" joint="left_elbow_joint" gear="1"/>
+    <position name="act_left_index_joint_0" joint="left_index_joint_0" gear="1"/>
+    <position name="act_left_index_joint_1" joint="left_index_joint_1" gear="1"/>
+    <position name="act_left_middle_joint_0" joint="left_middle_joint_0" gear="1"/>
+    <position name="act_left_middle_joint_1" joint="left_middle_joint_1" gear="1"/>
+    <position name="act_left_ring_joint_0" joint="left_ring_joint_0" gear="1"/>
+    <position name="act_left_ring_joint_1" joint="left_ring_joint_1" gear="1"/>
+    <position name="act_left_shoulder_pitch_joint" joint="left_shoulder_pitch_joint" gear="1"/>
+    <position name="act_left_shoulder_roll_joint" joint="left_shoulder_roll_joint" gear="1"/>
+    <position name="act_left_shoulder_yaw_joint" joint="left_shoulder_yaw_joint" gear="1"/>
+    <position name="act_left_thumb_joint_0" joint="left_thumb_joint_0" gear="1"/>
+    <position name="act_left_thumb_joint_1" joint="left_thumb_joint_1" gear="1"/>
+    <position name="act_left_wrist_pitch_joint" joint="left_wrist_pitch_joint" gear="1"/>
+    <position name="act_left_wrist_roll_joint" joint="left_wrist_roll_joint" gear="1"/>
+    <position name="act_left_wrist_yaw_joint" joint="left_wrist_yaw_joint" gear="1"/>
+    <position name="act_right_elbow_joint" joint="right_elbow_joint" gear="1"/>
+    <position name="act_right_index_joint_0" joint="right_index_joint_0" gear="1"/>
+    <position name="act_right_index_joint_1" joint="right_index_joint_1" gear="1"/>
+    <position name="act_right_middle_joint_0" joint="right_middle_joint_0" gear="1"/>
+    <position name="act_right_middle_joint_1" joint="right_middle_joint_1" gear="1"/>
+    <position name="act_right_ring_joint_0" joint="right_ring_joint_0" gear="1"/>
+    <position name="act_right_ring_joint_1" joint="right_ring_joint_1" gear="1"/>
+    <position name="act_right_shoulder_pitch_joint" joint="right_shoulder_pitch_joint" gear="1"/>
+    <position name="act_right_shoulder_roll_joint" joint="right_shoulder_roll_joint" gear="1"/>
+    <position name="act_right_shoulder_yaw_joint" joint="right_shoulder_yaw_joint" gear="1"/>
+    <position name="act_right_thumb_joint_0" joint="right_thumb_joint_0" gear="1"/>
+    <position name="act_right_thumb_joint_1" joint="right_thumb_joint_1" gear="1"/>
+    <position name="act_right_wrist_pitch_joint" joint="right_wrist_pitch_joint" gear="1"/>
+    <position name="act_right_wrist_roll_joint" joint="right_wrist_roll_joint" gear="1"/>
+    <position name="act_right_wrist_yaw_joint" joint="right_wrist_yaw_joint" gear="1"/>
+  </actuator>
+</mujoco>

@@ -1,0 +1,30 @@
+# =============================================================================
+# Hydra Configuration Defaults
+# =============================================================================
+# Version       : 1.0
+# Last Updated  : 2025-07-21
+# Description   : Inclusion automatique des configurations agent, environnement,
+#                 tâche et planificateur pour le projet HumanoidHand.
+
+defaults:
+  - agent: sac_humanoid               # Hyperparamètres et réseau de l’agent SAC
+  - env: humanoid_env                 # Paramètres Mujoco, physics, assets
+  - task: task_pick_place             # Définition de la tâche Pick & Place
+  - planner: planner                  # Planificateur hiérarchique (optionnel)
+
+  # 👉 Hydra intercepte cette liste et charge les fichiers :
+  #    cfg/agent/sac_humanoid.yaml
+  #    cfg/env/humanoid_env.yaml
+  #    cfg/task/task_pick_place.yaml
+  #    cfg/planner/planner.yaml
+
+  # ⛔ Pour désactiver temporairement le planner :
+  # - planner: null
+
+  # 🧪 Tu peux surcharger en ligne de commande :
+  # python train_rl.py +env=humanoid_env_v2 +task=task_rotate
+
+hydra:
+  run:
+    dir: logs/${agent.experiment_name}
+  output_subdir: null

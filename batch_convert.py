@@ -9,7 +9,7 @@ import argparse
 import tempfile
 
 class URDFToMuJoCoConverter:
-    def __init__(self, source_dir: str, output_dir: str, verbose: bool = False):
+    def __init__(self, source_dir: str, output_dir: str, verbose: bool = True):
         self.source_dir = Path(source_dir)
         self.output_dir = Path(output_dir)
         self.verbose = verbose
@@ -135,12 +135,23 @@ class URDFToMuJoCoConverter:
             shutil.copytree(source_meshes_dir, target_meshes_dir, dirs_exist_ok=True)
     
     def find_urdf_files(self) -> List[Path]:
-        """Trouve tous les fichiers URDF dans le dossier source"""
-        urdf_files = []
-        for file_path in self.source_dir.rglob('*.urdf'):
-            urdf_files.append(file_path)
-        return urdf_files
-    
+        """Détecte tous les fichiers URDF-like (.urdf + .xml avec balises <link> et <joint>)"""
+        candidates = []
+        for ext in ('*.xml', '*.urdf'):
+            for path in self.source_dir.rglob(ext):
+                try:
+                    tree = ET.parse(path)
+                    root = tree.getroot()
+                    tags = {el.tag for el in root.iter()}
+                    if 'link' in tags and 'joint' in tags:
+                        self.log(f"🟢 Détecté fichier URDF-like : {path}")
+                        candidates.append(path)
+                    else:
+                        self.log(f"⚪ Ignoré (non URDF-like) : {path}")
+                except ET.ParseError:
+                    self.log(f"🔴 Fichier corrompu : {path}")
+        return candidates
+
     def create_directory_structure(self, urdf_files: List[Path]):
         """Crée la structure de dossiers dans le dossier de sortie"""
         for urdf_file in urdf_files:

@@ -1,0 +1,77 @@
+# -----------------------------------------------------------------------------
+# Configuration YAML pour GraspLiftTask + SAC
+# Tout est piloté par ce fichier : capteurs, rewards, SAC, logs
+# -----------------------------------------------------------------------------
+
+task:
+  # Robot & simulation
+  cube_body_name: "cube"               # corps MuJoCo du cube à saisir
+  max_steps_per_episode: 500           # horizon max de chaque épisode
+
+  # Capteurs tactiles (touch sensors)  
+  touch_sensors:
+    - left_thumb_tip_sensor
+    - left_index_tip_sensor
+    - left_middle_tip_sensor
+    - left_ring_tip_sensor
+    - right_thumb_tip_sensor
+    - right_index_tip_sensor
+    - right_middle_tip_sensor
+    - right_ring_tip_sensor
+
+  # Capteurs de force (3 par doigt : indices 0,1,2)
+  force_sensors:
+    - left_thumb_force_sensor0
+    - left_thumb_force_sensor1
+    - left_thumb_force_sensor2
+    - left_index_force_sensor0
+    - left_index_force_sensor1
+    - left_index_force_sensor2
+    - left_middle_force_sensor0
+    - left_middle_force_sensor1
+    - left_middle_force_sensor2
+    - left_ring_force_sensor0
+    - left_ring_force_sensor1
+    - left_ring_force_sensor2
+    - right_thumb_force_sensor0
+    - right_thumb_force_sensor1
+    - right_thumb_force_sensor2
+    - right_index_force_sensor0
+    - right_index_force_sensor1
+    - right_index_force_sensor2
+    - right_middle_force_sensor0
+    - right_middle_force_sensor1
+    - right_middle_force_sensor2
+    - right_ring_force_sensor0
+    - right_ring_force_sensor1
+    - right_ring_force_sensor2
+
+  # Reward components et leurs poids
+  force_reward_weight_normal:     0.50   # w_fn : encourage la force normale
+  force_reward_weight_tangential: -0.20  # w_ft : pénalise la force tangentielle (glissement)
+  translation_penalty_weight:      0.10  # w_tp : pénalise la dérive XY du cube
+  include_orientation_reward:      true  # activer la composante orientation
+  target_cube_euler: [0.0, 0.0, 0.0]      # objectif orientation du cube en RPY (rad)
+  orientation_reward_weight:        0.10  # w_ori : pénalise l’erreur angulaire (rad)
+
+  # Chemins et fréquence de sauvegarde
+  output_dir: "results"              # où loguer et sauvegarder checkpoints
+  save_freq_steps: 100000            # intervalle (en steps) de sauvegarde
+
+# -----------------------------------------------------------------------------
+# Hyperparamètres Soft Actor–Critic (SAC) – section "rl"
+# -----------------------------------------------------------------------------
+rl:
+  gamma:        0.99       # facteur de discount γ
+  alpha:        0.20       # température α (entropie)
+  learning_rate: 3e-4      # lr pour Adam
+  hidden_size:   256       # taille des couches cachées
+  batch_size:    256       # batch_size pour mise à jour
+  replay_size:   1000000   # capacité du replay buffer
+  start_steps:   10000     # steps aléatoires avant policy roll-out
+  update_after:  1000      # steps à collecter avant la 1ᵉ update
+  update_every:  50        # fréquence (steps) des mises à jour
+  num_updates:   50        # itérations d’optimisation par update
+  total_steps:   500000    # total de steps d’entraînement
+  act_limit:     1.0        # ← ajoute cette ligne
+  tau:    0.005

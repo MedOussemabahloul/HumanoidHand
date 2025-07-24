@@ -1,0 +1,33 @@
+# =============================================================================
+# High-Level Planner Configuration for HumanoidHand Manipulation
+# =============================================================================
+# Version       : 1.0
+# Last Updated  : 2025-07-21
+# Description   : Planificateur hiérarchique basé sur séquences de contrôle logique
+
+planner:
+  type: "hierarchical"                     # Options : "flat", "hierarchical", "symbolic"
+  execution_mode: "greedy"                 # "greedy", "depth_first", "score_based"
+
+  modules:
+    - name: "reach"
+      goal: "approach object"
+      timeout: 250
+      success_condition: "distance < 0.1"
+    - name: "grasp"
+      goal: "grip object"
+      timeout: 150
+      success_condition: "fingertip_contact && force > 0.5"
+    - name: "place"
+      goal: "release at target"
+      timeout: 200
+      success_condition: "object_position ~ goal_position"
+
+  fallback: "retry"                        # En cas d’échec d’un module
+  max_retries: 3
+
+  logging:
+    enable: true
+    save_traces: true
+    save_failure_cases: true
+    trace_dir: "logs/planner_traces"

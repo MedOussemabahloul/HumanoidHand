@@ -1,0 +1,61 @@
+# =============================================================================
+# Pick & Place Task Configuration
+# =============================================================================
+# Version        : 1.0
+# Last Updated   : 2025-07-21
+# Description    : Tâche de préhension et de placement d’un objet à l’aide
+#                  de la main humanoïde simulée dans Mujoco.
+
+task:
+  name: "PickPlace"                          # Identifiant de la tâche
+  mode: "train"                              # train | eval | debug
+  difficulty: "standard"                     # easy | standard | cluttered | multi-object
+
+  object:
+    type: "cube"                             # Nom référencé dans env.objectType
+    instance_id: "obj_01"                    # Utilisé pour logging ou arctic indexing
+    initial_pose:
+      position: [0.25, 0.0, 0.55]            # Coordonnées (x, y, z)
+      orientation: [0.0, 0.0, 0.0]           # Rotation Euler ou quaternion (selon loader)
+
+  goal:
+    position: [0.0, 0.3, 0.55]               # Position cible dans la scène
+    tolerance:
+      distance: 0.05                         # Tolérance spatiale pour considérer réussite
+      orientation: 0.1                       # Écart angulaire max
+
+  reward:
+    shaping: "dense"                         # dense | sparse | hybrid
+    components:
+      distance_scale: 10.0                   # Influence de la distance main-objet
+      orientation_scale: 1.0                 # Alignement angulaire
+      success_bonus: 100.0                   # Récompense à la réussite
+      action_penalty: -0.01                  # Coût des commandes moteur
+      fall_penalty: -5.0
+      fall_distance: 0.4
+
+  success:
+    required_consecutive_steps: 1            # Nombre d’étapes validées pour « réussite »
+    reset_on_success: false                  # Redémarrer l’épisode quand atteint
+
+  reset:
+    start_noise:
+      position: 0.02                         # Bruit sur le spawn position
+      orientation: 0.1
+    dof_noise:
+      position_interval: 0.01
+      velocity_interval: 0.02
+
+  logging:
+    enabled: true
+    save_trajectories: true                  # Archive des trajectoires réussies
+    metrics_interval: 5000                   # Enregistrement des stats
+    video:
+      record_interval: 50000
+      resolution: [640, 480]
+      include_overlay: true
+
+  metadata:
+    task_source: "custom"
+    author: "MohamedOussema"
+    version_tag: "pickplace_v1"
