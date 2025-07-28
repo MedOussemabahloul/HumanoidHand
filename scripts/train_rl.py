@@ -89,9 +89,17 @@ def build_combined_xml(body_xml: str, fingers_xml: str, out_dir: str) -> str:
     Génère un MJCF unique qui :
       - inclut entièrement body_xml et fingers_xml (mesh, sites, sensors…)
       - ajoute un bloc <actuator> automatique pour chaque joint trouvé
+      - utilise automatiquement la version optimisée si disponible
     """
     os.makedirs(out_dir, exist_ok=True)
     combined_path = os.path.join(out_dir, "g1_combined.xml")
+    
+    # Vérifier si la version optimisée existe
+    fingers_dir = os.path.dirname(fingers_xml)
+    optimized_fingers = os.path.join(fingers_dir, "g1_fingers_optimized.xml")
+    if os.path.exists(optimized_fingers):
+        print(f"[INFO] Utilisation de la version optimisée: {optimized_fingers}")
+        fingers_xml = optimized_fingers
 
     abs_body   = os.path.abspath(body_xml)
     abs_finger = os.path.abspath(fingers_xml)
