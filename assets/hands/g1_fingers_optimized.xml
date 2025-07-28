@@ -27,7 +27,7 @@
     <mesh name="right_ring_0_mesh"   file="/content/HumanoidHand/assets/hands/meshes/right_ring_1.STL"/>
     <mesh name="right_ring_1_mesh"   file="/content/HumanoidHand/assets/hands/meshes/right_ring_2.STL"/>
 
-    <!-- Force sensor meshes (si nécessaire) -->
+    <!-- Force sensor meshes -->
     <mesh name="left_thumb_force_sensor_0_mesh"  file="/content/HumanoidHand/assets/hands/meshes/left_thumb_force_sensor_1.STL"/>
     <mesh name="left_thumb_force_sensor_1_mesh"  file="/content/HumanoidHand/assets/hands/meshes/left_thumb_force_sensor_2.STL"/>
     <mesh name="left_thumb_force_sensor_2_mesh"  file="/content/HumanoidHand/assets/hands/meshes/left_thumb_force_sensor_3.STL"/>
@@ -65,16 +65,22 @@
   <worldbody>
     <!-- ========== INDEX GAUCHE ========== -->
     <body name="left_index_0" pos="0.03 0.05 0.02">
-      <inertial pos="0.01 0 0" quat="1 0 0 0" mass="0.045" diaginertia="2.5e-05 2.2e-05 1.8e-05"/>
-      <joint name="left_index_joint_0" type="hinge" axis="0 1 0" range="0 1.396" actuatorfrcrange="-8 8"/>
-      <geom type="mesh" contype="1" conaffinity="1" group="1" density="0" rgba="0.7 0.7 0.7 1" mesh="left_index_0_mesh"/>
-      <geom type="mesh" rgba="0.7 0.7 0.7 1" mesh="left_index_0_mesh"/>
+      <inertial pos="0.012 0.002 -0.001" quat="0.998 0.058 0.025 0.015" mass="0.045" diaginertia="2.5e-05 2.2e-05 1.8e-05"/>
+      <joint name="left_index_joint_0" pos="0 0 0" axis="0 1 0" range="0 1.396" actuatorfrcrange="-8 8"
+             damping="0.8"
+             frictionloss="0.3"
+             armature="0.05"/>
+      <geom type="mesh" contype="1" conaffinity="1" group="1" density="0" rgba="0.7 0.7 0.7 1" friction="0.9 0.5 0.1" solref="0.01 0.5" margin="0.0002" condim="4" mesh="left_index_0_mesh"/>
+      <geom type="mesh" rgba="0.7 0.7 0.7 1" friction="0.9 0.5 0.1" solref="0.01 0.5" margin="0.0002" condim="4" mesh="left_index_0_mesh"/>
       
       <body name="left_index_1" pos="0.02 0 0">
-        <inertial pos="0.01 0 0" quat="1 0 0 0" mass="0.025" diaginertia="1.5e-05 1.2e-05 1.0e-05"/>
-        <joint name="left_index_joint_1" type="hinge" axis="0 1 0" range="0 1.222" actuatorfrcrange="-6 6"/>
-        <geom type="mesh" contype="1" conaffinity="1" group="1" density="0" rgba="0.7 0.7 0.7 1" mesh="left_index_1_mesh"/>
-        <geom type="mesh" rgba="0.7 0.7 0.7 1" mesh="left_index_1_mesh"/>
+        <inertial pos="0.01 0.001 -0.0005" quat="0.996 0.072 0.035 0.025" mass="0.025" diaginertia="1.5e-05 1.2e-05 1.0e-05"/>
+        <joint name="left_index_joint_1" pos="0 0 0" axis="0 1 0" range="0 1.222" actuatorfrcrange="-6 6"
+               damping="0.6"
+               frictionloss="0.2"
+               armature="0.03"/>
+        <geom type="mesh" contype="1" conaffinity="1" group="1" density="0" rgba="0.7 0.7 0.7 1" friction="0.9 0.5 0.1" solref="0.01 0.5" margin="0.0002" condim="4" mesh="left_index_1_mesh"/>
+        <geom type="mesh" rgba="0.7 0.7 0.7 1" friction="0.9 0.5 0.1" solref="0.01 0.5" margin="0.0002" condim="4" mesh="left_index_1_mesh"/>
         
         <site name="left_index_tip_site" pos="0.02 0 0" size="0.003" type="sphere"/>
       </body>
@@ -82,16 +88,22 @@
 
     <!-- ========== MAJEUR GAUCHE ========== -->
     <body name="left_middle_0" pos="0.035 0.05 0.025">
-      <inertial pos="0.01 0 0" quat="1 0 0 0" mass="0.048" diaginertia="2.8e-05 2.4e-05 2.0e-05"/>
-      <joint name="left_middle_joint_0" type="hinge" axis="0 1 0" range="0 1.396" actuatorfrcrange="-8 8"/>
-      <geom type="mesh" contype="1" conaffinity="1" group="1" density="0" rgba="0.7 0.7 0.7 1" mesh="left_middle_0_mesh"/>
-      <geom type="mesh" rgba="0.7 0.7 0.7 1" mesh="left_middle_0_mesh"/>
+      <inertial pos="0.013 0.002 -0.001" quat="0.997 0.062 0.028 0.018" mass="0.048" diaginertia="2.8e-05 2.4e-05 2.0e-05"/>
+      <joint name="left_middle_joint_0" pos="0 0 0" axis="0 1 0" range="0 1.396" actuatorfrcrange="-8 8"
+             damping="0.8"
+             frictionloss="0.3"
+             armature="0.05"/>
+      <geom type="mesh" contype="1" conaffinity="1" group="1" density="0" rgba="0.7 0.7 0.7 1" friction="0.9 0.5 0.1" solref="0.01 0.5" margin="0.0002" condim="4" mesh="left_middle_0_mesh"/>
+      <geom type="mesh" rgba="0.7 0.7 0.7 1" friction="0.9 0.5 0.1" solref="0.01 0.5" margin="0.0002" condim="4" mesh="left_middle_0_mesh"/>
       
       <body name="left_middle_1" pos="0.02 0 0">
-        <inertial pos="0.01 0 0" quat="1 0 0 0" mass="0.028" diaginertia="1.6e-05 1.3e-05 1.1e-05"/>
-        <joint name="left_middle_joint_1" type="hinge" axis="0 1 0" range="0 1.222" actuatorfrcrange="-6 6"/>
-        <geom type="mesh" contype="1" conaffinity="1" group="1" density="0" rgba="0.7 0.7 0.7 1" mesh="left_middle_1_mesh"/>
-        <geom type="mesh" rgba="0.7 0.7 0.7 1" mesh="left_middle_1_mesh"/>
+        <inertial pos="0.011 0.001 -0.0005" quat="0.995 0.075 0.038 0.028" mass="0.028" diaginertia="1.6e-05 1.3e-05 1.1e-05"/>
+        <joint name="left_middle_joint_1" pos="0 0 0" axis="0 1 0" range="0 1.222" actuatorfrcrange="-6 6"
+               damping="0.6"
+               frictionloss="0.2"
+               armature="0.03"/>
+        <geom type="mesh" contype="1" conaffinity="1" group="1" density="0" rgba="0.7 0.7 0.7 1" friction="0.9 0.5 0.1" solref="0.01 0.5" margin="0.0002" condim="4" mesh="left_middle_1_mesh"/>
+        <geom type="mesh" rgba="0.7 0.7 0.7 1" friction="0.9 0.5 0.1" solref="0.01 0.5" margin="0.0002" condim="4" mesh="left_middle_1_mesh"/>
         
         <site name="left_middle_tip_site" pos="0.02 0 0" size="0.003" type="sphere"/>
       </body>
@@ -99,16 +111,22 @@
 
     <!-- ========== ANNULAIRE GAUCHE ========== -->
     <body name="left_ring_0" pos="0.04 0.05 0.025">
-      <inertial pos="0.01 0 0" quat="1 0 0 0" mass="0.042" diaginertia="2.4e-05 2.1e-05 1.7e-05"/>
-      <joint name="left_ring_joint_0" type="hinge" axis="0 1 0" range="0 1.396" actuatorfrcrange="-8 8"/>
-      <geom type="mesh" contype="1" conaffinity="1" group="1" density="0" rgba="0.7 0.7 0.7 1" mesh="left_ring_0_mesh"/>
-      <geom type="mesh" rgba="0.7 0.7 0.7 1" mesh="left_ring_0_mesh"/>
+      <inertial pos="0.011 0.002 -0.001" quat="0.996 0.065 0.032 0.022" mass="0.042" diaginertia="2.4e-05 2.1e-05 1.7e-05"/>
+      <joint name="left_ring_joint_0" pos="0 0 0" axis="0 1 0" range="0 1.396" actuatorfrcrange="-8 8"
+             damping="0.8"
+             frictionloss="0.3"
+             armature="0.05"/>
+      <geom type="mesh" contype="1" conaffinity="1" group="1" density="0" rgba="0.7 0.7 0.7 1" friction="0.9 0.5 0.1" solref="0.01 0.5" margin="0.0002" condim="4" mesh="left_ring_0_mesh"/>
+      <geom type="mesh" rgba="0.7 0.7 0.7 1" friction="0.9 0.5 0.1" solref="0.01 0.5" margin="0.0002" condim="4" mesh="left_ring_0_mesh"/>
       
       <body name="left_ring_1" pos="0.02 0 0">
-        <inertial pos="0.01 0 0" quat="1 0 0 0" mass="0.024" diaginertia="1.4e-05 1.1e-05 0.9e-05"/>
-        <joint name="left_ring_joint_1" type="hinge" axis="0 1 0" range="0 1.222" actuatorfrcrange="-6 6"/>
-        <geom type="mesh" contype="1" conaffinity="1" group="1" density="0" rgba="0.7 0.7 0.7 1" mesh="left_ring_1_mesh"/>
-        <geom type="mesh" rgba="0.7 0.7 0.7 1" mesh="left_ring_1_mesh"/>
+        <inertial pos="0.01 0.001 -0.0005" quat="0.994 0.078 0.042 0.032" mass="0.024" diaginertia="1.4e-05 1.1e-05 0.9e-05"/>
+        <joint name="left_ring_joint_1" pos="0 0 0" axis="0 1 0" range="0 1.222" actuatorfrcrange="-6 6"
+               damping="0.6"
+               frictionloss="0.2"
+               armature="0.03"/>
+        <geom type="mesh" contype="1" conaffinity="1" group="1" density="0" rgba="0.7 0.7 0.7 1" friction="0.9 0.5 0.1" solref="0.01 0.5" margin="0.0002" condim="4" mesh="left_ring_1_mesh"/>
+        <geom type="mesh" rgba="0.7 0.7 0.7 1" friction="0.9 0.5 0.1" solref="0.01 0.5" margin="0.0002" condim="4" mesh="left_ring_1_mesh"/>
         
         <site name="left_ring_tip_site" pos="0.02 0 0" size="0.003" type="sphere"/>
       </body>
@@ -116,16 +134,22 @@
 
     <!-- ========== POUCE GAUCHE ========== -->
     <body name="left_thumb_0" pos="0.02 0.04 0.015">
-      <inertial pos="0.01 0 0" quat="1 0 0 0" mass="0.055" diaginertia="3.2e-05 2.8e-05 2.2e-05"/>
-      <joint name="left_thumb_joint_0" type="hinge" axis="0 1 0" range="0 1.745" actuatorfrcrange="-10 10"/>
-      <geom type="mesh" contype="1" conaffinity="1" group="1" density="0" rgba="0.7 0.7 0.7 1" mesh="left_thumb_0_mesh"/>
-      <geom type="mesh" rgba="0.7 0.7 0.7 1" mesh="left_thumb_0_mesh"/>
+      <inertial pos="0.014 0.003 -0.001" quat="0.992 0.085 0.045 0.035" mass="0.055" diaginertia="3.2e-05 2.8e-05 2.2e-05"/>
+      <joint name="left_thumb_joint_0" pos="0 0 0" axis="0 1 0" range="0 1.745" actuatorfrcrange="-10 10"
+             damping="1.0"
+             frictionloss="0.4"
+             armature="0.08"/>
+      <geom type="mesh" contype="1" conaffinity="1" group="1" density="0" rgba="0.7 0.7 0.7 1" friction="0.9 0.5 0.1" solref="0.01 0.5" margin="0.0002" condim="4" mesh="left_thumb_0_mesh"/>
+      <geom type="mesh" rgba="0.7 0.7 0.7 1" friction="0.9 0.5 0.1" solref="0.01 0.5" margin="0.0002" condim="4" mesh="left_thumb_0_mesh"/>
       
       <body name="left_thumb_1" pos="0.02 0 0">
-        <inertial pos="0.01 0 0" quat="1 0 0 0" mass="0.032" diaginertia="1.8e-05 1.5e-05 1.2e-05"/>
-        <joint name="left_thumb_joint_1" type="hinge" axis="0 1 0" range="0 1.396" actuatorfrcrange="-8 8"/>
-        <geom type="mesh" contype="1" conaffinity="1" group="1" density="0" rgba="0.7 0.7 0.7 1" mesh="left_thumb_1_mesh"/>
-        <geom type="mesh" rgba="0.7 0.7 0.7 1" mesh="left_thumb_1_mesh"/>
+        <inertial pos="0.012 0.002 -0.0008" quat="0.993 0.082 0.048 0.038" mass="0.032" diaginertia="1.8e-05 1.5e-05 1.2e-05"/>
+        <joint name="left_thumb_joint_1" pos="0 0 0" axis="0 1 0" range="0 1.396" actuatorfrcrange="-8 8"
+               damping="0.8"
+               frictionloss="0.3"
+               armature="0.05"/>
+        <geom type="mesh" contype="1" conaffinity="1" group="1" density="0" rgba="0.7 0.7 0.7 1" friction="0.9 0.5 0.1" solref="0.01 0.5" margin="0.0002" condim="4" mesh="left_thumb_1_mesh"/>
+        <geom type="mesh" rgba="0.7 0.7 0.7 1" friction="0.9 0.5 0.1" solref="0.01 0.5" margin="0.0002" condim="4" mesh="left_thumb_1_mesh"/>
         
         <site name="left_thumb_tip_site" pos="0.02 0 0" size="0.003" type="sphere"/>
       </body>
@@ -133,16 +157,22 @@
 
     <!-- ========== INDEX DROIT ========== -->
     <body name="right_index_0" pos="-0.03 -0.05 0.02">
-      <inertial pos="0.01 0 0" quat="1 0 0 0" mass="0.045" diaginertia="2.5e-05 2.2e-05 1.8e-05"/>
-      <joint name="right_index_joint_0" type="hinge" axis="0 1 0" range="0 1.396" actuatorfrcrange="-8 8"/>
-      <geom type="mesh" contype="1" conaffinity="1" group="1" density="0" rgba="0.7 0.7 0.7 1" mesh="right_index_0_mesh"/>
-      <geom type="mesh" rgba="0.7 0.7 0.7 1" mesh="right_index_0_mesh"/>
+      <inertial pos="0.012 -0.002 -0.001" quat="0.998 -0.058 0.025 -0.015" mass="0.045" diaginertia="2.5e-05 2.2e-05 1.8e-05"/>
+      <joint name="right_index_joint_0" pos="0 0 0" axis="0 1 0" range="0 1.396" actuatorfrcrange="-8 8"
+             damping="0.8"
+             frictionloss="0.3"
+             armature="0.05"/>
+      <geom type="mesh" contype="1" conaffinity="1" group="1" density="0" rgba="0.7 0.7 0.7 1" friction="0.9 0.5 0.1" solref="0.01 0.5" margin="0.0002" condim="4" mesh="right_index_0_mesh"/>
+      <geom type="mesh" rgba="0.7 0.7 0.7 1" friction="0.9 0.5 0.1" solref="0.01 0.5" margin="0.0002" condim="4" mesh="right_index_0_mesh"/>
       
       <body name="right_index_1" pos="0.02 0 0">
-        <inertial pos="0.01 0 0" quat="1 0 0 0" mass="0.025" diaginertia="1.5e-05 1.2e-05 1.0e-05"/>
-        <joint name="right_index_joint_1" type="hinge" axis="0 1 0" range="0 1.222" actuatorfrcrange="-6 6"/>
-        <geom type="mesh" contype="1" conaffinity="1" group="1" density="0" rgba="0.7 0.7 0.7 1" mesh="right_index_1_mesh"/>
-        <geom type="mesh" rgba="0.7 0.7 0.7 1" mesh="right_index_1_mesh"/>
+        <inertial pos="0.01 -0.001 -0.0005" quat="0.996 -0.072 0.035 -0.025" mass="0.025" diaginertia="1.5e-05 1.2e-05 1.0e-05"/>
+        <joint name="right_index_joint_1" pos="0 0 0" axis="0 1 0" range="0 1.222" actuatorfrcrange="-6 6"
+               damping="0.6"
+               frictionloss="0.2"
+               armature="0.03"/>
+        <geom type="mesh" contype="1" conaffinity="1" group="1" density="0" rgba="0.7 0.7 0.7 1" friction="0.9 0.5 0.1" solref="0.01 0.5" margin="0.0002" condim="4" mesh="right_index_1_mesh"/>
+        <geom type="mesh" rgba="0.7 0.7 0.7 1" friction="0.9 0.5 0.1" solref="0.01 0.5" margin="0.0002" condim="4" mesh="right_index_1_mesh"/>
         
         <site name="right_index_tip_site" pos="0.02 0 0" size="0.003" type="sphere"/>
       </body>
@@ -150,16 +180,22 @@
 
     <!-- ========== MAJEUR DROIT ========== -->
     <body name="right_middle_0" pos="-0.035 -0.05 0.025">
-      <inertial pos="0.01 0 0" quat="1 0 0 0" mass="0.048" diaginertia="2.8e-05 2.4e-05 2.0e-05"/>
-      <joint name="right_middle_joint_0" type="hinge" axis="0 1 0" range="0 1.396" actuatorfrcrange="-8 8"/>
-      <geom type="mesh" contype="1" conaffinity="1" group="1" density="0" rgba="0.7 0.7 0.7 1" mesh="right_middle_0_mesh"/>
-      <geom type="mesh" rgba="0.7 0.7 0.7 1" mesh="right_middle_0_mesh"/>
+      <inertial pos="0.013 -0.002 -0.001" quat="0.997 -0.062 0.028 -0.018" mass="0.048" diaginertia="2.8e-05 2.4e-05 2.0e-05"/>
+      <joint name="right_middle_joint_0" pos="0 0 0" axis="0 1 0" range="0 1.396" actuatorfrcrange="-8 8"
+             damping="0.8"
+             frictionloss="0.3"
+             armature="0.05"/>
+      <geom type="mesh" contype="1" conaffinity="1" group="1" density="0" rgba="0.7 0.7 0.7 1" friction="0.9 0.5 0.1" solref="0.01 0.5" margin="0.0002" condim="4" mesh="right_middle_0_mesh"/>
+      <geom type="mesh" rgba="0.7 0.7 0.7 1" friction="0.9 0.5 0.1" solref="0.01 0.5" margin="0.0002" condim="4" mesh="right_middle_0_mesh"/>
       
       <body name="right_middle_1" pos="0.02 0 0">
-        <inertial pos="0.01 0 0" quat="1 0 0 0" mass="0.028" diaginertia="1.6e-05 1.3e-05 1.1e-05"/>
-        <joint name="right_middle_joint_1" type="hinge" axis="0 1 0" range="0 1.222" actuatorfrcrange="-6 6"/>
-        <geom type="mesh" contype="1" conaffinity="1" group="1" density="0" rgba="0.7 0.7 0.7 1" mesh="right_middle_1_mesh"/>
-        <geom type="mesh" rgba="0.7 0.7 0.7 1" mesh="right_middle_1_mesh"/>
+        <inertial pos="0.011 -0.001 -0.0005" quat="0.995 -0.075 0.038 -0.028" mass="0.028" diaginertia="1.6e-05 1.3e-05 1.1e-05"/>
+        <joint name="right_middle_joint_1" pos="0 0 0" axis="0 1 0" range="0 1.222" actuatorfrcrange="-6 6"
+               damping="0.6"
+               frictionloss="0.2"
+               armature="0.03"/>
+        <geom type="mesh" contype="1" conaffinity="1" group="1" density="0" rgba="0.7 0.7 0.7 1" friction="0.9 0.5 0.1" solref="0.01 0.5" margin="0.0002" condim="4" mesh="right_middle_1_mesh"/>
+        <geom type="mesh" rgba="0.7 0.7 0.7 1" friction="0.9 0.5 0.1" solref="0.01 0.5" margin="0.0002" condim="4" mesh="right_middle_1_mesh"/>
         
         <site name="right_middle_tip_site" pos="0.02 0 0" size="0.003" type="sphere"/>
       </body>
@@ -167,16 +203,22 @@
 
     <!-- ========== ANNULAIRE DROIT ========== -->
     <body name="right_ring_0" pos="-0.04 -0.05 0.025">
-      <inertial pos="0.01 0 0" quat="1 0 0 0" mass="0.042" diaginertia="2.4e-05 2.1e-05 1.7e-05"/>
-      <joint name="right_ring_joint_0" type="hinge" axis="0 1 0" range="0 1.396" actuatorfrcrange="-8 8"/>
-      <geom type="mesh" contype="1" conaffinity="1" group="1" density="0" rgba="0.7 0.7 0.7 1" mesh="right_ring_0_mesh"/>
-      <geom type="mesh" rgba="0.7 0.7 0.7 1" mesh="right_ring_0_mesh"/>
+      <inertial pos="0.011 -0.002 -0.001" quat="0.996 -0.065 0.032 -0.022" mass="0.042" diaginertia="2.4e-05 2.1e-05 1.7e-05"/>
+      <joint name="right_ring_joint_0" pos="0 0 0" axis="0 1 0" range="0 1.396" actuatorfrcrange="-8 8"
+             damping="0.8"
+             frictionloss="0.3"
+             armature="0.05"/>
+      <geom type="mesh" contype="1" conaffinity="1" group="1" density="0" rgba="0.7 0.7 0.7 1" friction="0.9 0.5 0.1" solref="0.01 0.5" margin="0.0002" condim="4" mesh="right_ring_0_mesh"/>
+      <geom type="mesh" rgba="0.7 0.7 0.7 1" friction="0.9 0.5 0.1" solref="0.01 0.5" margin="0.0002" condim="4" mesh="right_ring_0_mesh"/>
       
       <body name="right_ring_1" pos="0.02 0 0">
-        <inertial pos="0.01 0 0" quat="1 0 0 0" mass="0.024" diaginertia="1.4e-05 1.1e-05 0.9e-05"/>
-        <joint name="right_ring_joint_1" type="hinge" axis="0 1 0" range="0 1.222" actuatorfrcrange="-6 6"/>
-        <geom type="mesh" contype="1" conaffinity="1" group="1" density="0" rgba="0.7 0.7 0.7 1" mesh="right_ring_1_mesh"/>
-        <geom type="mesh" rgba="0.7 0.7 0.7 1" mesh="right_ring_1_mesh"/>
+        <inertial pos="0.01 -0.001 -0.0005" quat="0.994 -0.078 0.042 -0.032" mass="0.024" diaginertia="1.4e-05 1.1e-05 0.9e-05"/>
+        <joint name="right_ring_joint_1" pos="0 0 0" axis="0 1 0" range="0 1.222" actuatorfrcrange="-6 6"
+               damping="0.6"
+               frictionloss="0.2"
+               armature="0.03"/>
+        <geom type="mesh" contype="1" conaffinity="1" group="1" density="0" rgba="0.7 0.7 0.7 1" friction="0.9 0.5 0.1" solref="0.01 0.5" margin="0.0002" condim="4" mesh="right_ring_1_mesh"/>
+        <geom type="mesh" rgba="0.7 0.7 0.7 1" friction="0.9 0.5 0.1" solref="0.01 0.5" margin="0.0002" condim="4" mesh="right_ring_1_mesh"/>
         
         <site name="right_ring_tip_site" pos="0.02 0 0" size="0.003" type="sphere"/>
       </body>
@@ -184,16 +226,22 @@
 
     <!-- ========== POUCE DROIT ========== -->
     <body name="right_thumb_0" pos="-0.02 -0.05 0.015">
-      <inertial pos="0.01 0 0" quat="1 0 0 0" mass="0.055" diaginertia="3.2e-05 2.8e-05 2.2e-05"/>
-      <joint name="right_thumb_joint_0" type="hinge" axis="0 1 0" range="0 1.745" actuatorfrcrange="-10 10"/>
-      <geom type="mesh" contype="1" conaffinity="1" group="1" density="0" rgba="0.7 0.7 0.7 1" mesh="right_thumb_0_mesh"/>
-      <geom type="mesh" rgba="0.7 0.7 0.7 1" mesh="right_thumb_0_mesh"/>
+      <inertial pos="0.014 -0.003 -0.001" quat="0.992 -0.085 0.045 -0.035" mass="0.055" diaginertia="3.2e-05 2.8e-05 2.2e-05"/>
+      <joint name="right_thumb_joint_0" pos="0 0 0" axis="0 1 0" range="0 1.745" actuatorfrcrange="-10 10"
+             damping="1.0"
+             frictionloss="0.4"
+             armature="0.08"/>
+      <geom type="mesh" contype="1" conaffinity="1" group="1" density="0" rgba="0.7 0.7 0.7 1" friction="0.9 0.5 0.1" solref="0.01 0.5" margin="0.0002" condim="4" mesh="right_thumb_0_mesh"/>
+      <geom type="mesh" rgba="0.7 0.7 0.7 1" friction="0.9 0.5 0.1" solref="0.01 0.5" margin="0.0002" condim="4" mesh="right_thumb_0_mesh"/>
       
       <body name="right_thumb_1" pos="0.02 0 0">
-        <inertial pos="0.01 0 0" quat="1 0 0 0" mass="0.032" diaginertia="1.8e-05 1.5e-05 1.2e-05"/>
-        <joint name="right_thumb_joint_1" type="hinge" axis="0 1 0" range="0 1.396" actuatorfrcrange="-8 8"/>
-        <geom type="mesh" contype="1" conaffinity="1" group="1" density="0" rgba="0.7 0.7 0.7 1" mesh="right_thumb_1_mesh"/>
-        <geom type="mesh" rgba="0.7 0.7 0.7 1" mesh="right_thumb_1_mesh"/>
+        <inertial pos="0.012 -0.002 -0.0008" quat="0.993 -0.082 0.048 -0.038" mass="0.032" diaginertia="1.8e-05 1.5e-05 1.2e-05"/>
+        <joint name="right_thumb_joint_1" pos="0 0 0" axis="0 1 0" range="0 1.396" actuatorfrcrange="-8 8"
+               damping="0.8"
+               frictionloss="0.3"
+               armature="0.05"/>
+        <geom type="mesh" contype="1" conaffinity="1" group="1" density="0" rgba="0.7 0.7 0.7 1" friction="0.9 0.5 0.1" solref="0.01 0.5" margin="0.0002" condim="4" mesh="right_thumb_1_mesh"/>
+        <geom type="mesh" rgba="0.7 0.7 0.7 1" friction="0.9 0.5 0.1" solref="0.01 0.5" margin="0.0002" condim="4" mesh="right_thumb_1_mesh"/>
         
         <site name="right_thumb_tip_site" pos="0.02 0 0" size="0.003" type="sphere"/>
       </body>
@@ -202,75 +250,75 @@
     <!-- ===================== FORCE SENSOR SITES ===================== -->
     <body name="left_thumb_force_sensors" pos="0.02 0 0">
       <site name="left_thumb_force_sensor_0_site" pos="0 0 0" size="0.003" type="sphere"/>
-      <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.8 0.2 0.2 0.3" mesh="left_thumb_force_sensor_0_mesh"/>
+      <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.8 0.2 0.2 0.3" friction="0.9 0.5 0.1" solref="0.01 0.5" margin="0.0002" condim="4" mesh="left_thumb_force_sensor_0_mesh"/>
       <site name="left_thumb_force_sensor_1_site" pos="0 0 0" size="0.003" type="sphere"/>
-      <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.2 0.8 0.2 0.3" mesh="left_thumb_force_sensor_1_mesh"/>
+      <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.2 0.8 0.2 0.3" friction="0.9 0.5 0.1" solref="0.01 0.5" margin="0.0002" condim="4" mesh="left_thumb_force_sensor_1_mesh"/>
       <site name="left_thumb_force_sensor_2_site" pos="0 0 0" size="0.003" type="sphere"/>
-      <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.2 0.2 0.8 0.3" mesh="left_thumb_force_sensor_2_mesh"/>
+      <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.2 0.2 0.8 0.3" friction="0.9 0.5 0.1" solref="0.01 0.5" margin="0.0002" condim="4" mesh="left_thumb_force_sensor_2_mesh"/>
     </body>
 
     <body name="left_index_force_sensors" pos="0.02 0 0">
       <site name="left_index_force_sensor_0_site" pos="0 0 0" size="0.003" type="sphere"/>
-      <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.8 0.2 0.2 0.3" mesh="left_index_force_sensor_0_mesh"/>
+      <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.8 0.2 0.2 0.3" friction="0.9 0.5 0.1" solref="0.01 0.5" margin="0.0002" condim="4" mesh="left_index_force_sensor_0_mesh"/>
       <site name="left_index_force_sensor_1_site" pos="0 0 0" size="0.003" type="sphere"/>
-      <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.2 0.8 0.2 0.3" mesh="left_index_force_sensor_1_mesh"/>
+      <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.2 0.8 0.2 0.3" friction="0.9 0.5 0.1" solref="0.01 0.5" margin="0.0002" condim="4" mesh="left_index_force_sensor_1_mesh"/>
       <site name="left_index_force_sensor_2_site" pos="0 0 0" size="0.003" type="sphere"/>
-      <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.2 0.2 0.8 0.3" mesh="left_index_force_sensor_2_mesh"/>
+      <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.2 0.2 0.8 0.3" friction="0.9 0.5 0.1" solref="0.01 0.5" margin="0.0002" condim="4" mesh="left_index_force_sensor_2_mesh"/>
     </body>
 
     <body name="left_middle_force_sensors" pos="0.02 0 0">
       <site name="left_middle_force_sensor_0_site" pos="0 0 0" size="0.003" type="sphere"/>
-      <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.8 0.2 0.2 0.3" mesh="left_middle_force_sensor_0_mesh"/>
+      <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.8 0.2 0.2 0.3" friction="0.9 0.5 0.1" solref="0.01 0.5" margin="0.0002" condim="4" mesh="left_middle_force_sensor_0_mesh"/>
       <site name="left_middle_force_sensor_1_site" pos="0 0 0" size="0.003" type="sphere"/>
-      <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.2 0.8 0.2 0.3" mesh="left_middle_force_sensor_1_mesh"/>
+      <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.2 0.8 0.2 0.3" friction="0.9 0.5 0.1" solref="0.01 0.5" margin="0.0002" condim="4" mesh="left_middle_force_sensor_1_mesh"/>
       <site name="left_middle_force_sensor_2_site" pos="0 0 0" size="0.003" type="sphere"/>
-      <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.2 0.2 0.8 0.3" mesh="left_middle_force_sensor_2_mesh"/>
+      <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.2 0.2 0.8 0.3" friction="0.9 0.5 0.1" solref="0.01 0.5" margin="0.0002" condim="4" mesh="left_middle_force_sensor_2_mesh"/>
     </body>
 
     <body name="left_ring_force_sensors" pos="0.02 0 0">
       <site name="left_ring_force_sensor_0_site" pos="0 0 0" size="0.003" type="sphere"/>
-      <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.8 0.2 0.2 0.3" mesh="left_ring_force_sensor_0_mesh"/>
+      <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.8 0.2 0.2 0.3" friction="0.9 0.5 0.1" solref="0.01 0.5" margin="0.0002" condim="4" mesh="left_ring_force_sensor_0_mesh"/>
       <site name="left_ring_force_sensor_1_site" pos="0 0 0" size="0.003" type="sphere"/>
-      <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.2 0.8 0.2 0.3" mesh="left_ring_force_sensor_1_mesh"/>
+      <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.2 0.8 0.2 0.3" friction="0.9 0.5 0.1" solref="0.01 0.5" margin="0.0002" condim="4" mesh="left_ring_force_sensor_1_mesh"/>
       <site name="left_ring_force_sensor_2_site" pos="0 0 0" size="0.003" type="sphere"/>
-      <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.2 0.2 0.8 0.3" mesh="left_ring_force_sensor_2_mesh"/>
+      <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.2 0.2 0.8 0.3" friction="0.9 0.5 0.1" solref="0.01 0.5" margin="0.0002" condim="4" mesh="left_ring_force_sensor_2_mesh"/>
     </body>
 
     <!-- Droite -->
     <body name="right_thumb_force_sensors" pos="0.02 0 0">
       <site name="right_thumb_force_sensor_0_site" pos="0 0 0" size="0.003" type="sphere"/>
-      <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.8 0.2 0.2 0.3" mesh="right_thumb_force_sensor_0_mesh"/>
+      <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.8 0.2 0.2 0.3" friction="0.9 0.5 0.1" solref="0.01 0.5" margin="0.0002" condim="4" mesh="right_thumb_force_sensor_0_mesh"/>
       <site name="right_thumb_force_sensor_1_site" pos="0 0 0" size="0.003" type="sphere"/>
-      <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.2 0.8 0.2 0.3" mesh="right_thumb_force_sensor_1_mesh"/>
+      <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.2 0.8 0.2 0.3" friction="0.9 0.5 0.1" solref="0.01 0.5" margin="0.0002" condim="4" mesh="right_thumb_force_sensor_1_mesh"/>
       <site name="right_thumb_force_sensor_2_site" pos="0 0 0" size="0.003" type="sphere"/>
-      <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.2 0.2 0.8 0.3" mesh="right_thumb_force_sensor_2_mesh"/>
+      <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.2 0.2 0.8 0.3" friction="0.9 0.5 0.1" solref="0.01 0.5" margin="0.0002" condim="4" mesh="right_thumb_force_sensor_2_mesh"/>
     </body>
 
     <body name="right_index_force_sensors" pos="0.02 0 0">
       <site name="right_index_force_sensor_0_site" pos="0 0 0" size="0.003" type="sphere"/>
-      <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.8 0.2 0.2 0.3" mesh="right_index_force_sensor_0_mesh"/>
+      <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.8 0.2 0.2 0.3" friction="0.9 0.5 0.1" solref="0.01 0.5" margin="0.0002" condim="4" mesh="right_index_force_sensor_0_mesh"/>
       <site name="right_index_force_sensor_1_site" pos="0 0 0" size="0.003" type="sphere"/>
-      <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.2 0.8 0.2 0.3" mesh="right_index_force_sensor_1_mesh"/>
+      <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.2 0.8 0.2 0.3" friction="0.9 0.5 0.1" solref="0.01 0.5" margin="0.0002" condim="4" mesh="right_index_force_sensor_1_mesh"/>
       <site name="right_index_force_sensor_2_site" pos="0 0 0" size="0.003" type="sphere"/>
-      <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.2 0.2 0.8 0.3" mesh="right_index_force_sensor_2_mesh"/>
+      <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.2 0.2 0.8 0.3" friction="0.9 0.5 0.1" solref="0.01 0.5" margin="0.0002" condim="4" mesh="right_index_force_sensor_2_mesh"/>
     </body>
 
     <body name="right_middle_force_sensors" pos="0.02 0 0">
       <site name="right_middle_force_sensor_0_site" pos="0 0 0" size="0.003" type="sphere"/>
-      <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.8 0.2 0.2 0.3" mesh="right_middle_force_sensor_0_mesh"/>
+      <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.8 0.2 0.2 0.3" friction="0.9 0.5 0.1" solref="0.01 0.5" margin="0.0002" condim="4" mesh="right_middle_force_sensor_0_mesh"/>
       <site name="right_middle_force_sensor_1_site" pos="0 0 0" size="0.003" type="sphere"/>
-      <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.2 0.8 0.2 0.3" mesh="right_middle_force_sensor_1_mesh"/>
+      <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.2 0.8 0.2 0.3" friction="0.9 0.5 0.1" solref="0.01 0.5" margin="0.0002" condim="4" mesh="right_middle_force_sensor_1_mesh"/>
       <site name="right_middle_force_sensor_2_site" pos="0 0 0" size="0.003" type="sphere"/>
-      <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.2 0.2 0.8 0.3" mesh="right_middle_force_sensor_2_mesh"/>
+      <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.2 0.2 0.8 0.3" friction="0.9 0.5 0.1" solref="0.01 0.5" margin="0.0002" condim="4" mesh="right_middle_force_sensor_2_mesh"/>
     </body>
 
     <body name="right_ring_force_sensors" pos="0.02 0 0">
       <site name="right_ring_force_sensor_0_site" pos="0 0 0" size="0.003" type="sphere"/>
-      <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.8 0.2 0.2 0.3" mesh="right_ring_force_sensor_0_mesh"/>
+      <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.8 0.2 0.2 0.3" friction="0.9 0.5 0.1" solref="0.01 0.5" margin="0.0002" condim="4" mesh="right_ring_force_sensor_0_mesh"/>
       <site name="right_ring_force_sensor_1_site" pos="0 0 0" size="0.003" type="sphere"/>
-      <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.2 0.8 0.2 0.3" mesh="right_ring_force_sensor_1_mesh"/>
+      <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.2 0.8 0.2 0.3" friction="0.9 0.5 0.1" solref="0.01 0.5" margin="0.0002" condim="4" mesh="right_ring_force_sensor_1_mesh"/>
       <site name="right_ring_force_sensor_2_site" pos="0 0 0" size="0.003" type="sphere"/>
-      <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.2 0.2 0.8 0.3" mesh="right_ring_force_sensor_2_mesh"/>
+      <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.2 0.2 0.8 0.3" friction="0.9 0.5 0.1" solref="0.01 0.5" margin="0.0002" condim="4" mesh="right_ring_force_sensor_2_mesh"/>
     </body>
   </worldbody>
 
@@ -323,32 +371,66 @@
     <force name="right_ring_force_sensor_2"   site="right_ring_force_sensor_2_site"/>
   </sensor>
 
-  <!-- ============================ ACTUATORS ============================ -->
+  <!-- ============================ ACTUATORS PROFESSIONNELS ============================ -->
   <actuator>
-    <!-- Main gauche -->
-    <motor name="left_thumb_joint_0"  joint="left_thumb_joint_0"/>
-    <motor name="left_thumb_joint_1"  joint="left_thumb_joint_1"/>
+    <!-- Main gauche - Pouces (gear=50, plus puissants) -->
+    <general name="left_thumb_joint_0" joint="left_thumb_joint_0"
+             gear="50" biastype="affine" dynprm="0 0.15" fricloss="0.2"
+             ctrlrange="0 1.745" forcerange="-10 10"/>
+    <general name="left_thumb_joint_1" joint="left_thumb_joint_1"
+             gear="50" biastype="affine" dynprm="0 0.15" fricloss="0.2"
+             ctrlrange="0 1.396" forcerange="-8 8"/>
 
-    <motor name="left_index_joint_0"  joint="left_index_joint_0"/>
-    <motor name="left_index_joint_1"  joint="left_index_joint_1"/>
+    <!-- Main gauche - Doigts (gear=40, plus fins) -->
+    <general name="left_index_joint_0" joint="left_index_joint_0"
+             gear="40" biastype="affine" dynprm="0 0.12" fricloss="0.15"
+             ctrlrange="0 1.396" forcerange="-6 6"/>
+    <general name="left_index_joint_1" joint="left_index_joint_1"
+             gear="40" biastype="affine" dynprm="0 0.12" fricloss="0.15"
+             ctrlrange="0 1.222" forcerange="-4 4"/>
 
-    <motor name="left_middle_joint_0" joint="left_middle_joint_0"/>
-    <motor name="left_middle_joint_1" joint="left_middle_joint_1"/>
+    <general name="left_middle_joint_0" joint="left_middle_joint_0"
+             gear="40" biastype="affine" dynprm="0 0.12" fricloss="0.15"
+             ctrlrange="0 1.396" forcerange="-6 6"/>
+    <general name="left_middle_joint_1" joint="left_middle_joint_1"
+             gear="40" biastype="affine" dynprm="0 0.12" fricloss="0.15"
+             ctrlrange="0 1.222" forcerange="-4 4"/>
 
-    <motor name="left_ring_joint_0"   joint="left_ring_joint_0"/>
-    <motor name="left_ring_joint_1"   joint="left_ring_joint_1"/>
+    <general name="left_ring_joint_0" joint="left_ring_joint_0"
+             gear="40" biastype="affine" dynprm="0 0.12" fricloss="0.15"
+             ctrlrange="0 1.396" forcerange="-6 6"/>
+    <general name="left_ring_joint_1" joint="left_ring_joint_1"
+             gear="40" biastype="affine" dynprm="0 0.12" fricloss="0.15"
+             ctrlrange="0 1.222" forcerange="-4 4"/>
 
-    <!-- Main droite -->
-    <motor name="right_thumb_joint_0"  joint="right_thumb_joint_0"/>
-    <motor name="right_thumb_joint_1"  joint="right_thumb_joint_1"/>
+    <!-- Main droite - Pouces -->
+    <general name="right_thumb_joint_0" joint="right_thumb_joint_0"
+             gear="50" biastype="affine" dynprm="0 0.15" fricloss="0.2"
+             ctrlrange="0 1.745" forcerange="-10 10"/>
+    <general name="right_thumb_joint_1" joint="right_thumb_joint_1"
+             gear="50" biastype="affine" dynprm="0 0.15" fricloss="0.2"
+             ctrlrange="0 1.396" forcerange="-8 8"/>
 
-    <motor name="right_index_joint_0"  joint="right_index_joint_0"/>
-    <motor name="right_index_joint_1"  joint="right_index_joint_1"/>
+    <!-- Main droite - Doigts -->
+    <general name="right_index_joint_0" joint="right_index_joint_0"
+             gear="40" biastype="affine" dynprm="0 0.12" fricloss="0.15"
+             ctrlrange="0 1.396" forcerange="-6 6"/>
+    <general name="right_index_joint_1" joint="right_index_joint_1"
+             gear="40" biastype="affine" dynprm="0 0.12" fricloss="0.15"
+             ctrlrange="0 1.222" forcerange="-4 4"/>
 
-    <motor name="right_middle_joint_0" joint="right_middle_joint_0"/>
-    <motor name="right_middle_joint_1" joint="right_middle_joint_1"/>
+    <general name="right_middle_joint_0" joint="right_middle_joint_0"
+             gear="40" biastype="affine" dynprm="0 0.12" fricloss="0.15"
+             ctrlrange="0 1.396" forcerange="-6 6"/>
+    <general name="right_middle_joint_1" joint="right_middle_joint_1"
+             gear="40" biastype="affine" dynprm="0 0.12" fricloss="0.15"
+             ctrlrange="0 1.222" forcerange="-4 4"/>
 
-    <motor name="right_ring_joint_0"   joint="right_ring_joint_0"/>
-    <motor name="right_ring_joint_1"   joint="right_ring_joint_1"/>
+    <general name="right_ring_joint_0" joint="right_ring_joint_0"
+             gear="40" biastype="affine" dynprm="0 0.12" fricloss="0.15"
+             ctrlrange="0 1.396" forcerange="-6 6"/>
+    <general name="right_ring_joint_1" joint="right_ring_joint_1"
+             gear="40" biastype="affine" dynprm="0 0.12" fricloss="0.15"
+             ctrlrange="0 1.222" forcerange="-4 4"/>
   </actuator>
 </mujoco>
