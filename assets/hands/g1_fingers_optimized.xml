@@ -375,62 +375,62 @@
   <actuator>
     <!-- Main gauche - Pouces (gear=50, plus puissants) -->
     <general name="left_thumb_joint_0" joint="left_thumb_joint_0"
-             gear="50" biastype="affine" dynprm="0 0.15" fricloss="0.2"
+             gear="50" biastype="affine" dynprm="0 0.15"
              ctrlrange="0 1.745" forcerange="-10 10"/>
     <general name="left_thumb_joint_1" joint="left_thumb_joint_1"
-             gear="50" biastype="affine" dynprm="0 0.15" fricloss="0.2"
+             gear="50" biastype="affine" dynprm="0 0.15"
              ctrlrange="0 1.396" forcerange="-8 8"/>
 
     <!-- Main gauche - Doigts (gear=40, plus fins) -->
     <general name="left_index_joint_0" joint="left_index_joint_0"
-             gear="40" biastype="affine" dynprm="0 0.12" fricloss="0.15"
+             gear="40" biastype="affine" dynprm="0 0.12"
              ctrlrange="0 1.396" forcerange="-6 6"/>
     <general name="left_index_joint_1" joint="left_index_joint_1"
-             gear="40" biastype="affine" dynprm="0 0.12" fricloss="0.15"
+             gear="40" biastype="affine" dynprm="0 0.12"
              ctrlrange="0 1.222" forcerange="-4 4"/>
 
     <general name="left_middle_joint_0" joint="left_middle_joint_0"
-             gear="40" biastype="affine" dynprm="0 0.12" fricloss="0.15"
+             gear="40" biastype="affine" dynprm="0 0.12"
              ctrlrange="0 1.396" forcerange="-6 6"/>
     <general name="left_middle_joint_1" joint="left_middle_joint_1"
-             gear="40" biastype="affine" dynprm="0 0.12" fricloss="0.15"
+             gear="40" biastype="affine" dynprm="0 0.12"
              ctrlrange="0 1.222" forcerange="-4 4"/>
 
     <general name="left_ring_joint_0" joint="left_ring_joint_0"
-             gear="40" biastype="affine" dynprm="0 0.12" fricloss="0.15"
+             gear="40" biastype="affine" dynprm="0 0.12"
              ctrlrange="0 1.396" forcerange="-6 6"/>
     <general name="left_ring_joint_1" joint="left_ring_joint_1"
-             gear="40" biastype="affine" dynprm="0 0.12" fricloss="0.15"
+             gear="40" biastype="affine" dynprm="0 0.12"
              ctrlrange="0 1.222" forcerange="-4 4"/>
 
     <!-- Main droite - Pouces -->
     <general name="right_thumb_joint_0" joint="right_thumb_joint_0"
-             gear="50" biastype="affine" dynprm="0 0.15" fricloss="0.2"
+             gear="50" biastype="affine" dynprm="0 0.15"
              ctrlrange="0 1.745" forcerange="-10 10"/>
     <general name="right_thumb_joint_1" joint="right_thumb_joint_1"
-             gear="50" biastype="affine" dynprm="0 0.15" fricloss="0.2"
+             gear="50" biastype="affine" dynprm="0 0.15"
              ctrlrange="0 1.396" forcerange="-8 8"/>
 
     <!-- Main droite - Doigts -->
     <general name="right_index_joint_0" joint="right_index_joint_0"
-             gear="40" biastype="affine" dynprm="0 0.12" fricloss="0.15"
+             gear="40" biastype="affine" dynprm="0 0.12"
              ctrlrange="0 1.396" forcerange="-6 6"/>
     <general name="right_index_joint_1" joint="right_index_joint_1"
-             gear="40" biastype="affine" dynprm="0 0.12" fricloss="0.15"
+             gear="40" biastype="affine" dynprm="0 0.12"
              ctrlrange="0 1.222" forcerange="-4 4"/>
 
     <general name="right_middle_joint_0" joint="right_middle_joint_0"
-             gear="40" biastype="affine" dynprm="0 0.12" fricloss="0.15"
+             gear="40" biastype="affine" dynprm="0 0.12"
              ctrlrange="0 1.396" forcerange="-6 6"/>
     <general name="right_middle_joint_1" joint="right_middle_joint_1"
-             gear="40" biastype="affine" dynprm="0 0.12" fricloss="0.15"
+             gear="40" biastype="affine" dynprm="0 0.12"
              ctrlrange="0 1.222" forcerange="-4 4"/>
 
     <general name="right_ring_joint_0" joint="right_ring_joint_0"
-             gear="40" biastype="affine" dynprm="0 0.12" fricloss="0.15"
+             gear="40" biastype="affine" dynprm="0 0.12"
              ctrlrange="0 1.396" forcerange="-6 6"/>
     <general name="right_ring_joint_1" joint="right_ring_joint_1"
-             gear="40" biastype="affine" dynprm="0 0.12" fricloss="0.15"
+             gear="40" biastype="affine" dynprm="0 0.12"
              ctrlrange="0 1.222" forcerange="-4 4"/>
   </actuator>
 </mujoco>
