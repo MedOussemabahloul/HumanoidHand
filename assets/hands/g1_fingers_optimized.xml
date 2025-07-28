@@ -43,17 +43,15 @@
              range="0 1.396" ref="0.1" springref="0.1" 
              damping="0.1" stiffness="2.0" frictionloss="0.01"/>
       <geom type="mesh" mesh="left_index_0_mesh"
-            contype="1" conaffinity="1" friction="0.8 0.005 0.0001"
-            material="finger_material"/>
+            contype="1" conaffinity="1" friction="0.8 0.005 0.0001"/>
       
       <body name="left_index_1" pos="0.02 0 0">
         <inertial pos="0.01 0 0" mass="0.008" diaginertia="8e-6 8e-6 8e-6"/>
         <joint name="left_index_joint_1" type="hinge" axis="0 1 0"
                range="0 1.222" ref="0.05" springref="0.05"
                damping="0.08" stiffness="1.5" frictionloss="0.008"/>
-        <geom type="mesh" mesh="left_index_1_mesh"
-              contype="1" conaffinity="1" friction="0.8 0.005 0.0001"
-              material="finger_material"/>
+                 <geom type="mesh" mesh="left_index_1_mesh"
+               contype="1" conaffinity="1" friction="0.8 0.005 0.0001"/>
         
         <!-- Site tactile optimisé -->
         <site name="left_index_tip_site"
@@ -70,7 +68,7 @@
              damping="0.1" stiffness="2.0" frictionloss="0.01"/>
       <geom type="mesh" mesh="left_middle_0_mesh"
             contype="1" conaffinity="1" friction="0.8 0.005 0.0001"
-            material="finger_material"/>
+           />
       
       <body name="left_middle_1" pos="0.02 0 0">
         <inertial pos="0.01 0 0" mass="0.009" diaginertia="9e-6 9e-6 9e-6"/>
@@ -79,7 +77,7 @@
                damping="0.08" stiffness="1.5" frictionloss="0.008"/>
         <geom type="mesh" mesh="left_middle_1_mesh"
               contype="1" conaffinity="1" friction="0.8 0.005 0.0001"
-              material="finger_material"/>
+             />
         
         <site name="left_middle_tip_site"
               pos="0.015 0 0" size="0.002" type="sphere"
@@ -95,7 +93,7 @@
              damping="0.1" stiffness="2.0" frictionloss="0.01"/>
       <geom type="mesh" mesh="left_ring_0_mesh"
             contype="1" conaffinity="1" friction="0.8 0.005 0.0001"
-            material="finger_material"/>
+           />
       
       <body name="left_ring_1" pos="0.02 0 0">
         <inertial pos="0.01 0 0" mass="0.008" diaginertia="8e-6 8e-6 8e-6"/>
@@ -104,7 +102,7 @@
                damping="0.08" stiffness="1.5" frictionloss="0.008"/>
         <geom type="mesh" mesh="left_ring_1_mesh"
               contype="1" conaffinity="1" friction="0.8 0.005 0.0001"
-              material="finger_material"/>
+             />
         
         <site name="left_ring_tip_site"
               pos="0.015 0 0" size="0.002" type="sphere"
@@ -121,7 +119,7 @@
              damping="0.12" stiffness="2.5" frictionloss="0.012"/>
       <geom type="mesh" mesh="left_thumb_0_mesh"
             contype="1" conaffinity="1" friction="0.8 0.005 0.0001"
-            material="finger_material"/>
+           />
       
       <body name="left_thumb_1" pos="0.02 0 0">
         <inertial pos="0.01 0 0" mass="0.010" diaginertia="1e-5 1e-5 1e-5"/>
@@ -130,7 +128,7 @@
                damping="0.1" stiffness="2.0" frictionloss="0.01"/>
         <geom type="mesh" mesh="left_thumb_1_mesh"
               contype="1" conaffinity="1" friction="0.8 0.005 0.0001"
-              material="finger_material"/>
+             />
         
         <site name="left_thumb_tip_site"
               pos="0.015 0 0" size="0.002" type="sphere"
@@ -146,7 +144,7 @@
              damping="0.1" stiffness="2.0" frictionloss="0.01"/>
       <geom type="mesh" mesh="right_index_0_mesh"
             contype="1" conaffinity="1" friction="0.8 0.005 0.0001"
-            material="finger_material"/>
+           />
       
       <body name="right_index_1" pos="0.02 0 0">
         <inertial pos="0.01 0 0" mass="0.008" diaginertia="8e-6 8e-6 8e-6"/>
@@ -155,7 +153,7 @@
                damping="0.08" stiffness="1.5" frictionloss="0.008"/>
         <geom type="mesh" mesh="right_index_1_mesh"
               contype="1" conaffinity="1" friction="0.8 0.005 0.0001"
-              material="finger_material"/>
+             />
         
         <site name="right_index_tip_site"
               pos="0.015 0 0" size="0.002" type="sphere"
@@ -171,7 +169,7 @@
              damping="0.1" stiffness="2.0" frictionloss="0.01"/>
       <geom type="mesh" mesh="right_middle_0_mesh"
             contype="1" conaffinity="1" friction="0.8 0.005 0.0001"
-            material="finger_material"/>
+           />
       
       <body name="right_middle_1" pos="0.02 0 0">
         <inertial pos="0.01 0 0" mass="0.009" diaginertia="9e-6 9e-6 9e-6"/>
@@ -180,7 +178,7 @@
                damping="0.08" stiffness="1.5" frictionloss="0.008"/>
         <geom type="mesh" mesh="right_middle_1_mesh"
               contype="1" conaffinity="1" friction="0.8 0.005 0.0001"
-              material="finger_material"/>
+             />
         
         <site name="right_middle_tip_site"
               pos="0.015 0 0" size="0.002" type="sphere"
@@ -196,7 +194,7 @@
              damping="0.1" stiffness="2.0" frictionloss="0.01"/>
       <geom type="mesh" mesh="right_ring_0_mesh"
             contype="1" conaffinity="1" friction="0.8 0.005 0.0001"
-            material="finger_material"/>
+           />
       
       <body name="right_ring_1" pos="0.02 0 0">
         <inertial pos="0.01 0 0" mass="0.008" diaginertia="8e-6 8e-6 8e-6"/>
@@ -205,7 +203,7 @@
                damping="0.08" stiffness="1.5" frictionloss="0.008"/>
         <geom type="mesh" mesh="right_ring_1_mesh"
               contype="1" conaffinity="1" friction="0.8 0.005 0.0001"
-              material="finger_material"/>
+             />
         
         <site name="right_ring_tip_site"
               pos="0.015 0 0" size="0.002" type="sphere"
@@ -221,7 +219,7 @@
              damping="0.12" stiffness="2.5" frictionloss="0.012"/>
       <geom type="mesh" mesh="right_thumb_0_mesh"
             contype="1" conaffinity="1" friction="0.8 0.005 0.0001"
-            material="finger_material"/>
+           />
       
       <body name="right_thumb_1" pos="0.02 0 0">
         <inertial pos="0.01 0 0" mass="0.010" diaginertia="1e-5 1e-5 1e-5"/>
@@ -230,7 +228,7 @@
                damping="0.1" stiffness="2.0" frictionloss="0.01"/>
         <geom type="mesh" mesh="right_thumb_1_mesh"
               contype="1" conaffinity="1" friction="0.8 0.005 0.0001"
-              material="finger_material"/>
+             />
         
         <site name="right_thumb_tip_site"
               pos="0.015 0 0" size="0.002" type="sphere"
@@ -278,10 +276,7 @@
     </body>
   </worldbody>
 
-  <!-- ============================ MATÉRIAUX ============================ -->
-  <asset>
-    <material name="finger_material" rgba="0.9 0.8 0.7 1" shininess="0.3" specular="0.5"/>
-  </asset>
+
 
   <!-- ============================ SENSORS ============================ -->
   <sensor>
