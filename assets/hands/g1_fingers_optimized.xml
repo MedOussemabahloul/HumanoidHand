@@ -31,9 +31,7 @@
   </asset>
 
   <!-- ============================ OPTION COMPILER ============================ -->
-  <option timestep="0.001" iterations="50" solver="Newton" tolerance="1e-10">
-    <flag gravity="enable" contact="enable" frictionloss="enable"/>
-  </option>
+  <option timestep="0.001" iterations="50" solver="Newton" tolerance="1e-10"/>
 
   <worldbody>
     <!-- ========== INDEX GAUCHE ========== -->
@@ -41,7 +39,7 @@
       <inertial pos="0.01 0 0" mass="0.012" diaginertia="1e-5 1e-5 1e-5"/>
       <joint name="left_index_joint_0" type="hinge" axis="0 1 0"
              range="0 1.396" ref="0.1" springref="0.1" 
-             damping="0.1" stiffness="2.0" frictionloss="0.01"/>
+             damping="0.1"/>
       <geom type="mesh" mesh="left_index_0_mesh"
             contype="1" conaffinity="1" friction="0.8 0.005 0.0001"/>
       
@@ -49,7 +47,7 @@
         <inertial pos="0.01 0 0" mass="0.008" diaginertia="8e-6 8e-6 8e-6"/>
         <joint name="left_index_joint_1" type="hinge" axis="0 1 0"
                range="0 1.222" ref="0.05" springref="0.05"
-               damping="0.08" stiffness="1.5" frictionloss="0.008"/>
+               damping="0.08"/>
                  <geom type="mesh" mesh="left_index_1_mesh"
                contype="1" conaffinity="1" friction="0.8 0.005 0.0001"/>
         
@@ -65,7 +63,7 @@
       <inertial pos="0.01 0 0" mass="0.014" diaginertia="1.2e-5 1.2e-5 1.2e-5"/>
       <joint name="left_middle_joint_0" type="hinge" axis="0 1 0"
              range="0 1.396" ref="0.1" springref="0.1"
-             damping="0.1" stiffness="2.0" frictionloss="0.01"/>
+             damping="0.1"/>
       <geom type="mesh" mesh="left_middle_0_mesh"
             contype="1" conaffinity="1" friction="0.8 0.005 0.0001"
            />
@@ -74,7 +72,7 @@
         <inertial pos="0.01 0 0" mass="0.009" diaginertia="9e-6 9e-6 9e-6"/>
         <joint name="left_middle_joint_1" type="hinge" axis="0 1 0"
                range="0 1.222" ref="0.05" springref="0.05"
-               damping="0.08" stiffness="1.5" frictionloss="0.008"/>
+               damping="0.08"/>
         <geom type="mesh" mesh="left_middle_1_mesh"
               contype="1" conaffinity="1" friction="0.8 0.005 0.0001"
              />
@@ -90,7 +88,7 @@
       <inertial pos="0.01 0 0" mass="0.013" diaginertia="1.1e-5 1.1e-5 1.1e-5"/>
       <joint name="left_ring_joint_0" type="hinge" axis="0 1 0"
              range="0 1.396" ref="0.1" springref="0.1"
-             damping="0.1" stiffness="2.0" frictionloss="0.01"/>
+             damping="0.1"/>
       <geom type="mesh" mesh="left_ring_0_mesh"
             contype="1" conaffinity="1" friction="0.8 0.005 0.0001"
            />
@@ -99,7 +97,7 @@
         <inertial pos="0.01 0 0" mass="0.008" diaginertia="8e-6 8e-6 8e-6"/>
         <joint name="left_ring_joint_1" type="hinge" axis="0 1 0"
                range="0 1.222" ref="0.05" springref="0.05"
-               damping="0.08" stiffness="1.5" frictionloss="0.008"/>
+               damping="0.08"/>
         <geom type="mesh" mesh="left_ring_1_mesh"
               contype="1" conaffinity="1" friction="0.8 0.005 0.0001"
              />
@@ -116,7 +114,7 @@
       <!-- Pouce: plage plus large pour TMC joint -->
       <joint name="left_thumb_joint_0" type="hinge" axis="0 1 0"
              range="0 1.745" ref="0.2" springref="0.2"
-             damping="0.12" stiffness="2.5" frictionloss="0.012"/>
+             damping="0.12"/>
       <geom type="mesh" mesh="left_thumb_0_mesh"
             contype="1" conaffinity="1" friction="0.8 0.005 0.0001"
            />
@@ -125,7 +123,7 @@
         <inertial pos="0.01 0 0" mass="0.010" diaginertia="1e-5 1e-5 1e-5"/>
         <joint name="left_thumb_joint_1" type="hinge" axis="0 1 0"
                range="0 1.396" ref="0.1" springref="0.1"
-               damping="0.1" stiffness="2.0" frictionloss="0.01"/>
+               damping="0.1"/>
         <geom type="mesh" mesh="left_thumb_1_mesh"
               contype="1" conaffinity="1" friction="0.8 0.005 0.0001"
              />
@@ -141,7 +139,7 @@
       <inertial pos="0.01 0 0" mass="0.012" diaginertia="1e-5 1e-5 1e-5"/>
       <joint name="right_index_joint_0" type="hinge" axis="0 1 0"
              range="0 1.396" ref="0.1" springref="0.1"
-             damping="0.1" stiffness="2.0" frictionloss="0.01"/>
+             damping="0.1"/>
       <geom type="mesh" mesh="right_index_0_mesh"
             contype="1" conaffinity="1" friction="0.8 0.005 0.0001"
            />
@@ -150,7 +148,7 @@
         <inertial pos="0.01 0 0" mass="0.008" diaginertia="8e-6 8e-6 8e-6"/>
         <joint name="right_index_joint_1" type="hinge" axis="0 1 0"
                range="0 1.222" ref="0.05" springref="0.05"
-               damping="0.08" stiffness="1.5" frictionloss="0.008"/>
+               damping="0.08"/>
         <geom type="mesh" mesh="right_index_1_mesh"
               contype="1" conaffinity="1" friction="0.8 0.005 0.0001"
              />
@@ -166,7 +164,7 @@
       <inertial pos="0.01 0 0" mass="0.014" diaginertia="1.2e-5 1.2e-5 1.2e-5"/>
       <joint name="right_middle_joint_0" type="hinge" axis="0 1 0"
              range="0 1.396" ref="0.1" springref="0.1"
-             damping="0.1" stiffness="2.0" frictionloss="0.01"/>
+             damping="0.1"/>
       <geom type="mesh" mesh="right_middle_0_mesh"
             contype="1" conaffinity="1" friction="0.8 0.005 0.0001"
            />
@@ -175,7 +173,7 @@
         <inertial pos="0.01 0 0" mass="0.009" diaginertia="9e-6 9e-6 9e-6"/>
         <joint name="right_middle_joint_1" type="hinge" axis="0 1 0"
                range="0 1.222" ref="0.05" springref="0.05"
-               damping="0.08" stiffness="1.5" frictionloss="0.008"/>
+               damping="0.08"/>
         <geom type="mesh" mesh="right_middle_1_mesh"
               contype="1" conaffinity="1" friction="0.8 0.005 0.0001"
              />
@@ -191,7 +189,7 @@
       <inertial pos="0.01 0 0" mass="0.013" diaginertia="1.1e-5 1.1e-5 1.1e-5"/>
       <joint name="right_ring_joint_0" type="hinge" axis="0 1 0"
              range="0 1.396" ref="0.1" springref="0.1"
-             damping="0.1" stiffness="2.0" frictionloss="0.01"/>
+             damping="0.1"/>
       <geom type="mesh" mesh="right_ring_0_mesh"
             contype="1" conaffinity="1" friction="0.8 0.005 0.0001"
            />
@@ -200,7 +198,7 @@
         <inertial pos="0.01 0 0" mass="0.008" diaginertia="8e-6 8e-6 8e-6"/>
         <joint name="right_ring_joint_1" type="hinge" axis="0 1 0"
                range="0 1.222" ref="0.05" springref="0.05"
-               damping="0.08" stiffness="1.5" frictionloss="0.008"/>
+               damping="0.08"/>
         <geom type="mesh" mesh="right_ring_1_mesh"
               contype="1" conaffinity="1" friction="0.8 0.005 0.0001"
              />
@@ -216,7 +214,7 @@
       <inertial pos="0.01 0 0" mass="0.015" diaginertia="1.3e-5 1.3e-5 1.3e-5"/>
       <joint name="right_thumb_joint_0" type="hinge" axis="0 1 0"
              range="0 1.745" ref="0.2" springref="0.2"
-             damping="0.12" stiffness="2.5" frictionloss="0.012"/>
+             damping="0.12"/>
       <geom type="mesh" mesh="right_thumb_0_mesh"
             contype="1" conaffinity="1" friction="0.8 0.005 0.0001"
            />
@@ -225,7 +223,7 @@
         <inertial pos="0.01 0 0" mass="0.010" diaginertia="1e-5 1e-5 1e-5"/>
         <joint name="right_thumb_joint_1" type="hinge" axis="0 1 0"
                range="0 1.396" ref="0.1" springref="0.1"
-               damping="0.1" stiffness="2.0" frictionloss="0.01"/>
+               damping="0.1"/>
         <geom type="mesh" mesh="right_thumb_1_mesh"
               contype="1" conaffinity="1" friction="0.8 0.005 0.0001"
              />
