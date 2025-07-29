@@ -1,0 +1,287 @@
+# Configuration PRODUCTION pour Entraînement Final
+# ================================================
+# 🏆 Paramètres optimaux pour performance maximale
+# 🎯 Configuration long-terme pour modèle final
+
+task:
+  output_dir: "outputs/production_g1_grasp"
+  model_path: "results/g1_combined.xml"
+  environment: "g1_grasp_lift_optimized"
+  task_class: "GraspLiftTaskOptimized"
+  
+  cube_body_name: "cube"
+  
+  # Tous les sensors pour performance maximale
+  touch_sensors:
+    - "left_thumb_touch"
+    - "left_index_touch"
+    - "left_middle_touch"
+    - "left_ring_touch"
+    - "right_thumb_touch"
+    - "right_index_touch"
+    - "right_middle_touch"
+    - "right_ring_touch"
+  
+  force_sensors:
+    - "left_thumb_force_x"
+    - "left_thumb_force_y"
+    - "left_thumb_force_z"
+    - "left_index_force_x"
+    - "left_index_force_y"
+    - "left_index_force_z"
+    - "left_middle_force_x"
+    - "left_middle_force_y"
+    - "left_middle_force_z"
+    - "left_ring_force_x"
+    - "left_ring_force_y"
+    - "left_ring_force_z"
+    - "right_thumb_force_x"
+    - "right_thumb_force_y"
+    - "right_thumb_force_z"
+    - "right_index_force_x"
+    - "right_index_force_y"
+    - "right_index_force_z"
+    - "right_middle_force_x"
+    - "right_middle_force_y"
+    - "right_middle_force_z"
+    - "right_ring_force_x"
+    - "right_ring_force_y"
+    - "right_ring_force_z"
+  
+  # Episodes longs pour learning profond
+  max_steps_per_episode: 750
+  success_threshold: 0.20        # Plus difficile
+  grasp_threshold: 3.0          # Plus strict
+  stability_threshold: 0.03     # Plus précis
+  
+  # Randomisation maximale pour robustesse
+  randomize_cube_position: true
+  position_noise_std: 0.03      # Plus de bruit
+  randomize_cube_size: true
+  size_variation_range: [0.7, 1.3]  # ±30% variation
+  randomize_friction: true
+  friction_range: [0.3, 2.0]    # Large range friction
+  randomize_mass: true          # Randomisation masse
+  mass_range: [0.5, 2.0]
+  
+  # Orientation complète avec quaternions
+  include_orientation_reward: true
+  target_cube_euler: [0.0, 0.0, 0.0]
+  orientation_reward_weight: 1.5
+  
+  # Reward shaping ultra-sophistiqué
+  reward_weights:
+    # Multi-phase rewards
+    approach_reward: 0.5         # Récompense approche
+    contact_reward: 2.0
+    grasp_reward: 8.0
+    lift_reward: 15.0
+    hold_reward: 3.0            # Récompense maintien
+    
+    # Advanced stability
+    stability_reward: 2.0
+    efficiency_reward: 1.5
+    smoothness_reward: 1.0      # Récompense mouvement fluide
+    
+    # Force control sophistiqué
+    force_reward_weight_normal: 0.8
+    force_reward_weight_tangential: 0.4
+    force_balance_reward: 0.5   # Équilibre forces
+    
+    # Orientation & precision
+    orientation_reward_weight: 1.5
+    precision_reward: 1.0       # Précision positionnement
+    
+    # Penalties sophistiquées
+    translation_penalty_weight: 0.2
+    rotation_penalty_weight: 0.1
+    collision_penalty: -3.0
+    drop_penalty: -5.0          # Pénalité si lâche cube
+    timeout_penalty: -2.0
+    
+    # Success & completion
+    success_bonus: 30.0         # Gros bonus succès
+    efficiency_bonus: 5.0       # Bonus vitesse
+
+rl:
+  algorithm: "SAC_PER_ULTRA"
+  
+  # Paramètres production ultra-optimisés
+  gamma: 0.995                  # Discount élevé pour horizon long
+  learning_rate: 1e-4           # Plus bas pour stabilité
+  batch_size: 512               # Grand batch pour stabilité
+  total_steps: 5000000          # 5M steps pour convergence complète
+  
+  # Architecture large pour capacité maximale
+  hidden_sizes: [768, 768, 512, 256]  # Architecture large
+  activation: "gelu"
+  layer_norm: true
+  dropout: 0.05                 # Dropout réduit pour production
+  
+  # SAC production
+  tau: 0.003                    # Mise à jour plus douce
+  target_update_freq: 1
+  start_steps: 25000            # Exploration longue
+  update_after: 5000
+  update_every: 25              # Moins fréquent mais plus stable
+  num_updates: 100              # Plus d'updates par cycle
+  
+  # Entropie très fine
+  initial_alpha: 0.1            # Plus bas pour exploitation
+  auto_alpha: true
+  target_entropy: -15           # Plus strict
+  alpha_lr: 1e-4               # Adaptation lente
+  
+  # PER production ultra-large
+  replay_size: 5000000          # 5M buffer énorme
+  per_alpha: 0.7               # Plus de prioritization
+  per_beta: 0.4
+  per_beta_annealing: true
+  per_epsilon: 1e-8            # Plus précis
+  
+  # Optimization production
+  gradient_clip: 0.5           # Plus strict
+  weight_decay: 5e-5           # Régularisation légère
+  lr_schedule: "cosine_warm"   # Warmup + cosine
+  warmup_steps: 50000
+  
+  # Exploration sophistiquée
+  action_noise: 0.05           # Moins de bruit
+  action_clip: 1.0
+  exploration_schedule: true   # Noise decay
+  
+  # Curriculum learning avancé
+  curriculum_enabled: true
+  curriculum_phases: 4         # 4 phases difficulté
+  curriculum_success_threshold: 0.8
+  curriculum_window: 200
+  curriculum_patience: 50000
+  
+  # Monitoring production
+  log_interval: 20
+  eval_interval: 25000
+  checkpoint_interval: 100000
+  save_best_model: true
+  
+  # Advanced training techniques
+  use_target_smoothing: true   # Target smoothing
+  use_gradient_penalty: true   # Gradient penalty
+  use_spectral_norm: false     # Trop lourd
+
+system:
+  # Configuration serveur haute performance
+  device: "auto"
+  num_threads: 12              # Threads max
+  seed: 42
+  
+  # CUDA production optimisé
+  cuda_deterministic: false
+  cuda_benchmark: true
+  mixed_precision: true        # Activé pour production
+  compile_model: true          # torch.compile si PyTorch 2.0+
+  
+  # Memory management production
+  max_memory_gb: 32            # 32GB pour gros modèles
+  cache_size: 5000            # Cache large
+  buffer_pin_memory: true
+  prefetch_factor: 4          # Prefetch data
+  
+  # Safety production ultra-robuste
+  emergency_save: true
+  recovery_mode: true
+  validation_strict: true
+  auto_resume: true
+  health_check_interval: 1000  # Check santé régulier
+  
+  # File management production
+  backup_checkpoints: true
+  max_checkpoints: 10         # Plus de backups
+  compress_checkpoints: true   # Compression pour stockage
+  remote_backup: false        # Backup distant si configuré
+
+monitoring:
+  # Monitoring production complet
+  tensorboard_enabled: true
+  tensorboard_log_dir: "runs/production_g1"
+  
+  # Métriques production ultra-détaillées
+  log_episode_stats: true
+  log_buffer_stats: true
+  log_network_stats: true
+  log_performance_stats: true
+  log_system_stats: true      # Stats système
+  log_memory_usage: true      # Usage mémoire
+  
+  # Profiling production
+  enable_profiling: false     # Désactivé par défaut (overhead)
+  profile_interval: 100000    # Si activé
+  
+  # Visualization production
+  render_episodes: false
+  save_videos: true          # Vidéos pour analyse
+  video_interval: 10000      # Moins fréquent
+  video_quality: "high"
+  
+  # Alerts & notifications
+  enable_alerts: false       # Alertes si implémenté
+  alert_thresholds:
+    low_success_rate: 0.1
+    high_loss: 10.0
+    memory_usage: 0.9
+
+debug:
+  # Debug désactivé en production
+  enabled: false
+  verbose_logging: false
+  profiling: false
+  
+  # Tests de sanité périodiques
+  sanity_checks: true
+  sanity_check_interval: 50000
+  
+  # Mode maintenance
+  maintenance_mode: false
+  test_mode: false
+  fast_mode: false
+
+evaluation:
+  # Evaluation production rigoureuse
+  enabled: true
+  eval_episodes: 50          # Beaucoup d'episodes
+  eval_deterministic: true
+  eval_render: false
+  eval_save_videos: true     # Vidéos eval
+  
+  # Criteria production stricts
+  success_rate_threshold: 0.95  # 95% succès
+  early_stopping: true
+  patience: 500000            # Patience longue
+  
+  # Evaluation multi-seed
+  eval_seeds: [42, 123, 456, 789, 999]  # 5 seeds
+  eval_statistical: true     # Stats complètes
+
+advanced:
+  # Features production avancées
+  use_multiprocessing: true   # Activé si supporté
+  num_workers: 4             # Multi-worker
+  
+  # Advanced SAC production
+  use_distributional_critic: false    # Trop expérimental
+  use_spectral_norm: false           # Trop lourd
+  use_layer_norm_critic: true       # Stabilité
+  
+  # Advanced PER production
+  per_tree_type: "segment"          # Optimal
+  per_compression: true             # Compression mémoire
+  per_parallel_sampling: true       # Sampling parallèle
+  
+  # Techniques avancées
+  use_hindsight_experience: false    # Pas adapté SAC
+  use_population_training: false     # Single agent
+  use_self_play: false              # Pas applicable
+  
+  # Experimental features (désactivées par défaut)
+  use_evolutionary_operators: false
+  use_meta_learning: false
+  use_continual_learning: false
