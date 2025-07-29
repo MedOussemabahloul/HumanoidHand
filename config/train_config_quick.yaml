@@ -1,0 +1,63 @@
+# Configuration rapide pour l'entraînement SAC
+task:
+  # Paramètres de la tâche Grasp & Lift
+  max_steps: 1000
+  reward_scale: 1.0
+  success_threshold: 0.05
+  save_freq_steps: 10000
+  output_dir: "results"
+  
+  # Noms des corps dans le modèle
+  cube_body_name: "target"
+  gripper_body_name: "gripper"
+  
+  # Capteurs tactiles (pour le robot simple, on utilise des capteurs fictifs)
+  touch_sensors: ["touch_sensor_1", "touch_sensor_2"]
+  force_sensors: ["force_sensor_1", "force_sensor_2"]
+  
+  # Paramètres de récompense
+  force_reward_weight_normal: 0.0
+  force_reward_weight_tangential: 0.0
+  translation_penalty_weight: 0.0
+  include_orientation_reward: false
+  
+  # Capteurs
+  obs_dim: 64  # Dimension des observations
+  act_dim: 12  # Dimension des actions (joints du robot)
+  
+  # Paramètres de simulation
+  dt: 0.01
+  substeps: 1
+  gravity: [0, 0, -9.81]
+
+rl:
+  # Hyperparamètres SAC
+  gamma: 0.99
+  alpha: 0.2
+  tau: 0.005
+  
+  # Optimisation
+  learning_rate: 3e-4
+  lr_pi: 3e-4
+  lr_q: 3e-4
+  lr_v: 3e-4
+  
+  # Buffer et batch
+  buffer_size: 1000000
+  replay_size: 1000000
+  batch_size: 256
+  
+  # Fréquence des mises à jour
+  update_every: 1
+  update_after: 1000
+  start_steps: 1000
+  num_updates: 1
+  
+  # Architecture des réseaux
+  hidden_size: 256
+  
+  # Limites d'action
+  act_limit: 1.0
+  
+  # Nombre total d'étapes d'entraînement
+  total_steps: 100000

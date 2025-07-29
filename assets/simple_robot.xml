@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<mujoco model="simple_robot">
+
+  <worldbody>
+    <!-- Sol -->
+    <geom name="floor" type="plane" pos="0 0 0" size="10 10 0.1" rgba="0.5 0.5 0.5 1"/>
+    
+    <!-- Robot simple avec 3 joints -->
+    <body name="base" pos="0 0 0.1">
+      <geom name="base_geom" type="box" size="0.1 0.1 0.05" rgba="0.8 0.2 0.2 1"/>
+      <inertial pos="0 0 0" mass="1" diaginertia="0.01 0.01 0.01"/>
+      
+      <body name="arm1" pos="0 0 0.1">
+        <joint name="joint1" type="hinge" axis="0 0 1" range="-3.14 3.14"/>
+        <geom name="arm1_geom" type="box" size="0.05 0.05 0.1" rgba="0.2 0.8 0.2 1"/>
+        <inertial pos="0 0 0.05" mass="0.5" diaginertia="0.005 0.005 0.005"/>
+        
+        <body name="arm2" pos="0 0 0.2">
+          <joint name="joint2" type="hinge" axis="0 0 1" range="-3.14 3.14"/>
+          <geom name="arm2_geom" type="box" size="0.05 0.05 0.1" rgba="0.2 0.2 0.8 1"/>
+          <inertial pos="0 0 0.05" mass="0.5" diaginertia="0.005 0.005 0.005"/>
+          
+          <body name="gripper" pos="0 0 0.2">
+            <joint name="joint3" type="hinge" axis="0 0 1" range="-3.14 3.14"/>
+            <geom name="gripper_geom" type="box" size="0.02 0.02 0.05" rgba="0.8 0.8 0.2 1"/>
+            <inertial pos="0 0 0.025" mass="0.1" diaginertia="0.001 0.001 0.001"/>
+            <site name="gripper_site" pos="0 0 0.05" size="0.01"/>
+          </body>
+        </body>
+      </body>
+    </body>
+    
+    <!-- Objet à saisir -->
+    <body name="target" pos="0.3 0 0.1">
+      <geom name="target_geom" type="sphere" size="0.02" rgba="0.9 0.1 0.1 1"/>
+      <inertial pos="0 0 0" mass="0.1" diaginertia="0.001 0.001 0.001"/>
+      <site name="target_site" pos="0 0 0" size="0.02"/>
+    </body>
+  </worldbody>
+
+  <actuator>
+    <position name="act_joint1" joint="joint1" gear="1"/>
+    <position name="act_joint2" joint="joint2" gear="1"/>
+    <position name="act_joint3" joint="joint3" gear="1"/>
+  </actuator>
+
+  <sensor>
+    <framepos name="gripper_pos" objtype="body" objname="gripper"/>
+    <framepos name="target_pos" objtype="body" objname="target"/>
+    <!-- Capteurs tactiles fictifs -->
+    <touch name="touch_sensor_1" site="gripper_site"/>
+    <touch name="touch_sensor_2" site="target_site"/>
+    <!-- Capteurs de force fictifs -->
+    <force name="force_sensor_1" site="gripper_site"/>
+    <force name="force_sensor_2" site="target_site"/>
+  </sensor>
+
+</mujoco>

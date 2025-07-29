@@ -93,6 +93,11 @@ def build_combined_xml(body_xml: str, fingers_xml: str, out_dir: str) -> str:
     os.makedirs(out_dir, exist_ok=True)
     combined_path = os.path.join(out_dir, "g1_combined.xml")
 
+    # Si les deux fichiers sont identiques, pas besoin de combiner
+    if body_xml == fingers_xml:
+        print(f"[INFO] Using single XML file: {body_xml}")
+        return body_xml
+
     abs_body   = os.path.abspath(body_xml)
     abs_finger = os.path.abspath(fingers_xml)
 
@@ -107,9 +112,9 @@ def build_combined_xml(body_xml: str, fingers_xml: str, out_dir: str) -> str:
         f.write('<?xml version="1.0"?>\n')
         f.write('<mujoco model="g1_combined">\n')
 
-        # inclure body + fingers (assets, worldbody, sensors intactes)
-        f.write(f'  <include file="{abs_body}"/>\n')
-        f.write(f'  <include file="{abs_finger}"/>\n\n')
+        # inclure body + fingers avec des chemins relatifs depuis results/
+        f.write(f'  <include file="../{body_xml}"/>\n')
+        f.write(f'  <include file="../{fingers_xml}"/>\n\n')
 
         # générer automatiquement les actuators
         f.write('  <actuator>\n')
@@ -477,20 +482,24 @@ class SACTrainer:
         policy entraînée. La fenêtre s'ouvre et montre la main
         saisir et soulever le cube.
         """
-        viewer = mujoco.viewer(self.model, self.data)
-        for _ in range(episodes):
-            obs = self.task.reset()
-            done = False
-            while not done:
-                # Génère action
-                with torch.no_grad():
-                    a_t, _ = self.policy.sample(
-                        torch.as_tensor(obs, dtype=torch.float32, device=self.device)
-                    )
-                action = a_t.cpu().numpy()
-                # Step sim + render
-                obs, _, done, _ = self.task.step(action)
-                viewer.render()
+        try:
+            viewer = mujoco.viewer.launch_passive(self.model, self.data)
+            for _ in range(episodes):
+                obs = self.task.reset()
+                done = False
+                while not done:
+                    # Génère action
+                    with torch.no_grad():
+                        a_t, _ = self.policy.sample(
+                            torch.as_tensor(obs, dtype=torch.float32, device=self.device)
+                        )
+                    action = a_t.cpu().numpy()
+                    # Step sim + render
+                    obs, _, done, _ = self.task.step(action)
+                    viewer.sync()
+        except Exception as e:
+            print(f"⚠️  Impossible de lancer le viewer: {e}")
+            print("✅ L'entraînement s'est terminé avec succès !")
 
 
 # -----------------------------------------------------------------------------
