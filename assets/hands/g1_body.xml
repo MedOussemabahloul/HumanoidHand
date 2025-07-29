@@ -36,14 +36,14 @@
     <geom type="mesh" rgba="0.2 0.2 0.2 1" mesh="head_link"/>
     <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.7 0.7 0.7 1" mesh="waist_support_link"/>
     <geom type="mesh" rgba="0.7 0.7 0.7 1" mesh="waist_support_link"/>
-    <body name="table" pos="0.5 0 0.4">
+    <body name="table" pos="0.5 0 0.15">
       <geom name="table_top" type="box" size="0.4 0.3 0.02" rgba="0.8 0.6 0.4 1" pos="0 0 0" />
-      <geom name="table_leg1" type="box" size="0.02 0.02 0.2" rgba="0.6 0.4 0.2 1" pos="0.35 0.25 -0.2" />
-      <geom name="table_leg2" type="box" size="0.02 0.02 0.2" rgba="0.6 0.4 0.2 1" pos="-0.35 0.25 -0.2" />
-      <geom name="table_leg3" type="box" size="0.02 0.02 0.2" rgba="0.6 0.4 0.2 1" pos="0.35 -0.25 -0.2" />
-      <geom name="table_leg4" type="box" size="0.02 0.02 0.2" rgba="0.6 0.4 0.2 1" pos="-0.35 -0.25 -0.2" />
+      <geom name="table_leg1" type="box" size="0.02 0.02 0.15" rgba="0.6 0.4 0.2 1" pos="0.35 0.25 -0.15" />
+      <geom name="table_leg2" type="box" size="0.02 0.02 0.15" rgba="0.6 0.4 0.2 1" pos="-0.35 0.25 -0.15" />
+      <geom name="table_leg3" type="box" size="0.02 0.02 0.15" rgba="0.6 0.4 0.2 1" pos="0.35 -0.25 -0.15" />
+      <geom name="table_leg4" type="box" size="0.02 0.02 0.15" rgba="0.6 0.4 0.2 1" pos="-0.35 -0.25 -0.15" />
     </body>
-    <body name="cube" pos="0.5 0 0.45">
+    <body name="cube" pos="0.5 0 0.175">
       <joint name="cube_free" type="free" />
       <geom name="cube_geom" type="box" size="0.025 0.025 0.025" rgba="0.2 0.8 0.2 1" density="1000" friction="1 0.1 0.1" />
     </body>
