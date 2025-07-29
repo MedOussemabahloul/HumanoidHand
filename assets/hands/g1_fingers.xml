@@ -221,6 +221,7 @@
   <!-- ===================== FORCE SENSOR SITES ===================== -->
   <!-- Gauche -->
   <body name="left_thumb_force_sensors" pos="0.02 0 0">
+    <inertial pos="0 0 0" mass="0.001" diaginertia="1e-8 1e-8 1e-8"/>
     <site name="left_thumb_force_sensor_0_site"
           pos="0 0 0"
           size="0.003"
@@ -251,6 +252,7 @@
   </body>
 
   <body name="left_index_force_sensors" pos="0.02 0 0">
+    <inertial pos="0 0 0" mass="0.001" diaginertia="1e-8 1e-8 1e-8"/>
     <site name="left_index_force_sensor_0_site"
           pos="0 0 0"
           size="0.003"
@@ -281,6 +283,7 @@
   </body>
 
   <body name="left_middle_force_sensors" pos="0.02 0 0">
+    <inertial pos="0 0 0" mass="0.001" diaginertia="1e-8 1e-8 1e-8"/>
     <site name="left_middle_force_sensor_0_site"
           pos="0 0 0"
           size="0.003"
@@ -311,6 +314,7 @@
   </body>
 
   <body name="left_ring_force_sensors" pos="0.02 0 0">
+    <inertial pos="0 0 0" mass="0.001" diaginertia="1e-8 1e-8 1e-8"/>
     <site name="left_ring_force_sensor_0_site"
           pos="0 0 0"
           size="0.003"
@@ -342,6 +346,7 @@
 
   <!-- Droite -->
   <body name="right_thumb_force_sensors" pos="0.02 0 0">
+    <inertial pos="0 0 0" mass="0.001" diaginertia="1e-8 1e-8 1e-8"/>
     <site name="right_thumb_force_sensor_0_site"
           pos="0 0 0"
           size="0.003"
@@ -372,6 +377,7 @@
   </body>
 
   <body name="right_index_force_sensors" pos="0.02 0 0">
+    <inertial pos="0 0 0" mass="0.001" diaginertia="1e-8 1e-8 1e-8"/>
     <site name="right_index_force_sensor_0_site"
           pos="0 0 0"
           size="0.003"
@@ -402,6 +408,7 @@
   </body>
 
   <body name="right_middle_force_sensors" pos="0.02 0 0">
+    <inertial pos="0 0 0" mass="0.001" diaginertia="1e-8 1e-8 1e-8"/>
     <site name="right_middle_force_sensor_0_site"
           pos="0 0 0"
           size="0.003"
@@ -432,6 +439,7 @@
   </body>
 
   <body name="right_ring_force_sensors" pos="0.02 0 0">
+    <inertial pos="0 0 0" mass="0.001" diaginertia="1e-8 1e-8 1e-8"/>
     <site name="right_ring_force_sensor_0_site"
           pos="0 0 0"
           size="0.003"
