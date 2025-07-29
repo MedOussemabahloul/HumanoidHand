@@ -1,0 +1,27 @@
+
+task:
+  cube_body_name: "cube"
+  max_steps_per_episode: 200
+  touch_sensors: []
+  force_sensors: []
+  include_orientation_reward: false
+  force_reward_weight_normal: 0.0
+  force_reward_weight_tangential: 0.0
+  translation_penalty_weight: 0.0
+  output_dir: "results"
+  save_freq_steps: 50000
+
+rl:
+  gamma: 0.99
+  alpha: 0.2
+  learning_rate: 0.0003
+  hidden_size: 256
+  batch_size: 64
+  replay_size: 10000
+  start_steps: 1000
+  update_after: 1000
+  update_every: 50
+  num_updates: 50
+  total_steps: 100000
+  tau: 0.005
+  act_limit: 1.0
