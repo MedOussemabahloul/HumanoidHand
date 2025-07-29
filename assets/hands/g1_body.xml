@@ -36,7 +36,17 @@
     <geom type="mesh" rgba="0.2 0.2 0.2 1" mesh="head_link"/>
     <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="0.7 0.7 0.7 1" mesh="waist_support_link"/>
     <geom type="mesh" rgba="0.7 0.7 0.7 1" mesh="waist_support_link"/>
-    <body name="cube" pos="0 0 0.04">
+    <!-- Table -->
+    <body name="table" pos="0.5 0 0.4">
+      <geom name="table_geom"
+            type="box"
+            size="0.5 0.5 0.05"
+            rgba="0.8 0.6 0.4 1.0"
+            mass="10"/>
+    </body>
+
+    <!-- Cube sur la table -->
+    <body name="cube" pos="0.5 0 0.47">
       <geom name="cube_geom"
             type="box"
             size="0.015 0.015 0.015"
