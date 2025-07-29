@@ -1,0 +1,120 @@
+# Configuration CPU Optimisée pour SAC+PER
+# ========================================
+# 🖥️ Spécialement optimisée pour entraînement CPU
+# ⚡ Paramètres réduits pour performance CPU
+
+task:
+  output_dir: "outputs/cpu_optimized"
+  model_path: "results/g1_combined.xml"
+  environment: "g1_grasp_lift_optimized"
+  task_class: "GraspLiftTaskOptimized"
+  
+  cube_body_name: "cube"
+  
+  # Sensors réduits pour CPU
+  touch_sensors:
+    - "left_thumb_touch"
+    - "left_index_touch"
+    - "right_thumb_touch"
+    - "right_index_touch"
+  
+  force_sensors:
+    - "left_thumb_force_x"
+    - "left_thumb_force_y"
+    - "left_index_force_x"
+    - "right_thumb_force_x"
+    - "right_thumb_force_y"
+    - "right_index_force_x"
+  
+  # Episodes très courts pour CPU
+  max_steps_per_episode: 150
+  success_threshold: 0.08     # Plus facile
+  grasp_threshold: 1.0       # Plus permissif
+  
+  # Pas de randomisation pour performance
+  randomize_cube_position: false
+  randomize_cube_size: false
+  randomize_friction: false
+  
+  include_orientation_reward: false  # Simplifié pour CPU
+  
+  # Rewards simplifiés
+  reward_weights:
+    contact_reward: 1.0
+    grasp_reward: 2.0
+    lift_reward: 5.0
+    stability_reward: 0.5
+    success_bonus: 10.0
+
+rl:
+  algorithm: "SAC_PER_ULTRA"
+  
+  # Paramètres CPU ultra-optimisés
+  gamma: 0.98                # Légèrement réduit
+  learning_rate: 5e-4        # Plus élevé pour convergence rapide
+  batch_size: 32             # Très petit batch pour CPU
+  total_steps: 25000         # 25K steps pour test rapide
+  
+  # Architecture très réduite pour CPU
+  hidden_sizes: [64, 64]     # Très petit pour CPU
+  dropout: 0.0              # Pas de dropout pour performance
+  
+  # SAC rapide pour CPU
+  tau: 0.02                 # Mise à jour plus agressive
+  start_steps: 500          # Exploration très réduite
+  update_after: 200
+  update_every: 10          # Plus fréquent
+  num_updates: 5            # Moins d'updates par cycle
+  
+  # Buffer très petit pour CPU
+  replay_size: 25000        # 25K buffer seulement
+  per_alpha: 0.5           # Moins de prioritization
+  per_beta: 0.4
+  per_beta_annealing: false # Pas d'annealing pour simplicité
+  
+  # Optimization CPU
+  gradient_clip: 1.0
+  weight_decay: 0.0        # Pas de régularisation
+  
+  # Monitoring minimal
+  log_interval: 2
+  eval_interval: 1000
+  checkpoint_interval: 5000
+
+system:
+  device: "cpu"              # Force CPU
+  num_threads: 8             # Max threads CPU
+  seed: 42
+  
+  # CPU optimizations
+  cuda_deterministic: false
+  cuda_benchmark: false     # Pas de CUDA
+  mixed_precision: false    # Pas supporté CPU
+  
+  # Memory management CPU
+  max_memory_gb: 4          # 4GB pour CPU
+  cache_size: 100          # Cache très réduit
+  buffer_pin_memory: false  # Pas de pin memory CPU
+  
+  # Safety CPU
+  emergency_save: true
+  recovery_mode: true
+  validation_strict: false  # Moins strict pour performance
+
+monitoring:
+  tensorboard_enabled: false  # Désactivé pour performance CPU
+  tensorboard_log_dir: "runs/cpu_test"
+  log_episode_stats: true
+  log_buffer_stats: false    # Désactivé pour performance
+  render_episodes: false
+
+debug:
+  enabled: false            # Désactivé pour performance
+  verbose_logging: false
+  test_mode: true          # Mode test rapide
+
+evaluation:
+  enabled: true
+  eval_episodes: 2         # Très peu d'episodes
+  eval_deterministic: true
+  success_rate_threshold: 0.5  # Plus permissif

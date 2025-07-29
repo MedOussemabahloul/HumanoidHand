@@ -1,0 +1,99 @@
+# Configuration RAPIDE pour Tests & Développement
+# ===============================================
+# 🚀 Version accélérée pour validation rapide
+# 🎯 Paramètres réduits pour itération développement
+
+task:
+  output_dir: "outputs/quick_test"
+  model_path: "results/g1_combined.xml"
+  environment: "g1_grasp_lift_optimized"
+  task_class: "GraspLiftTaskOptimized"
+  
+  cube_body_name: "cube"
+  
+  # Sensors simplifiés pour test
+  touch_sensors:
+    - "left_thumb_touch"
+    - "left_index_touch"
+    - "right_thumb_touch"
+    - "right_index_touch"
+  
+  force_sensors:
+    - "left_thumb_force_x"
+    - "left_thumb_force_y"
+    - "left_index_force_x"
+    - "right_thumb_force_x"
+    - "right_thumb_force_y"
+    - "right_index_force_x"
+  
+  # Episodes courts pour test rapide
+  max_steps_per_episode: 200
+  success_threshold: 0.10
+  grasp_threshold: 1.5
+  
+  # Pas de randomisation pour tests reproductibles
+  randomize_cube_position: false
+  randomize_cube_size: false
+  randomize_friction: false
+  
+  include_orientation_reward: false  # Simplifié
+  
+  reward_weights:
+    contact_reward: 1.0
+    grasp_reward: 3.0
+    lift_reward: 5.0
+    stability_reward: 1.0
+    success_bonus: 10.0
+
+rl:
+  algorithm: "SAC_PER_ULTRA"
+  
+  # Paramètres réduits pour test rapide
+  gamma: 0.99
+  learning_rate: 1e-3        # Plus élevé pour convergence rapide
+  batch_size: 64             # Plus petit pour vitesse
+  total_steps: 50000         # 50K steps seulement
+  
+  # Architecture plus petite
+  hidden_sizes: [128, 128]   # Plus petit
+  
+  # SAC rapide
+  tau: 0.01                  # Mise à jour plus agressive
+  start_steps: 1000          # Exploration réduite
+  update_after: 500
+  update_every: 20           # Plus fréquent
+  num_updates: 10            # Moins d'updates
+  
+  # Buffer plus petit
+  replay_size: 100000        # 100K buffer
+  per_alpha: 0.6
+  per_beta: 0.4
+  
+  # Monitoring rapide
+  log_interval: 5
+  eval_interval: 2000
+  checkpoint_interval: 10000
+
+system:
+  device: "auto"
+  num_threads: 2
+  seed: 42
+  cuda_benchmark: true
+  emergency_save: true
+  max_memory_gb: 4           # Limité
+
+monitoring:
+  tensorboard_enabled: true
+  tensorboard_log_dir: "runs/quick_test"
+  log_episode_stats: true
+  render_episodes: false
+
+debug:
+  enabled: true              # Activé pour développement
+  verbose_logging: true
+  test_mode: true            # Mode test
+
+evaluation:
+  enabled: true
+  eval_episodes: 3           # Peu d'episodes pour rapidité
+  success_rate_threshold: 0.6

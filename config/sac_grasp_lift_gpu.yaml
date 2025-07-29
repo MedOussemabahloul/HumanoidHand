@@ -1,0 +1,226 @@
+# Configuration GPU Optimisée SAC + PER pour G1 Grasp & Lift
+# ===========================================================
+# 🎮 Optimisée spécialement pour GPU avec paramètres haute performance
+# 🚀 Version GPU de sac_grasp_lift.yaml avec optimisations
+
+# === TASK CONFIGURATION ===
+task:
+  # Répertoires
+  output_dir: "outputs/sac_per_g1_grasp_gpu"
+  model_path: "results/g1_combined.xml"
+  
+  # Environnement
+  environment: "g1_grasp_lift_optimized"
+  task_class: "GraspLiftTaskOptimized"
+  
+  # IDs MuJoCo critiques
+  cube_body_name: "cube"
+  
+  # Sensors complets pour GPU (peut gérer plus)
+  touch_sensors:
+    - "left_thumb_touch"
+    - "left_index_touch"
+    - "left_middle_touch"
+    - "left_ring_touch"
+    - "right_thumb_touch"
+    - "right_index_touch"
+    - "right_middle_touch"
+    - "right_ring_touch"
+  
+  force_sensors:
+    - "left_thumb_force_x"
+    - "left_thumb_force_y"
+    - "left_thumb_force_z"
+    - "left_index_force_x"
+    - "left_index_force_y"
+    - "left_index_force_z"
+    - "left_middle_force_x"
+    - "left_middle_force_y"
+    - "left_middle_force_z"
+    - "left_ring_force_x"
+    - "left_ring_force_y"
+    - "left_ring_force_z"
+    - "right_thumb_force_x"
+    - "right_thumb_force_y"
+    - "right_thumb_force_z"
+    - "right_index_force_x"
+    - "right_index_force_y"
+    - "right_index_force_z"
+    - "right_middle_force_x"
+    - "right_middle_force_y"
+    - "right_middle_force_z"
+    - "right_ring_force_x"
+    - "right_ring_force_y"
+    - "right_ring_force_z"
+  
+  # Paramètres épisode
+  max_steps_per_episode: 500
+  success_threshold: 0.15
+  grasp_threshold: 2.0
+  stability_threshold: 0.05
+  
+  # Randomisation complète (GPU peut gérer)
+  randomize_cube_position: true
+  position_noise_std: 0.02
+  randomize_cube_size: true
+  size_variation_range: [0.8, 1.2]
+  randomize_friction: true
+  friction_range: [0.5, 1.5]
+  
+  # Orientation avec quaternions
+  include_orientation_reward: true
+  target_cube_euler: [0.0, 0.0, 0.0]
+  orientation_reward_weight: 1.0
+  
+  # Reward shaping complet
+  reward_weights:
+    contact_reward: 2.0
+    grasp_reward: 5.0
+    lift_reward: 10.0
+    stability_reward: 1.5
+    efficiency_reward: 1.0
+    force_reward_weight_normal: 0.5
+    force_reward_weight_tangential: 0.3
+    translation_penalty_weight: 0.1
+    collision_penalty: -2.0
+    timeout_penalty: -1.0
+    success_bonus: 20.0
+
+# === REINFORCEMENT LEARNING ===
+rl:
+  algorithm: "SAC_PER_ULTRA"
+  
+  # Paramètres GPU optimisés (plus agressifs)
+  gamma: 0.99
+  learning_rate: 3e-4
+  batch_size: 512              # Grand batch pour GPU
+  total_steps: 2000000         # 2M steps
+  
+  # Architecture plus large pour GPU
+  hidden_sizes: [512, 512, 256]
+  activation: "gelu"
+  layer_norm: true
+  dropout: 0.1
+  
+  # SAC optimisé GPU
+  tau: 0.005
+  target_update_freq: 1
+  start_steps: 15000
+  update_after: 2000
+  update_every: 50
+  num_updates: 50
+  
+  # Entropie adaptative
+  initial_alpha: 0.2
+  auto_alpha: true
+  target_entropy: -12
+  alpha_lr: 3e-4
+  
+  # PER optimisé GPU
+  replay_size: 2000000         # 2M buffer (GPU peut gérer)
+  per_alpha: 0.6
+  per_beta: 0.4
+  per_beta_annealing: true
+  per_epsilon: 1e-6
+  
+  # Optimization GPU
+  gradient_clip: 1.0
+  weight_decay: 1e-4
+  lr_schedule: "cosine"
+  
+  # Exploration
+  action_noise: 0.1
+  action_clip: 1.0
+  
+  # Curriculum learning
+  curriculum_enabled: true
+  curriculum_success_threshold: 0.7
+  curriculum_window: 100
+  
+  # Monitoring
+  log_interval: 10
+  eval_interval: 10000
+  checkpoint_interval: 50000
+  tensorboard_log_interval: 100
+
+# === SYSTEM CONFIGURATION ===
+system:
+  # GPU explicite
+  device: "cuda"               # Force GPU
+  num_threads: 8               # Threads pour GPU
+  seed: 42
+  
+  # CUDA optimizations maximales
+  cuda_deterministic: false   # Performance > determinism
+  cuda_benchmark: true        # cudnn optimizations
+  mixed_precision: true       # Activé pour GPU
+  
+  # Memory management GPU
+  max_memory_gb: 16           # 16GB pour GPU
+  cache_size: 3000           # Cache plus large
+  buffer_pin_memory: true     # Pin memory GPU
+  
+  # Safety
+  emergency_save: true
+  recovery_mode: true
+  validation_strict: true
+  auto_resume: true
+  
+  # File management
+  backup_checkpoints: true
+  max_checkpoints: 5
+  compress_checkpoints: false
+
+# === MONITORING & DEBUG ===
+monitoring:
+  # TensorBoard complet pour GPU
+  tensorboard_enabled: true
+  tensorboard_log_dir: "runs/sac_per_g1_grasp_gpu"
+  
+  # Métriques complètes
+  log_episode_stats: true
+  log_buffer_stats: true
+  log_network_stats: true
+  log_performance_stats: true
+  
+  # Visualization
+  render_episodes: false
+  save_videos: false
+  video_interval: 1000
+
+debug:
+  enabled: false
+  verbose_logging: false
+  profiling: false
+  
+  check_gradients: false
+  validate_every_step: false
+  memory_profiling: false
+  
+  test_mode: false
+  fast_mode: false
+
+# === EVALUATION ===
+evaluation:
+  enabled: true
+  eval_episodes: 10
+  eval_deterministic: true
+  eval_render: false
+  
+  success_rate_threshold: 0.8
+  early_stopping: true
+  patience: 100000
+
+# === ADVANCED FEATURES ===
+advanced:
+  use_multiprocessing: false
+  num_workers: 1
+  
+  use_distributional_critic: false
+  use_spectral_norm: false
+  
+  per_tree_type: "segment"
+  per_compression: false
+  
+  use_hindsight_experience: false
+  use_population_training: false
