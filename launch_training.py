@@ -21,7 +21,7 @@ def main():
     # Configuration
     parser.add_argument(
         '--config', '-c', 
-        choices=['standard', 'quick', 'production', 'cpu'],
+        choices=['standard', 'quick', 'production', 'cpu', 'gpu'],
         default='standard',
         help='Configuration à utiliser'
     )
@@ -56,7 +56,8 @@ def main():
         'standard': 'config/sac_grasp_lift.yaml',
         'quick': 'config/train_config_quick.yaml', 
         'production': 'config/train_config_production.yaml',
-        'cpu': 'config/train_config_cpu.yaml'
+        'cpu': 'config/train_config_cpu.yaml',
+        'gpu': 'config/sac_grasp_lift_gpu.yaml'
     }
     
     config_path = config_files[args.config]
