@@ -7,9 +7,6 @@ Reproduit l'erreur frictionloss exacte mentionnée par l'utilisateur
 import sys
 import os
 
-# Ajouter le chemin du projet
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
 def test_stability():
     """Test de stabilité du modèle G1 combiné"""
     
