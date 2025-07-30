@@ -1,77 +1,238 @@
-# -----------------------------------------------------------------------------
-# Configuration YAML pour GraspLiftTask + SAC
-# Tout est piloté par ce fichier : capteurs, rewards, SAC, logs
-# -----------------------------------------------------------------------------
 
+# Configuration Ultra-Optimisée SAC  PER pour G1 Grasp & Lift
+# ==============================================================
+# 🚀 Système ultra-robuste avec garanties complètes
+# 🎯 Performance optimale SAC  PER  Cache intelligent
+# 🔒 Recovery automatique  Validation  Logging structuré
+
+# === TASK CONFIGURATION ===
 task:
-  # Robot & simulation
-  cube_body_name: "cube"               # corps MuJoCo du cube à saisir
-  max_steps_per_episode: 500           # horizon max de chaque épisode
-
-  # Capteurs tactiles (touch sensors)  
+  # Répertoires
+  output_dir: "outputs/sac_per_g1_grasp"
+  model_path: "results/g1_combined.xml"
+  
+  # Environnement
+  environment: "g1_grasp_lift_optimized"
+  task_class: "GraspLiftTaskOptimized"
+  
+  # IDs MuJoCo critiques
+  cube_body_name: "cube"
+  
+  # Sensors (utilise ceux du modèle G1)
   touch_sensors:
-    - left_thumb_tip_sensor
-    - left_index_tip_sensor
-    - left_middle_tip_sensor
-    - left_ring_tip_sensor
-    - right_thumb_tip_sensor
-    - right_index_tip_sensor
-    - right_middle_tip_sensor
-    - right_ring_tip_sensor
-
-  # Capteurs de force (3 par doigt : indices 0,1,2)
+    - "left_thumb_touch"
+    - "left_index_touch"
+    - "left_middle_touch"
+    - "left_ring_touch"
+    - "right_thumb_touch" 
+    - "right_index_touch"
+    - "right_middle_touch"
+    - "right_ring_touch"
+  
   force_sensors:
-    - left_thumb_force_sensor0
-    - left_thumb_force_sensor1
-    - left_thumb_force_sensor2
-    - left_index_force_sensor0
-    - left_index_force_sensor1
-    - left_index_force_sensor2
-    - left_middle_force_sensor0
-    - left_middle_force_sensor1
-    - left_middle_force_sensor2
-    - left_ring_force_sensor0
-    - left_ring_force_sensor1
-    - left_ring_force_sensor2
-    - right_thumb_force_sensor0
-    - right_thumb_force_sensor1
-    - right_thumb_force_sensor2
-    - right_index_force_sensor0
-    - right_index_force_sensor1
-    - right_index_force_sensor2
-    - right_middle_force_sensor0
-    - right_middle_force_sensor1
-    - right_middle_force_sensor2
-    - right_ring_force_sensor0
-    - right_ring_force_sensor1
-    - right_ring_force_sensor2
+    - "left_thumb_force_x"
+    - "left_thumb_force_y" 
+    - "left_thumb_force_z"
+    - "left_index_force_x"
+    - "left_index_force_y"
+    - "left_index_force_z"
+    - "left_middle_force_x"
+    - "left_middle_force_y"
+    - "left_middle_force_z"
+    - "right_thumb_force_x"
+    - "right_thumb_force_y"
+    - "right_thumb_force_z"
+    - "right_index_force_x"
+    - "right_index_force_y"
+    - "right_index_force_z"
+  
+  # Paramètres épisode
+  max_steps_per_episode: 500
+  success_threshold: 0.15        # Hauteur minimale lift (15cm)
+  grasp_threshold: 2.0          # Force minimale grasp
+  stability_threshold: 0.05     # Stabilité mouvement
+  
+  # Randomisation pour robustesse
+  randomize_cube_position: true
+  position_noise_std: 0.02      # 2cm noise
+  randomize_cube_size: true
+  size_variation_range: [0.8, 1.2]  # ±20%
+  randomize_friction: true
+  friction_range: [0.5, 1.5]
+  
+  # Orientation (utilise high_level_planner quaternions)
+  include_orientation_reward: true
+  target_cube_euler: [0.0, 0.0, 0.0]  # Orientation cible
+  orientation_reward_weight: 1.0
+  
+  # Reward Shaping Ultra-Optimisé
+  reward_weights:
+    # Contact rewards
+    contact_reward: 2.0           # Récompense contact initial
+    grasp_reward: 5.0            # Récompense grasp stable
+    lift_reward: 10.0            # Récompense lift succès
+    
+    # Stability & efficiency
+    stability_reward: 1.5        # Récompense stabilité
+    efficiency_reward: 1.0       # Récompense efficacité
+    
+    # Force control
+    force_reward_weight_normal: 0.5
+    force_reward_weight_tangential: 0.3
+    
+    # Penalties
+    translation_penalty_weight: 0.1
+    collision_penalty: -2.0
+    timeout_penalty: -1.0
+    
+    # Success bonus
+    success_bonus: 20.0          # Bonus final succès
 
-  # Reward components et leurs poids
-  force_reward_weight_normal:     0.50   # w_fn : encourage la force normale
-  force_reward_weight_tangential: -0.20  # w_ft : pénalise la force tangentielle (glissement)
-  translation_penalty_weight:      0.10  # w_tp : pénalise la dérive XY du cube
-  include_orientation_reward:      true  # activer la composante orientation
-  target_cube_euler: [0.0, 0.0, 0.0]      # objectif orientation du cube en RPY (rad)
-  orientation_reward_weight:        0.10  # w_ori : pénalise l’erreur angulaire (rad)
-
-  # Chemins et fréquence de sauvegarde
-  output_dir: "results"              # où loguer et sauvegarder checkpoints
-  save_freq_steps: 100000            # intervalle (en steps) de sauvegarde
-
-# -----------------------------------------------------------------------------
-# Hyperparamètres Soft Actor–Critic (SAC) – section "rl"
-# -----------------------------------------------------------------------------
+# === REINFORCEMENT LEARNING ===
 rl:
-  gamma:        0.99       # facteur de discount γ
-  alpha:        0.20       # température α (entropie)
-  learning_rate: 3e-4      # lr pour Adam
-  hidden_size:   256       # taille des couches cachées
-  batch_size:    256       # batch_size pour mise à jour
-  replay_size:   1000000   # capacité du replay buffer
-  start_steps:   10000     # steps aléatoires avant policy roll-out
-  update_after:  1000      # steps à collecter avant la 1ᵉ update
-  update_every:  50        # fréquence (steps) des mises à jour
-  num_updates:   50        # itérations d’optimisation par update
-  total_steps:   500000    # total de steps d’entraînement
-  act_limit:     1.0        # ← ajoute cette ligne
-  tau:    0.005
+  # Algorithme principal
+  algorithm: "SAC_PER_ULTRA"
+  
+  # Paramètres core SAC (ultra-optimisés)
+  gamma: 0.99                   # Discount factor
+  learning_rate: 3e-4           # Learning rate optimal
+  batch_size: 256               # Batch size optimal
+  total_steps: 2000000          # 2M steps pour convergence complète
+  
+  # Architecture réseaux ultra-optimisée
+  hidden_sizes: [512, 512, 256] # Architecture testée optimale
+  activation: "gelu"            # GELU > ReLU pour gradients
+  layer_norm: true             # Stabilité entraînement
+  dropout: 0.1                 # Régularisation
+  
+  # SAC spécifique
+  tau: 0.005                   # Soft update rate
+  target_update_freq: 1        # Update frequency
+  start_steps: 15000           # Random exploration (plus long pour task complexe)
+  update_after: 2000           # Start updates after
+  update_every: 50             # Update frequency
+  num_updates: 50              # Updates per step
+  
+  # Entropie adaptative (critique pour exploration)
+  initial_alpha: 0.2           # Initial entropy coefficient
+  auto_alpha: true             # Adaptive alpha (crucial)
+  target_entropy: -12          # Target entropy (-act_dim estim.)
+  alpha_lr: 3e-4              # Alpha learning rate
+  
+  # PER Parameters ultra-optimisés
+  replay_size: 2000000         # 2M buffer (plus grand pour task complexe)
+  per_alpha: 0.6              # Priority exponent
+  per_beta: 0.4               # Importance sampling start
+  per_beta_annealing: true    # Beta annealing 0.4 → 1.0
+  per_epsilon: 1e-6           # Priority epsilon
+  
+  # Optimization & regularization
+  gradient_clip: 1.0          # Gradient clipping
+  weight_decay: 1e-4          # L2 regularization
+  lr_schedule: "cosine"       # Learning rate schedule
+  
+  # Exploration & safety
+  action_noise: 0.1           # Exploration noise
+  action_clip: 1.0            # Action clipping [-1, 1]
+  
+  # Curriculum Learning (pour task complexe)
+  curriculum_enabled: true
+  curriculum_success_threshold: 0.7  # 70% succès pour augmenter difficulté
+  curriculum_window: 100            # Fenêtre évaluation
+  
+  # Monitoring & checkpointing
+  log_interval: 10            # Log episode tous les 10
+  eval_interval: 10000        # Evaluation tous les 10K steps
+  checkpoint_interval: 50000  # Checkpoint tous les 50K steps
+  tensorboard_log_interval: 100  # TensorBoard tous les 100 steps
+
+# === SYSTEM CONFIGURATION ===
+system:
+  # Device & performance
+  device: "auto"              # Auto-detect CUDA/CPU
+  num_threads: 6              # Threads CPU (ajustez selon machine)
+  seed: 42                    # Reproductibilité
+  
+  # CUDA optimizations
+  cuda_deterministic: false   # Performance > determinism
+  cuda_benchmark: true        # cudnn optimizations
+  mixed_precision: false      # Désactivé par défaut (stabilité)
+  
+  # Memory management
+  max_memory_gb: 12           # Limite mémoire (ajustez selon GPU)
+  cache_size: 2000           # Cache entries
+  buffer_pin_memory: true     # Pin memory pour GPU
+  
+  # Safety & recovery ultra-robuste
+  emergency_save: true        # Sauvegarde urgence auto
+  recovery_mode: true         # Recovery automatique
+  validation_strict: true     # Validation stricte
+  auto_resume: true          # Resume auto depuis dernier checkpoint
+  
+  # File management
+  backup_checkpoints: true    # Backups multiples
+  max_checkpoints: 5         # Garde 5 derniers checkpoints
+  compress_checkpoints: false # Pas de compression (vitesse)
+
+# === MONITORING & DEBUG ===
+monitoring:
+  # TensorBoard ultra-détaillé
+  tensorboard_enabled: true
+  tensorboard_log_dir: "runs/sac_per_g1_grasp"
+  
+  # Métriques avancées
+  log_episode_stats: true
+  log_buffer_stats: true
+  log_network_stats: true
+  log_performance_stats: true
+  
+  # Visualization
+  render_episodes: false      # Désactivé pour performance
+  save_videos: false         # Désactivé par défaut
+  video_interval: 1000       # Vidéo tous les 1K episodes si activé
+
+debug:
+  # Mode debug
+  enabled: false             # Désactivé en production
+  verbose_logging: false     # Logs verbeux
+  profiling: false          # Profiling performance
+  
+  # Validation debug
+  check_gradients: false     # Vérification gradients
+  validate_every_step: false # Validation step-by-step
+  memory_profiling: false    # Profiling mémoire
+  
+  # Testing
+  test_mode: false          # Mode test (episodes courts)
+  fast_mode: false          # Mode rapide (moins d'updates)
+
+# === EVALUATION ===
+evaluation:
+  # Evaluation périodique
+  enabled: true
+  eval_episodes: 10          # Nb episodes évaluation
+  eval_deterministic: true   # Actions déterministes
+  eval_render: false        # Pas de render pendant eval
+  
+  # Success criteria
+  success_rate_threshold: 0.8  # 80% succès considéré optimal
+  early_stopping: true        # Arrêt si objectif atteint
+  patience: 100000            # Steps patience avant arrêt
+
+# === ADVANCED FEATURES ===
+advanced:
+  # Multi-processing (si supporté)
+  use_multiprocessing: false  # Désactivé par défaut
+  num_workers: 1             # Nb workers
+  
+  # Advanced SAC features
+  use_distributional_critic: false  # Critic distributional
+  use_spectral_norm: false          # Spectral normalization
+  
+  # Advanced PER features
+  per_tree_type: "segment"    # Type tree: "segment" ou "sum"
+  per_compression: false      # Compression buffer
+  
+  # Experimental
+  use_hindsight_experience: false  # HER (non compatible SAC direct)
+  use_population_training: false   # Population training
