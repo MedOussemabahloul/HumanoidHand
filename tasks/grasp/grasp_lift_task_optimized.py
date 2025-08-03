@@ -133,7 +133,7 @@ class RewardShaper:
         force_magnitudes = np.linalg.norm(forces.reshape(-1, 3), axis=1)
         
         # Sigmoid pour contact progressif
-        contact_rewards = 1.0 / (1.0  + np.exp(-(force_magnitudes - self.contact_threshold) * 5))
+        contact_rewards = 1.0 / (1.0 + np.exp(-(force_magnitudes - self.contact_threshold) * 5))
         base_contact = np.mean(contact_rewards)
         
         # Pénalité déséquilibre (encourage symétrie)
@@ -144,7 +144,7 @@ class RewardShaper:
             balance_penalty = 1.0
             
         # Pénalité force excessive (évite damage)
-        max_force = np.max(force_magnitudes) 
+        max_force = np.max(force_magnitudes) if len(force_magnitudes) > 0 else 0.0
         excessive_penalty = 1.0 if max_force < 10.0 else np.exp(-(max_force - 10.0))
         
         total_reward = base_contact * balance_penalty * excessive_penalty
@@ -154,7 +154,7 @@ class RewardShaper:
             'balance_penalty': balance_penalty,
             'excessive_penalty': excessive_penalty,
             'max_force': max_force,
-            'avg_force': np.mean(force_magnitudes)
+            'avg_force': np.mean(force_magnitudes) if len(force_magnitudes) > 0 else 0.0
         }
         
         return total_reward, info
@@ -170,7 +170,7 @@ class RewardShaper:
         
         # 1. Symétrie des forces
         if len(force_magnitudes) >= 2:
-            force_symmetry = 1.0 - (np.std(force_magnitudes) / (np.mean(force_magnitudes)  1e-6))
+            force_symmetry = 1.0 - (np.std(force_magnitudes) / (np.mean(force_magnitudes) + 1e-6))
         else:
             force_symmetry = 0.0
             
@@ -187,8 +187,8 @@ class RewardShaper:
         force_closure = np.tanh(total_force / 2.0)  # Saturation à 2N total
         
         # Combinaison pondérée
-        grasp_quality = (0.4 * force_symmetry  
-                        0.3 * geometric_quality  
+        grasp_quality = (0.4 * force_symmetry + 
+                        0.3 * geometric_quality + 
                         0.3 * force_closure)
         
         info = {
@@ -225,7 +225,7 @@ class RewardShaper:
         else:
             height_maintenance = height_progress
             
-        lift_reward = height_progress * velocity_penalty  0.5 * height_maintenance
+        lift_reward = height_progress * velocity_penalty + 0.5 * height_maintenance
         
         info = {
             'height_progress': height_progress,
@@ -254,7 +254,7 @@ class RewardShaper:
                 r = R.from_quat(cube_orientation)
                 euler = r.as_euler('xyz')
                 # Pénalise rotation X et Y (tilt), permet Z (yaw)
-                tilt_magnitude = np.sqrt(euler[0]**2  euler[1]**2)
+                tilt_magnitude = np.sqrt(euler[0]**2 + euler[1]**2)
                 orientation_bonus = np.exp(-tilt_magnitude * 5)
             else:
                 orientation_bonus = 1.0
@@ -284,7 +284,7 @@ class RewardShaper:
         # Pénalité longueur épisode (encourage efficacité)
         length_penalty = -0.001 * episode_length
         
-        efficiency_reward = action_penalty  length_penalty
+        efficiency_reward = action_penalty + length_penalty
         
         info = {
             'action_penalty': action_penalty,
@@ -317,11 +317,11 @@ class RewardShaper:
         
         # Reward pondéré
         weighted_reward = (
-            self.adaptive_weights['contact'] * contact_r 
-            self.adaptive_weights['grasp'] * grasp_r 
-            self.adaptive_weights['lift'] * lift_r 
-            self.adaptive_weights['stability'] * stability_r 
-            self.adaptive_weights['efficiency'] * efficiency_r 
+            self.adaptive_weights['contact'] * contact_r +
+            self.adaptive_weights['grasp'] * grasp_r +
+            self.adaptive_weights['lift'] * lift_r +
+            self.adaptive_weights['stability'] * stability_r +
+            self.adaptive_weights['efficiency'] * efficiency_r +
             success_bonus
         )
         
@@ -489,8 +489,8 @@ class ObservationProcessor:
         magnitudes_norm = np.clip(force_magnitudes / self.force_max, 0.0, 1.0)
         
         # Features dérivées
-        total_force = np.sum(force_magnitudes)
-        max_force = np.max(force_magnitudes)
+        total_force = np.sum(force_magnitudes) if len(force_magnitudes) > 0 else 0.0
+        max_force = np.max(force_magnitudes) if len(force_magnitudes) > 0 else 0.0
         force_std = np.std(force_magnitudes) if len(force_magnitudes) > 1 else 0.0
         
         # Normalisation features dérivées
@@ -553,7 +553,7 @@ class ObservationProcessor:
                 
                 # Direction cube-finger (vecteur unitaire)
                 direction = finger_pos - cube_pos
-                direction_norm = direction / (np.linalg.norm(direction)  1e-6)
+                direction_norm = direction / (np.linalg.norm(direction) + 1e-6)
                 
                 cube_finger_features.extend([distance_norm])
                 cube_finger_features.extend(direction_norm)
@@ -679,8 +679,8 @@ class SuccessDetector:
     def check_contact_criteria(self, forces: np.ndarray) -> Tuple[bool, float, Dict]:
         """Vérification critères de contact"""
         force_magnitudes = np.linalg.norm(forces.reshape(-1, 3), axis=1)
-        max_force = np.max(force_magnitudes)
-        total_force = np.sum(force_magnitudes)
+        max_force = np.max(force_magnitudes) if len(force_magnitudes) > 0 else 0.0
+        total_force = np.sum(force_magnitudes) if len(force_magnitudes) > 0 else 0.0
         
         # Critères contact
         sufficient_force = total_force > self.force_min
@@ -724,7 +724,7 @@ class SuccessDetector:
         
         # Symétrie forces
         if len(force_magnitudes) >= 2:
-            force_symmetry = 1.0 - (np.std(force_magnitudes) / (np.mean(force_magnitudes)  1e-6))
+            force_symmetry = 1.0 - (np.std(force_magnitudes) / (np.mean(force_magnitudes) + 1e-6))
             force_symmetry = np.clip(force_symmetry, 0.0, 1.0)
         else:
             force_symmetry = 0.0
@@ -748,8 +748,8 @@ class SuccessDetector:
         grasp_success = stable_forces and symmetric_forces and good_geometry
         
         # Confidence grasp
-        confidence = (force_stability * 0.4  
-                     force_symmetry * 0.3  
+        confidence = (force_stability * 0.4 + 
+                     force_symmetry * 0.3 + 
                      geometric_quality * 0.3)
         
         info = {
@@ -799,8 +799,8 @@ class SuccessDetector:
         stability_score = np.exp(-height_std) if len(self.height_history) >= 10 else 0.0
         movement_score = np.exp(-linear_speed) * np.exp(-angular_speed * 0.5)
         
-        confidence = (height_score * 0.4  
-                     stability_score * 0.3  
+        confidence = (height_score * 0.4 + 
+                     stability_score * 0.3 + 
                      movement_score * 0.3)
         
         info = {
@@ -841,15 +841,15 @@ class SuccessDetector:
         overall_success = contact_ok and grasp_ok and lift_ok
         
         # Confidence globale (moyenne pondérée)
-        overall_confidence = (contact_conf * 0.2  
-                            grasp_conf * 0.3  
+        overall_confidence = (contact_conf * 0.2 + 
+                            grasp_conf * 0.3 + 
                             lift_conf * 0.5)
         
         # Tracking stabilité succès
         self.success_history.append(overall_success)
         
         if overall_success:
-            self.consecutive_success_frames = 1
+            self.consecutive_success_frames += 1
         else:
             self.consecutive_success_frames = 0
         
@@ -965,7 +965,7 @@ class GraspLiftTaskOptimized:
             touch_sensors = self.config.get('touch_sensors', [])
             force_sensors = self.config.get('force_sensors', [])
             
-            for sensor_name in touch_sensors  force_sensors:
+            for sensor_name in touch_sensors + force_sensors:
                 try:
                     sensor_id = mujoco.mj_name2id(self.model, mujoco.mjtObj.mjOBJ_SENSOR, sensor_name)
                     if sensor_id < 0:
@@ -1033,7 +1033,7 @@ class GraspLiftTaskOptimized:
             spatial_dim = 10  # cube pos/orient/vel  relations
             contextual_dim = 5  # progress, difficulty, etc.
             
-            estimated_dim = joint_dim  force_dim  spatial_dim  contextual_dim
+            estimated_dim = joint_dim + force_dim + spatial_dim + contextual_dim
             logger.warning(f"⚠️  Obs dim estimée: {estimated_dim}")
             return estimated_dim
     
@@ -1080,20 +1080,23 @@ class GraspLiftTaskOptimized:
             for sensor_id in self.force_ids:
                 sensor_adr = self.model.sensor_adr[sensor_id]
                 sensor_dim = self.model.sensor_dim[sensor_id]
-                sensor_values = self.data.sensordata[sensor_adr:sensor_adrsensor_dim]
+                sensor_values = self.data.sensordata[sensor_adr:sensor_adr+sensor_dim]
                 force_data.append(sensor_values)
             
             # Concaténation et reshape
-            forces = np.concatenate(force_data) if force_data else np.zeros(0)
-            
-            # Filtrage outliers (clipping sécurisé)
-            forces = np.clip(forces, -50.0, 50.0)
+            if force_data:
+                forces = np.concatenate(force_data)
+                # Filtrage outliers (clipping sécurisé)
+                forces = np.clip(forces, -50.0, 50.0)
+            else:
+                forces = np.zeros(0, dtype=np.float32)
             
             return forces.astype(np.float32)
             
         except Exception as e:
             logger.error(f"❌ Erreur lecture forces: {e}")
-            return np.zeros(len(self.force_ids) * 3, dtype=np.float32)
+            # Retourne un array vide plutôt qu'un array de taille fixe
+            return np.zeros(0, dtype=np.float32)
     
     def _get_finger_positions(self) -> List[np.ndarray]:
         """Positions fingers via sites MuJoCo"""
@@ -1261,7 +1264,7 @@ class GraspLiftTaskOptimized:
             self._cache_valid = False
             
             # Incrémentation compteurs
-            self.step_count = 1
+            self.step_count += 1
             
             # Calcul reward et done
             reward, reward_info = self._compute_reward(action, done=False)
@@ -1351,7 +1354,7 @@ class GraspLiftTaskOptimized:
             
             # Adaptation difficulté
             if recent_success_rate > 0.8:
-                self.curriculum_difficulty = min(1.0, self.curriculum_difficulty  0.05)
+                self.curriculum_difficulty = min(1.0, self.curriculum_difficulty + 0.05)
             elif recent_success_rate < 0.2:
                 self.curriculum_difficulty = max(0.1, self.curriculum_difficulty - 0.05)
             
@@ -1373,7 +1376,7 @@ class GraspLiftTaskOptimized:
             )
         
         # Incrémentation compteur épisode
-        self.episode_count = 1
+        self.episode_count += 1
     
     def reset(self) -> np.ndarray:
         """
@@ -1384,7 +1387,7 @@ class GraspLiftTaskOptimized:
         try:
             # Reset compteurs step
             self.step_count = 0
-            self.reset_count = 1
+            self.reset_count += 1
             
             # Reset état MuJoCo
             mujoco.mj_resetData(self.model, self.data)
@@ -1440,7 +1443,7 @@ class GraspLiftTaskOptimized:
             # Position aléatoire
             cube_pos_noise = np.random.uniform(-pos_noise_scale, pos_noise_scale, 3)
             cube_pos_noise[2] *= 0.5  # Moins de variation en Z
-            new_cube_pos = base_pos  cube_pos_noise
+            new_cube_pos = base_pos + cube_pos_noise
             
             # Orientation aléatoire (quaternion)
             if orientation_noise_scale > 0:
@@ -1458,7 +1461,7 @@ class GraspLiftTaskOptimized:
             joint_noise_scale = 0.1 * self.curriculum_difficulty
             if joint_noise_scale > 0:
                 joint_noise = np.random.uniform(-joint_noise_scale, joint_noise_scale, self.model.nv)
-                self.data.qpos[:] = joint_noise
+                self.data.qpos[:] += joint_noise
                 self.data.qpos[:] = np.clip(self.data.qpos, -2*np.pi, 2*np.pi)  # Sécurité
             
             # Forward kinematics pour cohérence

@@ -284,8 +284,8 @@ class IntelligentCache:
         
         for key in self.cache:
             recency_score = current_time - self.access_times.get(key, 0)
-            frequency_score = 1.0 / (self.access_counts[key]  1)
-            scores[key] = recency_score  frequency_score
+            frequency_score = 1.0 / (self.access_counts[key] + 1)
+            scores[key] = recency_score + frequency_score
         
         # Suppression des items avec score le plus élevé (moins utiles)
         sorted_keys = sorted(scores.keys(), key=lambda k: scores[k], reverse=True)
@@ -396,13 +396,13 @@ class UltraPrioritizedReplayBuffer:
     
     def _update_tree(self, idx: int, priority: float):
         """Mise à jour segment tree efficace"""
-        tree_idx = idx  self.tree_size
+        tree_idx = idx + self.tree_size
         self.tree[tree_idx] = priority
         
         # Propagation vers racine
         while tree_idx > 1:
             tree_idx //= 2
-            self.tree[tree_idx] = self.tree[2 * tree_idx]  self.tree[2 * tree_idx  1]
+            self.tree[tree_idx] = self.tree[2 * tree_idx] + self.tree[2 * tree_idx + 1]
     
     def _get_priority_sum(self, start: int = 0, end: int = None) -> float:
         """Somme des priorités dans un range (O(log n))"""
@@ -410,17 +410,17 @@ class UltraPrioritizedReplayBuffer:
             end = self.actual_size
         
         # Conversion vers indices tree
-        start = self.tree_size
-        end = self.tree_size
+        start += self.tree_size
+        end += self.tree_size
         
         total = 0.0
         while start < end:
             if start % 2 == 1:
-                total = self.tree[start]
-                start = 1
+                total += self.tree[start]
+                start += 1
             if end % 2 == 1:
                 end -= 1
-                total = self.tree[end]
+                total += self.tree[end]
             start //= 2
             end //= 2
         
@@ -438,7 +438,7 @@ class UltraPrioritizedReplayBuffer:
         segment_size = total_priority / batch_size
         segments = np.arange(batch_size) * segment_size
         random_offsets = np.random.uniform(0, segment_size, size=batch_size)
-        samples = segments  random_offsets
+        samples = segments + random_offsets
         
         # Recherche indices correspondants dans tree
         indices = []
@@ -460,7 +460,7 @@ class UltraPrioritizedReplayBuffer:
                 tree_idx = left_child
             else:
                 value -= left_sum
-                tree_idx = left_child  1
+                tree_idx = left_child + 1
         
         return min(tree_idx - self.tree_size, self.actual_size - 1)
     
@@ -555,9 +555,9 @@ class UltraPrioritizedReplayBuffer:
             self._update_tree(self.ptr, self.max_priority)
             
             # Mise à jour état
-            self.ptr = (self.ptr  1) % self.size
-            self.actual_size = min(self.actual_size  1, self.size)
-            self.stats['total_additions'] = 1
+            self.ptr = (self.ptr + 1) % self.size
+            self.actual_size = min(self.actual_size + 1, self.size)
+            self.stats['total_additions'] += 1
             
             # Cache invalidation pour cohérence
             cache_key = f"sample_{self.stats['total_samples']}"
@@ -578,11 +578,11 @@ class UltraPrioritizedReplayBuffer:
         cached_result = self.cache.get(cache_key)
         
         if cached_result is not None:
-            self.stats['cache_hits'] = 1
+            self.stats['cache_hits'] += 1
             logger.debug("💾 Cache hit pour échantillonnage")
             return cached_result
         
-        self.stats['cache_misses'] = 1
+        self.stats['cache_misses'] += 1
         
         with self._error_recovery("sample"):
             # Échantillonnage proportionnel
@@ -590,11 +590,11 @@ class UltraPrioritizedReplayBuffer:
             
             # Calcul poids importance sampling
             total_priority = self._get_priority_sum()
-            min_priority = np.min([self.tree[i  self.tree_size] for i in indices])
+            min_priority = np.min([self.tree[i + self.tree_size] for i in indices])
             
             weights = []
             for idx in indices:
-                priority = self.tree[idx  self.tree_size]
+                priority = self.tree[idx + self.tree_size]
                 prob = priority / total_priority
                 weight = (self.actual_size * prob) ** (-self.beta)
                 weights.append(weight)
@@ -620,7 +620,7 @@ class UltraPrioritizedReplayBuffer:
             
             # Cache pour réutilisation
             self.cache.set(cache_key, result)
-            self.stats['total_samples'] = 1
+            self.stats['total_samples'] += 1
             
             return result
     
@@ -642,7 +642,7 @@ class UltraPrioritizedReplayBuffer:
             priorities = priorities_valid.metadata['tensor'].cpu().numpy()
             
             # Clipping et epsilon pour stabilité
-            priorities = np.abs(priorities)  self.epsilon
+            priorities = np.abs(priorities) + self.epsilon
             priorities = np.clip(priorities, self.epsilon, 100.0)
             
             # Mise à jour tree
@@ -651,7 +651,7 @@ class UltraPrioritizedReplayBuffer:
                     self._update_tree(idx, priority ** self.alpha)
                     self.max_priority = max(self.max_priority, priority)
             
-            self.stats['priority_updates'] = 1
+            self.stats['priority_updates'] += 1
     
     def get_stats(self) -> Dict[str, Any]:
         """Statistiques complètes du buffer"""
@@ -665,7 +665,7 @@ class UltraPrioritizedReplayBuffer:
             'total_additions': self.stats['total_additions'],
             'total_samples': self.stats['total_samples'],
             'priority_updates': self.stats['priority_updates'],
-            'cache_hit_ratio': self.stats['cache_hits'] / max(self.stats['cache_hits']  self.stats['cache_misses'], 1),
+            'cache_hit_ratio': self.stats['cache_hits'] / max(self.stats['cache_hits'] + self.stats['cache_misses'], 1),
             'cache_stats': cache_stats,
             'alpha': self.alpha,
             'beta': self.beta
@@ -806,11 +806,11 @@ class UltraAdvancedSACAgent:
                 super().__init__()
                 
                 # Normalisation d'entrée
-                self.input_norm = nn.LayerNorm(obs_dim  act_dim)
+                self.input_norm = nn.LayerNorm(obs_dim + act_dim)
                 
                 # Trunk partagé
                 layers = []
-                in_dim = obs_dim  act_dim
+                in_dim = obs_dim + act_dim
                 
                 for hidden_size in hidden_sizes:
                     layers.extend([
@@ -847,7 +847,7 @@ class UltraAdvancedSACAgent:
                 advantage = self.advantage_head(features)
                 
                 # Dueling: Q = V  A - mean(A)
-                q_value = value  advantage - advantage.mean(dim=-1, keepdim=True)
+                q_value = value + advantage - advantage.mean(dim=-1, keepdim=True)
                 
                 return q_value.squeeze(-1)
         
@@ -1112,7 +1112,7 @@ class UltraSACPERTrainer:
             yield
         finally:
             self.timers[name] = time.time() - start
-            self.counters[name] = 1
+            self.counters[name] += 1
     
     def _emergency_save(self):
         """Sauvegarde d'urgence en cas de problème"""
@@ -1136,7 +1136,7 @@ class UltraSACPERTrainer:
         """Mise à jour β pour PER avec annealing"""
         if self.per_beta_annealing:
             progress = min(self.step_count / self.total_steps, 1.0)
-            self.buffer.beta = self.per_beta_start  progress * (self.per_beta_end - self.per_beta_start)
+            self.buffer.beta = self.per_beta_start + progress * (self.per_beta_end - self.per_beta_start)
     
     def train(self):
         """Boucle d'entraînement ultra-robuste avec recovery automatique"""
@@ -1184,15 +1184,15 @@ class UltraSACPERTrainer:
                             logger.warning("⚠️  Échec stockage buffer")
                     
                     # Mise à jour métriques épisode
-                    episode_reward = reward
-                    episode_length = 1
+                    episode_reward += reward
+                    episode_length += 1
                     obs = next_obs
                     
                     # === FIN D'ÉPISODE ===
                     if done:
                         self.metrics['episode_rewards'].append(episode_reward)
                         self.metrics['episode_lengths'].append(episode_length)
-                        self.episode_count = 1
+                        self.episode_count += 1
                         
                         # Logging épisode
                         if self.episode_count % 10 == 0:
@@ -1309,7 +1309,7 @@ class UltraSACPERTrainer:
                     min_q_next = torch.min(q1_next, q2_next)
                     
                     alpha = torch.exp(self.agent.log_alpha)
-                    target_q = batch['rew']  self.gamma * (~batch['done']) * (min_q_next - alpha * next_log_probs)
+                    target_q = batch['rew'] + self.gamma * (~batch['done']) * (min_q_next - alpha * next_log_probs)
                 
                 # Mise à jour Q1 avec PER weights
                 q1_pred = self.agent.q1(batch['obs'], batch['act'])
@@ -1348,7 +1348,7 @@ class UltraSACPERTrainer:
                 self.agent.policy_optimizer.step()
                 
                 # === ENTROPIE ADAPTATIVE ===
-                alpha_loss = -(self.agent.log_alpha * (log_probs  self.agent.target_entropy).detach()).mean()
+                alpha_loss = -(self.agent.log_alpha * (log_probs + self.agent.target_entropy).detach()).mean()
                 
                 self.agent.alpha_optimizer.zero_grad()
                 alpha_loss.backward()
