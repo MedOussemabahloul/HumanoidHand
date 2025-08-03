@@ -18,33 +18,41 @@ task:
   # IDs MuJoCo critiques
   cube_body_name: "cube"
   
-  # Sensors (utilise ceux du modèle G1)
-  touch_sensors:
-    - "left_thumb_touch"
-    - "left_index_touch"
-    - "left_middle_touch"
-    - "left_ring_touch"
-    - "right_thumb_touch" 
-    - "right_index_touch"
-    - "right_middle_touch"
-    - "right_ring_touch"
+  # Sensors (désactivés car non disponibles dans le modèle G1)
+  # Les capteurs tactiles et de force ne sont pas définis dans g1_combined.xml
+  touch_sensors: []
+    # - "left_thumb_touch"
+    # - "left_index_touch"
+    # - "left_middle_touch"
+    # - "left_ring_touch"
+    # - "right_thumb_touch" 
+    # - "right_index_touch"
+    # - "right_middle_touch"
+    # - "right_ring_touch"
   
-  force_sensors:
-    - "left_thumb_force_x"
-    - "left_thumb_force_y" 
-    - "left_thumb_force_z"
-    - "left_index_force_x"
-    - "left_index_force_y"
-    - "left_index_force_z"
-    - "left_middle_force_x"
-    - "left_middle_force_y"
-    - "left_middle_force_z"
-    - "right_thumb_force_x"
-    - "right_thumb_force_y"
-    - "right_thumb_force_z"
-    - "right_index_force_x"
-    - "right_index_force_y"
-    - "right_index_force_z"
+  force_sensors: []
+    # - "left_thumb_force_x"
+    # - "left_thumb_force_y" 
+    # - "left_thumb_force_z"
+    # - "left_index_force_x"
+    # - "left_index_force_y"
+    # - "left_index_force_z"
+    # - "left_middle_force_x"
+    # - "left_middle_force_y"
+    # - "left_middle_force_z"
+    # - "right_thumb_force_x"
+    # - "right_thumb_force_y"
+    # - "right_thumb_force_z"
+    # - "right_index_force_x"
+    # - "right_index_force_y"
+    # - "right_index_force_z"
+  
+  # Sites de doigts (à définir selon le modèle G1)
+  finger_sites: []
+    # - "left_index_tip"
+    # - "left_thumb_tip"
+    # - "right_index_tip"
+    # - "right_thumb_tip"
   
   # Paramètres épisode
   max_steps_per_episode: 500
