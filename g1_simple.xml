@@ -1,0 +1,190 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mujoco model="g1_simple">
+  <compiler angle="radian" coordinate="local" />
+  <option timestep="0.002" iterations="50" solver="Newton" tolerance="1e-10">
+    <flag warmstart="enable" energy="enable" />
+  </option>
+  <size nconmax="100" njmax="1000" nstack="600000" />
+  <asset>
+    <texture type="skybox" builtin="flat" rgb1="0 0 0" rgb2="0 0 0" width="512" height="3072" />
+    <texture type="2d" name="groundplane" builtin="checker" mark="edge" rgb1="0.2 0.3 0.4" rgb2="0.1 0.2 0.3" markrgb="0.8 0.8 0.8" width="300" height="300" />
+    <material name="groundplane" texture="groundplane" texuniform="true" texrepeat="5 5" reflectance="0.2" />
+  </asset>
+  <worldbody>
+    <light cutoff="100" diffuse="1 1 1" dir="-0 0 -1.3" directional="true" exponent="1" pos="0 0 1.3" specular=".1 .1 .1" />
+    <geom name="floor" size="0 0 0.05" type="plane" material="groundplane" />
+    
+    <!-- Table -->
+    <body name="table" pos="0.5 0 0.01">
+      <geom name="table_top" type="box" size="0.4 0.3 0.02" rgba="0.8 0.6 0.4 1" pos="0 0 0" />
+      <geom name="table_leg1" type="box" size="0.02 0.02 0.2" rgba="0.6 0.4 0.2 1" pos="0.35 0.25 -0.2" />
+      <geom name="table_leg2" type="box" size="0.02 0.02 0.2" rgba="0.6 0.4 0.2 1" pos="-0.35 0.25 -0.2" />
+      <geom name="table_leg3" type="box" size="0.02 0.02 0.2" rgba="0.6 0.4 0.2 1" pos="0.35 -0.25 -0.2" />
+      <geom name="table_leg4" type="box" size="0.02 0.02 0.2" rgba="0.6 0.4 0.2 1" pos="-0.35 -0.25 -0.2" />
+    </body>
+    
+    <!-- Cube à manipuler -->
+    <body name="cube" pos="0.3 0 0.05">
+      <joint name="cube_free" type="free" />
+      <geom name="cube_geom" type="box" size="0.025 0.025 0.025" rgba="0.2 0.8 0.2 1" density="1000" friction="1 0.1 0.1" />
+    </body>
+    
+    <!-- Robot G1 simplifié - Bras droit -->
+    <body name="right_shoulder" pos="0.3 -0.2 0.3">
+      <joint name="right_shoulder_pitch" type="hinge" axis="0 1 0" range="-3.14 3.14" />
+      <joint name="right_shoulder_roll" type="hinge" axis="1 0 0" range="-3.14 3.14" />
+      <joint name="right_shoulder_yaw" type="hinge" axis="0 0 1" range="-3.14 3.14" />
+      <geom type="sphere" size="0.05" rgba="0.7 0.7 0.7 1" />
+      
+      <!-- Bras -->
+      <body name="right_upper_arm" pos="0 0 -0.15">
+        <joint name="right_elbow" type="hinge" axis="0 1 0" range="-3.14 3.14" />
+        <geom type="cylinder" size="0.03 0.15" rgba="0.7 0.7 0.7 1" />
+        
+        <!-- Avant-bras -->
+        <body name="right_forearm" pos="0 0 -0.15">
+          <joint name="right_wrist_roll" type="hinge" axis="1 0 0" range="-3.14 3.14" />
+          <joint name="right_wrist_pitch" type="hinge" axis="0 1 0" range="-3.14 3.14" />
+          <joint name="right_wrist_yaw" type="hinge" axis="0 0 1" range="-3.14 3.14" />
+          <geom type="cylinder" size="0.025 0.12" rgba="0.7 0.7 0.7 1" />
+          
+          <!-- Main -->
+          <body name="right_hand" pos="0 0 -0.06">
+            <geom type="sphere" size="0.04" rgba="0.8 0.8 0.8 1" />
+            
+            <!-- Doigts -->
+            <body name="right_thumb" pos="0.03 0 0">
+              <joint name="right_thumb_joint_0" type="hinge" axis="0 1 0" range="0 1.5" />
+              <geom type="capsule" size="0.01 0.03" rgba="0.8 0.8 0.8 1" />
+              <body name="right_thumb_tip" pos="0 0 -0.03">
+                <joint name="right_thumb_joint_1" type="hinge" axis="0 1 0" range="0 1.5" />
+                <geom type="sphere" size="0.01" rgba="0.8 0.8 0.8 1" />
+                <site name="right_thumb_tip_site" pos="0 0 0" size="0.005" type="sphere" />
+              </body>
+            </body>
+            
+            <body name="right_index" pos="0.02 0.02 0">
+              <joint name="right_index_joint_0" type="hinge" axis="0 1 0" range="0 1.5" />
+              <geom type="capsule" size="0.01 0.03" rgba="0.8 0.8 0.8 1" />
+              <body name="right_index_tip" pos="0 0 -0.03">
+                <joint name="right_index_joint_1" type="hinge" axis="0 1 0" range="0 1.5" />
+                <geom type="sphere" size="0.01" rgba="0.8 0.8 0.8 1" />
+                <site name="right_index_tip_site" pos="0 0 0" size="0.005" type="sphere" />
+              </body>
+            </body>
+            
+            <body name="right_middle" pos="0.02 0.04 0">
+              <joint name="right_middle_joint_0" type="hinge" axis="0 1 0" range="0 1.5" />
+              <geom type="capsule" size="0.01 0.03" rgba="0.8 0.8 0.8 1" />
+              <body name="right_middle_tip" pos="0 0 -0.03">
+                <joint name="right_middle_joint_1" type="hinge" axis="0 1 0" range="0 1.5" />
+                <geom type="sphere" size="0.01" rgba="0.8 0.8 0.8 1" />
+                <site name="right_middle_tip_site" pos="0 0 0" size="0.005" type="sphere" />
+              </body>
+            </body>
+            
+            <body name="right_ring" pos="0.02 0.06 0">
+              <joint name="right_ring_joint_0" type="hinge" axis="0 1 0" range="0 1.5" />
+              <geom type="capsule" size="0.01 0.03" rgba="0.8 0.8 0.8 1" />
+              <body name="right_ring_tip" pos="0 0 -0.03">
+                <joint name="right_ring_joint_1" type="hinge" axis="0 1 0" range="0 1.5" />
+                <geom type="sphere" size="0.01" rgba="0.8 0.8 0.8 1" />
+                <site name="right_ring_tip_site" pos="0 0 0" size="0.005" type="sphere" />
+              </body>
+            </body>
+            
+            <!-- Capteurs de force sur les doigts -->
+            <site name="right_thumb_force_sensor_0" pos="0.03 0 0" size="0.01" type="sphere" />
+            <site name="right_thumb_force_sensor_1" pos="0.03 0 0" size="0.01" type="sphere" />
+            <site name="right_thumb_force_sensor_2" pos="0.03 0 0" size="0.01" type="sphere" />
+            <site name="right_index_force_sensor_0" pos="0.02 0.02 0" size="0.01" type="sphere" />
+            <site name="right_index_force_sensor_1" pos="0.02 0.02 0" size="0.01" type="sphere" />
+            <site name="right_index_force_sensor_2" pos="0.02 0.02 0" size="0.01" type="sphere" />
+            <site name="right_middle_force_sensor_0" pos="0.02 0.04 0" size="0.01" type="sphere" />
+            <site name="right_middle_force_sensor_1" pos="0.02 0.04 0" size="0.01" type="sphere" />
+            <site name="right_middle_force_sensor_2" pos="0.02 0.04 0" size="0.01" type="sphere" />
+            <site name="right_ring_force_sensor_0" pos="0.02 0.06 0" size="0.01" type="sphere" />
+            <site name="right_ring_force_sensor_1" pos="0.02 0.06 0" size="0.01" type="sphere" />
+            <site name="right_ring_force_sensor_2" pos="0.02 0.06 0" size="0.01" type="sphere" />
+          </body>
+        </body>
+      </body>
+    </body>
+  </worldbody>
+  
+  <actuator>
+    <!-- Bras droit -->
+    <position name="act_right_shoulder_pitch" joint="right_shoulder_pitch" gear="1" kp="100" kv="10" />
+    <position name="act_right_shoulder_roll" joint="right_shoulder_roll" gear="1" kp="100" kv="10" />
+    <position name="act_right_shoulder_yaw" joint="right_shoulder_yaw" gear="1" kp="100" kv="10" />
+    <position name="act_right_elbow" joint="right_elbow" gear="1" kp="100" kv="10" />
+    <position name="act_right_wrist_roll" joint="right_wrist_roll" gear="1" kp="100" kv="10" />
+    <position name="act_right_wrist_pitch" joint="right_wrist_pitch" gear="1" kp="100" kv="10" />
+    <position name="act_right_wrist_yaw" joint="right_wrist_yaw" gear="1" kp="100" kv="10" />
+    
+    <!-- Doigts -->
+    <position name="act_right_thumb_joint_0" joint="right_thumb_joint_0" gear="1" kp="100" kv="10" />
+    <position name="act_right_thumb_joint_1" joint="right_thumb_joint_1" gear="1" kp="100" kv="10" />
+    <position name="act_right_index_joint_0" joint="right_index_joint_0" gear="1" kp="100" kv="10" />
+    <position name="act_right_index_joint_1" joint="right_index_joint_1" gear="1" kp="100" kv="10" />
+    <position name="act_right_middle_joint_0" joint="right_middle_joint_0" gear="1" kp="100" kv="10" />
+    <position name="act_right_middle_joint_1" joint="right_middle_joint_1" gear="1" kp="100" kv="10" />
+    <position name="act_right_ring_joint_0" joint="right_ring_joint_0" gear="1" kp="100" kv="10" />
+    <position name="act_right_ring_joint_1" joint="right_ring_joint_1" gear="1" kp="100" kv="10" />
+  </actuator>
+  
+  <sensor>
+    <!-- Capteurs tactiles -->
+    <touch name="right_thumb_tip_sensor" site="right_thumb_tip_site" />
+    <touch name="right_index_tip_sensor" site="right_index_tip_site" />
+    <touch name="right_middle_tip_sensor" site="right_middle_tip_site" />
+    <touch name="right_ring_tip_sensor" site="right_ring_tip_site" />
+    
+    <!-- Capteurs de force -->
+    <force name="right_thumb_force_sensor_0" site="right_thumb_force_sensor_0" />
+    <force name="right_thumb_force_sensor_1" site="right_thumb_force_sensor_1" />
+    <force name="right_thumb_force_sensor_2" site="right_thumb_force_sensor_2" />
+    <force name="right_index_force_sensor_0" site="right_index_force_sensor_0" />
+    <force name="right_index_force_sensor_1" site="right_index_force_sensor_1" />
+    <force name="right_index_force_sensor_2" site="right_index_force_sensor_2" />
+    <force name="right_middle_force_sensor_0" site="right_middle_force_sensor_0" />
+    <force name="right_middle_force_sensor_1" site="right_middle_force_sensor_1" />
+    <force name="right_middle_force_sensor_2" site="right_middle_force_sensor_2" />
+    <force name="right_ring_force_sensor_0" site="right_ring_force_sensor_0" />
+    <force name="right_ring_force_sensor_1" site="right_ring_force_sensor_1" />
+    <force name="right_ring_force_sensor_2" site="right_ring_force_sensor_2" />
+    
+    <!-- Capteurs de position et vitesse -->
+    <jointpos name="pos_right_shoulder_pitch" joint="right_shoulder_pitch" />
+    <jointpos name="pos_right_shoulder_roll" joint="right_shoulder_roll" />
+    <jointpos name="pos_right_shoulder_yaw" joint="right_shoulder_yaw" />
+    <jointpos name="pos_right_elbow" joint="right_elbow" />
+    <jointpos name="pos_right_wrist_roll" joint="right_wrist_roll" />
+    <jointpos name="pos_right_wrist_pitch" joint="right_wrist_pitch" />
+    <jointpos name="pos_right_wrist_yaw" joint="right_wrist_yaw" />
+    <jointpos name="pos_right_thumb_joint_0" joint="right_thumb_joint_0" />
+    <jointpos name="pos_right_thumb_joint_1" joint="right_thumb_joint_1" />
+    <jointpos name="pos_right_index_joint_0" joint="right_index_joint_0" />
+    <jointpos name="pos_right_index_joint_1" joint="right_index_joint_1" />
+    <jointpos name="pos_right_middle_joint_0" joint="right_middle_joint_0" />
+    <jointpos name="pos_right_middle_joint_1" joint="right_middle_joint_1" />
+    <jointpos name="pos_right_ring_joint_0" joint="right_ring_joint_0" />
+    <jointpos name="pos_right_ring_joint_1" joint="right_ring_joint_1" />
+    
+    <jointvel name="vel_right_shoulder_pitch" joint="right_shoulder_pitch" />
+    <jointvel name="vel_right_shoulder_roll" joint="right_shoulder_roll" />
+    <jointvel name="vel_right_shoulder_yaw" joint="right_shoulder_yaw" />
+    <jointvel name="vel_right_elbow" joint="right_elbow" />
+    <jointvel name="vel_right_wrist_roll" joint="right_wrist_roll" />
+    <jointvel name="vel_right_wrist_pitch" joint="right_wrist_pitch" />
+    <jointvel name="vel_right_wrist_yaw" joint="right_wrist_yaw" />
+    <jointvel name="vel_right_thumb_joint_0" joint="right_thumb_joint_0" />
+    <jointvel name="vel_right_thumb_joint_1" joint="right_thumb_joint_1" />
+    <jointvel name="vel_right_index_joint_0" joint="right_index_joint_0" />
+    <jointvel name="vel_right_index_joint_1" joint="right_index_joint_1" />
+    <jointvel name="vel_right_middle_joint_0" joint="right_middle_joint_0" />
+    <jointvel name="vel_right_middle_joint_1" joint="right_middle_joint_1" />
+    <jointvel name="vel_right_ring_joint_0" joint="right_ring_joint_0" />
+    <jointvel name="vel_right_ring_joint_1" joint="right_ring_joint_1" />
+  </sensor>
+</mujoco>
