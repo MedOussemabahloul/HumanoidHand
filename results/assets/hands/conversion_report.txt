@@ -1,0 +1,921 @@
+=== RAPPORT DE CONVERSION URDF vers MuJoCo ===
+
+Dossier source: /home/oussema/Documents/project/assets/urdf
+Dossier de sortie: /home/oussema/Documents/project/assets/mujoco_urdf
+
+Conversions réussies: 0
+Conversions échouées: 0
+
+=== LOG DÉTAILLÉ ===
+Trouvé 60 fichiers URDF
+Conversion: /home/oussema/Documents/project/assets/urdf/mano-urdf/urdf/mano_right_fixed_con.urdf -> /home/oussema/Documents/project/assets/mujoco_urdf/mano-urdf/urdf/mano_right_fixed_con.xml
+❌ Erreur lors de la conversion de /home/oussema/Documents/project/assets/urdf/mano-urdf/urdf/mano_right_fixed_con.urdf
+   Sortie: 
+   Erreur: Traceback (most recent call last):
+  File "/home/oussema/Documents/project/venv/bin/urdf2mjcf", line 5, in <module>
+    from urdf2mjcf.convert import main
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/__init__.py", line 3, in <module>
+    from .convert import convert_urdf_to_mjcf as run
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/convert.py", line 55
+    ef self_heal_urdf_xml(urdf_path: Path) -> None:
+       ^^^^^^^^^^^^^^^^^^
+SyntaxError: invalid syntax
+
+⚠️ Attempting fallback conversion
+🔄 Using basic XML fallback conversion
+Conversion: /home/oussema/Documents/project/assets/urdf/mano-urdf/urdf/mano_left_fixed_free.urdf -> /home/oussema/Documents/project/assets/mujoco_urdf/mano-urdf/urdf/mano_left_fixed_free.xml
+❌ Erreur lors de la conversion de /home/oussema/Documents/project/assets/urdf/mano-urdf/urdf/mano_left_fixed_free.urdf
+   Sortie: 
+   Erreur: Traceback (most recent call last):
+  File "/home/oussema/Documents/project/venv/bin/urdf2mjcf", line 5, in <module>
+    from urdf2mjcf.convert import main
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/__init__.py", line 3, in <module>
+    from .convert import convert_urdf_to_mjcf as run
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/convert.py", line 55
+    ef self_heal_urdf_xml(urdf_path: Path) -> None:
+       ^^^^^^^^^^^^^^^^^^
+SyntaxError: invalid syntax
+
+⚠️ Attempting fallback conversion
+🔄 Using basic XML fallback conversion
+Conversion: /home/oussema/Documents/project/assets/urdf/mano-urdf/urdf/mano_right.urdf -> /home/oussema/Documents/project/assets/mujoco_urdf/mano-urdf/urdf/mano_right.xml
+❌ Erreur lors de la conversion de /home/oussema/Documents/project/assets/urdf/mano-urdf/urdf/mano_right.urdf
+   Sortie: 
+   Erreur: Traceback (most recent call last):
+  File "/home/oussema/Documents/project/venv/bin/urdf2mjcf", line 5, in <module>
+    from urdf2mjcf.convert import main
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/__init__.py", line 3, in <module>
+    from .convert import convert_urdf_to_mjcf as run
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/convert.py", line 55
+    ef self_heal_urdf_xml(urdf_path: Path) -> None:
+       ^^^^^^^^^^^^^^^^^^
+SyntaxError: invalid syntax
+
+⚠️ Attempting fallback conversion
+🔄 Using basic XML fallback conversion
+Conversion: /home/oussema/Documents/project/assets/urdf/mano-urdf/urdf/mano_left_fixed.urdf -> /home/oussema/Documents/project/assets/mujoco_urdf/mano-urdf/urdf/mano_left_fixed.xml
+❌ Erreur lors de la conversion de /home/oussema/Documents/project/assets/urdf/mano-urdf/urdf/mano_left_fixed.urdf
+   Sortie: 
+   Erreur: Traceback (most recent call last):
+  File "/home/oussema/Documents/project/venv/bin/urdf2mjcf", line 5, in <module>
+    from urdf2mjcf.convert import main
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/__init__.py", line 3, in <module>
+    from .convert import convert_urdf_to_mjcf as run
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/convert.py", line 55
+    ef self_heal_urdf_xml(urdf_path: Path) -> None:
+       ^^^^^^^^^^^^^^^^^^
+SyntaxError: invalid syntax
+
+⚠️ Attempting fallback conversion
+🔄 Using basic XML fallback conversion
+Conversion: /home/oussema/Documents/project/assets/urdf/mano-urdf/urdf/mano_left_fixed_constraint.urdf -> /home/oussema/Documents/project/assets/mujoco_urdf/mano-urdf/urdf/mano_left_fixed_constraint.xml
+❌ Erreur lors de la conversion de /home/oussema/Documents/project/assets/urdf/mano-urdf/urdf/mano_left_fixed_constraint.urdf
+   Sortie: 
+   Erreur: Traceback (most recent call last):
+  File "/home/oussema/Documents/project/venv/bin/urdf2mjcf", line 5, in <module>
+    from urdf2mjcf.convert import main
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/__init__.py", line 3, in <module>
+    from .convert import convert_urdf_to_mjcf as run
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/convert.py", line 55
+    ef self_heal_urdf_xml(urdf_path: Path) -> None:
+       ^^^^^^^^^^^^^^^^^^
+SyntaxError: invalid syntax
+
+⚠️ Attempting fallback conversion
+🔄 Using basic XML fallback conversion
+❌ Fallback conversion failed: mismatched tag: line 81, column 3
+Conversion: /home/oussema/Documents/project/assets/urdf/mano-urdf/urdf/mano_right_fixed.urdf -> /home/oussema/Documents/project/assets/mujoco_urdf/mano-urdf/urdf/mano_right_fixed.xml
+❌ Erreur lors de la conversion de /home/oussema/Documents/project/assets/urdf/mano-urdf/urdf/mano_right_fixed.urdf
+   Sortie: 
+   Erreur: Traceback (most recent call last):
+  File "/home/oussema/Documents/project/venv/bin/urdf2mjcf", line 5, in <module>
+    from urdf2mjcf.convert import main
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/__init__.py", line 3, in <module>
+    from .convert import convert_urdf_to_mjcf as run
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/convert.py", line 55
+    ef self_heal_urdf_xml(urdf_path: Path) -> None:
+       ^^^^^^^^^^^^^^^^^^
+SyntaxError: invalid syntax
+
+⚠️ Attempting fallback conversion
+🔄 Using basic XML fallback conversion
+Conversion: /home/oussema/Documents/project/assets/urdf/mano-urdf/urdf/mano_left.urdf -> /home/oussema/Documents/project/assets/mujoco_urdf/mano-urdf/urdf/mano_left.xml
+❌ Erreur lors de la conversion de /home/oussema/Documents/project/assets/urdf/mano-urdf/urdf/mano_left.urdf
+   Sortie: 
+   Erreur: Traceback (most recent call last):
+  File "/home/oussema/Documents/project/venv/bin/urdf2mjcf", line 5, in <module>
+    from urdf2mjcf.convert import main
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/__init__.py", line 3, in <module>
+    from .convert import convert_urdf_to_mjcf as run
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/convert.py", line 55
+    ef self_heal_urdf_xml(urdf_path: Path) -> None:
+       ^^^^^^^^^^^^^^^^^^
+SyntaxError: invalid syntax
+
+⚠️ Attempting fallback conversion
+🔄 Using basic XML fallback conversion
+Conversion: /home/oussema/Documents/project/assets/urdf/mano-urdf/urdf/mano_right_fixed_free.urdf -> /home/oussema/Documents/project/assets/mujoco_urdf/mano-urdf/urdf/mano_right_fixed_free.xml
+❌ Erreur lors de la conversion de /home/oussema/Documents/project/assets/urdf/mano-urdf/urdf/mano_right_fixed_free.urdf
+   Sortie: 
+   Erreur: Traceback (most recent call last):
+  File "/home/oussema/Documents/project/venv/bin/urdf2mjcf", line 5, in <module>
+    from urdf2mjcf.convert import main
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/__init__.py", line 3, in <module>
+    from .convert import convert_urdf_to_mjcf as run
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/convert.py", line 55
+    ef self_heal_urdf_xml(urdf_path: Path) -> None:
+       ^^^^^^^^^^^^^^^^^^
+SyntaxError: invalid syntax
+
+⚠️ Attempting fallback conversion
+🔄 Using basic XML fallback conversion
+Conversion: /home/oussema/Documents/project/assets/urdf/shadow_hand_description/shadowhand.urdf -> /home/oussema/Documents/project/assets/mujoco_urdf/shadow_hand_description/shadowhand.xml
+❌ Erreur lors de la conversion de /home/oussema/Documents/project/assets/urdf/shadow_hand_description/shadowhand.urdf
+   Sortie: 
+   Erreur: Traceback (most recent call last):
+  File "/home/oussema/Documents/project/venv/bin/urdf2mjcf", line 5, in <module>
+    from urdf2mjcf.convert import main
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/__init__.py", line 3, in <module>
+    from .convert import convert_urdf_to_mjcf as run
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/convert.py", line 55
+    ef self_heal_urdf_xml(urdf_path: Path) -> None:
+       ^^^^^^^^^^^^^^^^^^
+SyntaxError: invalid syntax
+
+⚠️ Attempting fallback conversion
+🔄 Using basic XML fallback conversion
+Conversion: /home/oussema/Documents/project/assets/urdf/shadow_hand_description/ur10e_schunkhand_right_digital_twin.urdf -> /home/oussema/Documents/project/assets/mujoco_urdf/shadow_hand_description/ur10e_schunkhand_right_digital_twin.xml
+❌ Erreur lors de la conversion de /home/oussema/Documents/project/assets/urdf/shadow_hand_description/ur10e_schunkhand_right_digital_twin.urdf
+   Sortie: 
+   Erreur: Traceback (most recent call last):
+  File "/home/oussema/Documents/project/venv/bin/urdf2mjcf", line 5, in <module>
+    from urdf2mjcf.convert import main
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/__init__.py", line 3, in <module>
+    from .convert import convert_urdf_to_mjcf as run
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/convert.py", line 55
+    ef self_heal_urdf_xml(urdf_path: Path) -> None:
+       ^^^^^^^^^^^^^^^^^^
+SyntaxError: invalid syntax
+
+⚠️ Attempting fallback conversion
+🔄 Using basic XML fallback conversion
+Conversion: /home/oussema/Documents/project/assets/urdf/shadow_hand_description/ur10e_shadowhand_left.urdf -> /home/oussema/Documents/project/assets/mujoco_urdf/shadow_hand_description/ur10e_shadowhand_left.xml
+❌ Erreur lors de la conversion de /home/oussema/Documents/project/assets/urdf/shadow_hand_description/ur10e_shadowhand_left.urdf
+   Sortie: 
+   Erreur: Traceback (most recent call last):
+  File "/home/oussema/Documents/project/venv/bin/urdf2mjcf", line 5, in <module>
+    from urdf2mjcf.convert import main
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/__init__.py", line 3, in <module>
+    from .convert import convert_urdf_to_mjcf as run
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/convert.py", line 55
+    ef self_heal_urdf_xml(urdf_path: Path) -> None:
+       ^^^^^^^^^^^^^^^^^^
+SyntaxError: invalid syntax
+
+⚠️ Attempting fallback conversion
+🔄 Using basic XML fallback conversion
+Conversion: /home/oussema/Documents/project/assets/urdf/shadow_hand_description/ur10e_shadowhand_right_digital_twin.urdf -> /home/oussema/Documents/project/assets/mujoco_urdf/shadow_hand_description/ur10e_shadowhand_right_digital_twin.xml
+❌ Erreur lors de la conversion de /home/oussema/Documents/project/assets/urdf/shadow_hand_description/ur10e_shadowhand_right_digital_twin.urdf
+   Sortie: 
+   Erreur: Traceback (most recent call last):
+  File "/home/oussema/Documents/project/venv/bin/urdf2mjcf", line 5, in <module>
+    from urdf2mjcf.convert import main
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/__init__.py", line 3, in <module>
+    from .convert import convert_urdf_to_mjcf as run
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/convert.py", line 55
+    ef self_heal_urdf_xml(urdf_path: Path) -> None:
+       ^^^^^^^^^^^^^^^^^^
+SyntaxError: invalid syntax
+
+⚠️ Attempting fallback conversion
+🔄 Using basic XML fallback conversion
+Conversion: /home/oussema/Documents/project/assets/urdf/shadow_hand_description/shadowhand_free.urdf -> /home/oussema/Documents/project/assets/mujoco_urdf/shadow_hand_description/shadowhand_free.xml
+❌ Erreur lors de la conversion de /home/oussema/Documents/project/assets/urdf/shadow_hand_description/shadowhand_free.urdf
+   Sortie: 
+   Erreur: Traceback (most recent call last):
+  File "/home/oussema/Documents/project/venv/bin/urdf2mjcf", line 5, in <module>
+    from urdf2mjcf.convert import main
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/__init__.py", line 3, in <module>
+    from .convert import convert_urdf_to_mjcf as run
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/convert.py", line 55
+    ef self_heal_urdf_xml(urdf_path: Path) -> None:
+       ^^^^^^^^^^^^^^^^^^
+SyntaxError: invalid syntax
+
+⚠️ Attempting fallback conversion
+🔄 Using basic XML fallback conversion
+Conversion: /home/oussema/Documents/project/assets/urdf/shadow_hand_description/ur10e_shadowhand_left_fingertip_ik.urdf -> /home/oussema/Documents/project/assets/mujoco_urdf/shadow_hand_description/ur10e_shadowhand_left_fingertip_ik.xml
+❌ Erreur lors de la conversion de /home/oussema/Documents/project/assets/urdf/shadow_hand_description/ur10e_shadowhand_left_fingertip_ik.urdf
+   Sortie: 
+   Erreur: Traceback (most recent call last):
+  File "/home/oussema/Documents/project/venv/bin/urdf2mjcf", line 5, in <module>
+    from urdf2mjcf.convert import main
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/__init__.py", line 3, in <module>
+    from .convert import convert_urdf_to_mjcf as run
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/convert.py", line 55
+    ef self_heal_urdf_xml(urdf_path: Path) -> None:
+       ^^^^^^^^^^^^^^^^^^
+SyntaxError: invalid syntax
+
+⚠️ Attempting fallback conversion
+🔄 Using basic XML fallback conversion
+Conversion: /home/oussema/Documents/project/assets/urdf/shadow_hand_description/ur10e_allegrohand_right_digital_twin.urdf -> /home/oussema/Documents/project/assets/mujoco_urdf/shadow_hand_description/ur10e_allegrohand_right_digital_twin.xml
+❌ Erreur lors de la conversion de /home/oussema/Documents/project/assets/urdf/shadow_hand_description/ur10e_allegrohand_right_digital_twin.urdf
+   Sortie: 
+   Erreur: Traceback (most recent call last):
+  File "/home/oussema/Documents/project/venv/bin/urdf2mjcf", line 5, in <module>
+    from urdf2mjcf.convert import main
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/__init__.py", line 3, in <module>
+    from .convert import convert_urdf_to_mjcf as run
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/convert.py", line 55
+    ef self_heal_urdf_xml(urdf_path: Path) -> None:
+       ^^^^^^^^^^^^^^^^^^
+SyntaxError: invalid syntax
+
+⚠️ Attempting fallback conversion
+🔄 Using basic XML fallback conversion
+Conversion: /home/oussema/Documents/project/assets/urdf/shadow_hand_description/ur10e_shadowhand_right_digital_twin_origin.urdf -> /home/oussema/Documents/project/assets/mujoco_urdf/shadow_hand_description/ur10e_shadowhand_right_digital_twin_origin.xml
+❌ Erreur lors de la conversion de /home/oussema/Documents/project/assets/urdf/shadow_hand_description/ur10e_shadowhand_right_digital_twin_origin.urdf
+   Sortie: 
+   Erreur: Traceback (most recent call last):
+  File "/home/oussema/Documents/project/venv/bin/urdf2mjcf", line 5, in <module>
+    from urdf2mjcf.convert import main
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/__init__.py", line 3, in <module>
+    from .convert import convert_urdf_to_mjcf as run
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/convert.py", line 55
+    ef self_heal_urdf_xml(urdf_path: Path) -> None:
+       ^^^^^^^^^^^^^^^^^^
+SyntaxError: invalid syntax
+
+⚠️ Attempting fallback conversion
+🔄 Using basic XML fallback conversion
+Conversion: /home/oussema/Documents/project/assets/urdf/shadow_hand_description/ur10e_shadowhand_right.urdf -> /home/oussema/Documents/project/assets/mujoco_urdf/shadow_hand_description/ur10e_shadowhand_right.xml
+❌ Erreur lors de la conversion de /home/oussema/Documents/project/assets/urdf/shadow_hand_description/ur10e_shadowhand_right.urdf
+   Sortie: 
+   Erreur: Traceback (most recent call last):
+  File "/home/oussema/Documents/project/venv/bin/urdf2mjcf", line 5, in <module>
+    from urdf2mjcf.convert import main
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/__init__.py", line 3, in <module>
+    from .convert import convert_urdf_to_mjcf as run
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/convert.py", line 55
+    ef self_heal_urdf_xml(urdf_path: Path) -> None:
+       ^^^^^^^^^^^^^^^^^^
+SyntaxError: invalid syntax
+
+⚠️ Attempting fallback conversion
+🔄 Using basic XML fallback conversion
+Conversion: /home/oussema/Documents/project/assets/urdf/shadow_hand_description/shadowhand_new.urdf -> /home/oussema/Documents/project/assets/mujoco_urdf/shadow_hand_description/shadowhand_new.xml
+❌ Erreur lors de la conversion de /home/oussema/Documents/project/assets/urdf/shadow_hand_description/shadowhand_new.urdf
+   Sortie: 
+   Erreur: Traceback (most recent call last):
+  File "/home/oussema/Documents/project/venv/bin/urdf2mjcf", line 5, in <module>
+    from urdf2mjcf.convert import main
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/__init__.py", line 3, in <module>
+    from .convert import convert_urdf_to_mjcf as run
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/convert.py", line 55
+    ef self_heal_urdf_xml(urdf_path: Path) -> None:
+       ^^^^^^^^^^^^^^^^^^
+SyntaxError: invalid syntax
+
+⚠️ Attempting fallback conversion
+🔄 Using basic XML fallback conversion
+Conversion: /home/oussema/Documents/project/assets/urdf/shadow_hand_description/shadowhand_with_fingertips.urdf -> /home/oussema/Documents/project/assets/mujoco_urdf/shadow_hand_description/shadowhand_with_fingertips.xml
+❌ Erreur lors de la conversion de /home/oussema/Documents/project/assets/urdf/shadow_hand_description/shadowhand_with_fingertips.urdf
+   Sortie: 
+   Erreur: Traceback (most recent call last):
+  File "/home/oussema/Documents/project/venv/bin/urdf2mjcf", line 5, in <module>
+    from urdf2mjcf.convert import main
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/__init__.py", line 3, in <module>
+    from .convert import convert_urdf_to_mjcf as run
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/convert.py", line 55
+    ef self_heal_urdf_xml(urdf_path: Path) -> None:
+       ^^^^^^^^^^^^^^^^^^
+SyntaxError: invalid syntax
+
+⚠️ Attempting fallback conversion
+🔄 Using basic XML fallback conversion
+Conversion: /home/oussema/Documents/project/assets/urdf/shadow_hand_description/ur10e_schunkhand_left_digital_twin.urdf -> /home/oussema/Documents/project/assets/mujoco_urdf/shadow_hand_description/ur10e_schunkhand_left_digital_twin.xml
+❌ Erreur lors de la conversion de /home/oussema/Documents/project/assets/urdf/shadow_hand_description/ur10e_schunkhand_left_digital_twin.urdf
+   Sortie: 
+   Erreur: Traceback (most recent call last):
+  File "/home/oussema/Documents/project/venv/bin/urdf2mjcf", line 5, in <module>
+    from urdf2mjcf.convert import main
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/__init__.py", line 3, in <module>
+    from .convert import convert_urdf_to_mjcf as run
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/convert.py", line 55
+    ef self_heal_urdf_xml(urdf_path: Path) -> None:
+       ^^^^^^^^^^^^^^^^^^
+SyntaxError: invalid syntax
+
+⚠️ Attempting fallback conversion
+🔄 Using basic XML fallback conversion
+Conversion: /home/oussema/Documents/project/assets/urdf/shadow_hand_description/kuka_shadow.urdf -> /home/oussema/Documents/project/assets/mujoco_urdf/shadow_hand_description/kuka_shadow.xml
+❌ Erreur lors de la conversion de /home/oussema/Documents/project/assets/urdf/shadow_hand_description/kuka_shadow.urdf
+   Sortie: 
+   Erreur: Traceback (most recent call last):
+  File "/home/oussema/Documents/project/venv/bin/urdf2mjcf", line 5, in <module>
+    from urdf2mjcf.convert import main
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/__init__.py", line 3, in <module>
+    from .convert import convert_urdf_to_mjcf as run
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/convert.py", line 55
+    ef self_heal_urdf_xml(urdf_path: Path) -> None:
+       ^^^^^^^^^^^^^^^^^^
+SyntaxError: invalid syntax
+
+⚠️ Attempting fallback conversion
+🔄 Using basic XML fallback conversion
+Conversion: /home/oussema/Documents/project/assets/urdf/shadow_hand_description/ur10e_abilityhand_right_digital_twin.urdf -> /home/oussema/Documents/project/assets/mujoco_urdf/shadow_hand_description/ur10e_abilityhand_right_digital_twin.xml
+❌ Erreur lors de la conversion de /home/oussema/Documents/project/assets/urdf/shadow_hand_description/ur10e_abilityhand_right_digital_twin.urdf
+   Sortie: 
+   Erreur: Traceback (most recent call last):
+  File "/home/oussema/Documents/project/venv/bin/urdf2mjcf", line 5, in <module>
+    from urdf2mjcf.convert import main
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/__init__.py", line 3, in <module>
+    from .convert import convert_urdf_to_mjcf as run
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/convert.py", line 55
+    ef self_heal_urdf_xml(urdf_path: Path) -> None:
+       ^^^^^^^^^^^^^^^^^^
+SyntaxError: invalid syntax
+
+⚠️ Attempting fallback conversion
+🔄 Using basic XML fallback conversion
+Conversion: /home/oussema/Documents/project/assets/urdf/shadow_hand_description/kuka_shadow_fix.urdf -> /home/oussema/Documents/project/assets/mujoco_urdf/shadow_hand_description/kuka_shadow_fix.xml
+❌ Erreur lors de la conversion de /home/oussema/Documents/project/assets/urdf/shadow_hand_description/kuka_shadow_fix.urdf
+   Sortie: 
+   Erreur: Traceback (most recent call last):
+  File "/home/oussema/Documents/project/venv/bin/urdf2mjcf", line 5, in <module>
+    from urdf2mjcf.convert import main
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/__init__.py", line 3, in <module>
+    from .convert import convert_urdf_to_mjcf as run
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/convert.py", line 55
+    ef self_heal_urdf_xml(urdf_path: Path) -> None:
+       ^^^^^^^^^^^^^^^^^^
+SyntaxError: invalid syntax
+
+⚠️ Attempting fallback conversion
+🔄 Using basic XML fallback conversion
+Conversion: /home/oussema/Documents/project/assets/urdf/shadow_hand_description/ur10e_shadowhand_right_fingertip_ik.urdf -> /home/oussema/Documents/project/assets/mujoco_urdf/shadow_hand_description/ur10e_shadowhand_right_fingertip_ik.xml
+❌ Erreur lors de la conversion de /home/oussema/Documents/project/assets/urdf/shadow_hand_description/ur10e_shadowhand_right_fingertip_ik.urdf
+   Sortie: 
+   Erreur: Traceback (most recent call last):
+  File "/home/oussema/Documents/project/venv/bin/urdf2mjcf", line 5, in <module>
+    from urdf2mjcf.convert import main
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/__init__.py", line 3, in <module>
+    from .convert import convert_urdf_to_mjcf as run
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/convert.py", line 55
+    ef self_heal_urdf_xml(urdf_path: Path) -> None:
+       ^^^^^^^^^^^^^^^^^^
+SyntaxError: invalid syntax
+
+⚠️ Attempting fallback conversion
+🔄 Using basic XML fallback conversion
+Conversion: /home/oussema/Documents/project/assets/urdf/shadow_hand_description/franka_shadow.urdf -> /home/oussema/Documents/project/assets/mujoco_urdf/shadow_hand_description/franka_shadow.xml
+❌ Erreur lors de la conversion de /home/oussema/Documents/project/assets/urdf/shadow_hand_description/franka_shadow.urdf
+   Sortie: 
+   Erreur: Traceback (most recent call last):
+  File "/home/oussema/Documents/project/venv/bin/urdf2mjcf", line 5, in <module>
+    from urdf2mjcf.convert import main
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/__init__.py", line 3, in <module>
+    from .convert import convert_urdf_to_mjcf as run
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/convert.py", line 55
+    ef self_heal_urdf_xml(urdf_path: Path) -> None:
+       ^^^^^^^^^^^^^^^^^^
+SyntaxError: invalid syntax
+
+⚠️ Attempting fallback conversion
+🔄 Using basic XML fallback conversion
+Conversion: /home/oussema/Documents/project/assets/urdf/shadow_hand_description/shadowhand_left_free.urdf -> /home/oussema/Documents/project/assets/mujoco_urdf/shadow_hand_description/shadowhand_left_free.xml
+❌ Erreur lors de la conversion de /home/oussema/Documents/project/assets/urdf/shadow_hand_description/shadowhand_left_free.urdf
+   Sortie: 
+   Erreur: Traceback (most recent call last):
+  File "/home/oussema/Documents/project/venv/bin/urdf2mjcf", line 5, in <module>
+    from urdf2mjcf.convert import main
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/__init__.py", line 3, in <module>
+    from .convert import convert_urdf_to_mjcf as run
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/convert.py", line 55
+    ef self_heal_urdf_xml(urdf_path: Path) -> None:
+       ^^^^^^^^^^^^^^^^^^
+SyntaxError: invalid syntax
+
+⚠️ Attempting fallback conversion
+🔄 Using basic XML fallback conversion
+Conversion: /home/oussema/Documents/project/assets/urdf/shadow_hand_description/franka_panda_allegro.urdf -> /home/oussema/Documents/project/assets/mujoco_urdf/shadow_hand_description/franka_panda_allegro.xml
+❌ Erreur lors de la conversion de /home/oussema/Documents/project/assets/urdf/shadow_hand_description/franka_panda_allegro.urdf
+   Sortie: 
+   Erreur: Traceback (most recent call last):
+  File "/home/oussema/Documents/project/venv/bin/urdf2mjcf", line 5, in <module>
+    from urdf2mjcf.convert import main
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/__init__.py", line 3, in <module>
+    from .convert import convert_urdf_to_mjcf as run
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/convert.py", line 55
+    ef self_heal_urdf_xml(urdf_path: Path) -> None:
+       ^^^^^^^^^^^^^^^^^^
+SyntaxError: invalid syntax
+
+⚠️ Attempting fallback conversion
+🔄 Using basic XML fallback conversion
+Conversion: /home/oussema/Documents/project/assets/urdf/shadow_hand_description/ur10e_abilityhand_left_digital_twin.urdf -> /home/oussema/Documents/project/assets/mujoco_urdf/shadow_hand_description/ur10e_abilityhand_left_digital_twin.xml
+❌ Erreur lors de la conversion de /home/oussema/Documents/project/assets/urdf/shadow_hand_description/ur10e_abilityhand_left_digital_twin.urdf
+   Sortie: 
+   Erreur: Traceback (most recent call last):
+  File "/home/oussema/Documents/project/venv/bin/urdf2mjcf", line 5, in <module>
+    from urdf2mjcf.convert import main
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/__init__.py", line 3, in <module>
+    from .convert import convert_urdf_to_mjcf as run
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/convert.py", line 55
+    ef self_heal_urdf_xml(urdf_path: Path) -> None:
+       ^^^^^^^^^^^^^^^^^^
+SyntaxError: invalid syntax
+
+⚠️ Attempting fallback conversion
+🔄 Using basic XML fallback conversion
+Conversion: /home/oussema/Documents/project/assets/urdf/shadow_hand_description/ur10e_allegrohand_left_digital_twin.urdf -> /home/oussema/Documents/project/assets/mujoco_urdf/shadow_hand_description/ur10e_allegrohand_left_digital_twin.xml
+❌ Erreur lors de la conversion de /home/oussema/Documents/project/assets/urdf/shadow_hand_description/ur10e_allegrohand_left_digital_twin.urdf
+   Sortie: 
+   Erreur: Traceback (most recent call last):
+  File "/home/oussema/Documents/project/venv/bin/urdf2mjcf", line 5, in <module>
+    from urdf2mjcf.convert import main
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/__init__.py", line 3, in <module>
+    from .convert import convert_urdf_to_mjcf as run
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/convert.py", line 55
+    ef self_heal_urdf_xml(urdf_path: Path) -> None:
+       ^^^^^^^^^^^^^^^^^^
+SyntaxError: invalid syntax
+
+⚠️ Attempting fallback conversion
+🔄 Using basic XML fallback conversion
+Conversion: /home/oussema/Documents/project/assets/urdf/shadow_hand_description/ur10e_shadowhand_left_digital_twin.urdf -> /home/oussema/Documents/project/assets/mujoco_urdf/shadow_hand_description/ur10e_shadowhand_left_digital_twin.xml
+❌ Erreur lors de la conversion de /home/oussema/Documents/project/assets/urdf/shadow_hand_description/ur10e_shadowhand_left_digital_twin.urdf
+   Sortie: 
+   Erreur: Traceback (most recent call last):
+  File "/home/oussema/Documents/project/venv/bin/urdf2mjcf", line 5, in <module>
+    from urdf2mjcf.convert import main
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/__init__.py", line 3, in <module>
+    from .convert import convert_urdf_to_mjcf as run
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/convert.py", line 55
+    ef self_heal_urdf_xml(urdf_path: Path) -> None:
+       ^^^^^^^^^^^^^^^^^^
+SyntaxError: invalid syntax
+
+⚠️ Attempting fallback conversion
+🔄 Using basic XML fallback conversion
+Conversion: /home/oussema/Documents/project/assets/urdf/shadow_hand_description/schunk_hand/schunk_svh_hand_right.urdf -> /home/oussema/Documents/project/assets/mujoco_urdf/shadow_hand_description/schunk_hand/schunk_svh_hand_right.xml
+❌ Erreur lors de la conversion de /home/oussema/Documents/project/assets/urdf/shadow_hand_description/schunk_hand/schunk_svh_hand_right.urdf
+   Sortie: 
+   Erreur: Traceback (most recent call last):
+  File "/home/oussema/Documents/project/venv/bin/urdf2mjcf", line 5, in <module>
+    from urdf2mjcf.convert import main
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/__init__.py", line 3, in <module>
+    from .convert import convert_urdf_to_mjcf as run
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/convert.py", line 55
+    ef self_heal_urdf_xml(urdf_path: Path) -> None:
+       ^^^^^^^^^^^^^^^^^^
+SyntaxError: invalid syntax
+
+⚠️ Attempting fallback conversion
+🔄 Using basic XML fallback conversion
+Conversion: /home/oussema/Documents/project/assets/urdf/shadow_hand_description/schunk_hand/schunk_svh_hand_left.urdf -> /home/oussema/Documents/project/assets/mujoco_urdf/shadow_hand_description/schunk_hand/schunk_svh_hand_left.xml
+❌ Erreur lors de la conversion de /home/oussema/Documents/project/assets/urdf/shadow_hand_description/schunk_hand/schunk_svh_hand_left.urdf
+   Sortie: 
+   Erreur: Traceback (most recent call last):
+  File "/home/oussema/Documents/project/venv/bin/urdf2mjcf", line 5, in <module>
+    from urdf2mjcf.convert import main
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/__init__.py", line 3, in <module>
+    from .convert import convert_urdf_to_mjcf as run
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/convert.py", line 55
+    ef self_heal_urdf_xml(urdf_path: Path) -> None:
+       ^^^^^^^^^^^^^^^^^^
+SyntaxError: invalid syntax
+
+⚠️ Attempting fallback conversion
+🔄 Using basic XML fallback conversion
+Conversion: /home/oussema/Documents/project/assets/urdf/shadow_hand_description/schunk_hand/schunk_svh_hand_left_glb.urdf -> /home/oussema/Documents/project/assets/mujoco_urdf/shadow_hand_description/schunk_hand/schunk_svh_hand_left_glb.xml
+❌ Erreur lors de la conversion de /home/oussema/Documents/project/assets/urdf/shadow_hand_description/schunk_hand/schunk_svh_hand_left_glb.urdf
+   Sortie: 
+   Erreur: Traceback (most recent call last):
+  File "/home/oussema/Documents/project/venv/bin/urdf2mjcf", line 5, in <module>
+    from urdf2mjcf.convert import main
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/__init__.py", line 3, in <module>
+    from .convert import convert_urdf_to_mjcf as run
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/convert.py", line 55
+    ef self_heal_urdf_xml(urdf_path: Path) -> None:
+       ^^^^^^^^^^^^^^^^^^
+SyntaxError: invalid syntax
+
+⚠️ Attempting fallback conversion
+🔄 Using basic XML fallback conversion
+Conversion: /home/oussema/Documents/project/assets/urdf/shadow_hand_description/schunk_hand/schunk_svh_hand_right_glb.urdf -> /home/oussema/Documents/project/assets/mujoco_urdf/shadow_hand_description/schunk_hand/schunk_svh_hand_right_glb.xml
+❌ Erreur lors de la conversion de /home/oussema/Documents/project/assets/urdf/shadow_hand_description/schunk_hand/schunk_svh_hand_right_glb.urdf
+   Sortie: 
+   Erreur: Traceback (most recent call last):
+  File "/home/oussema/Documents/project/venv/bin/urdf2mjcf", line 5, in <module>
+    from urdf2mjcf.convert import main
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/__init__.py", line 3, in <module>
+    from .convert import convert_urdf_to_mjcf as run
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/convert.py", line 55
+    ef self_heal_urdf_xml(urdf_path: Path) -> None:
+       ^^^^^^^^^^^^^^^^^^
+SyntaxError: invalid syntax
+
+⚠️ Attempting fallback conversion
+🔄 Using basic XML fallback conversion
+Conversion: /home/oussema/Documents/project/assets/urdf/shadow_hand_description/allegro_hand_description/allegro_hand_free.urdf -> /home/oussema/Documents/project/assets/mujoco_urdf/shadow_hand_description/allegro_hand_description/allegro_hand_free.xml
+❌ Erreur lors de la conversion de /home/oussema/Documents/project/assets/urdf/shadow_hand_description/allegro_hand_description/allegro_hand_free.urdf
+   Sortie: 
+   Erreur: Traceback (most recent call last):
+  File "/home/oussema/Documents/project/venv/bin/urdf2mjcf", line 5, in <module>
+    from urdf2mjcf.convert import main
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/__init__.py", line 3, in <module>
+    from .convert import convert_urdf_to_mjcf as run
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/convert.py", line 55
+    ef self_heal_urdf_xml(urdf_path: Path) -> None:
+       ^^^^^^^^^^^^^^^^^^
+SyntaxError: invalid syntax
+
+⚠️ Attempting fallback conversion
+🔄 Using basic XML fallback conversion
+Conversion: /home/oussema/Documents/project/assets/urdf/shadow_hand_description/allegro_hand_description/franka_panda_allegro.urdf -> /home/oussema/Documents/project/assets/mujoco_urdf/shadow_hand_description/allegro_hand_description/franka_panda_allegro.xml
+❌ Erreur lors de la conversion de /home/oussema/Documents/project/assets/urdf/shadow_hand_description/allegro_hand_description/franka_panda_allegro.urdf
+   Sortie: 
+   Erreur: Traceback (most recent call last):
+  File "/home/oussema/Documents/project/venv/bin/urdf2mjcf", line 5, in <module>
+    from urdf2mjcf.convert import main
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/__init__.py", line 3, in <module>
+    from .convert import convert_urdf_to_mjcf as run
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/convert.py", line 55
+    ef self_heal_urdf_xml(urdf_path: Path) -> None:
+       ^^^^^^^^^^^^^^^^^^
+SyntaxError: invalid syntax
+
+⚠️ Attempting fallback conversion
+🔄 Using basic XML fallback conversion
+Conversion: /home/oussema/Documents/project/assets/urdf/shadow_hand_description/ur_e_description/urdf/use_case_setup_ur10_e.urdf -> /home/oussema/Documents/project/assets/mujoco_urdf/shadow_hand_description/ur_e_description/urdf/use_case_setup_ur10_e.xml
+❌ Erreur lors de la conversion de /home/oussema/Documents/project/assets/urdf/shadow_hand_description/ur_e_description/urdf/use_case_setup_ur10_e.urdf
+   Sortie: 
+   Erreur: Traceback (most recent call last):
+  File "/home/oussema/Documents/project/venv/bin/urdf2mjcf", line 5, in <module>
+    from urdf2mjcf.convert import main
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/__init__.py", line 3, in <module>
+    from .convert import convert_urdf_to_mjcf as run
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/convert.py", line 55
+    ef self_heal_urdf_xml(urdf_path: Path) -> None:
+       ^^^^^^^^^^^^^^^^^^
+SyntaxError: invalid syntax
+
+⚠️ Attempting fallback conversion
+🔄 Using basic XML fallback conversion
+Conversion: /home/oussema/Documents/project/assets/urdf/shadow_hand_description/franka_description/robots/franka_panda_allegro_free_right.urdf -> /home/oussema/Documents/project/assets/mujoco_urdf/shadow_hand_description/franka_description/robots/franka_panda_allegro_free_right.xml
+❌ Erreur lors de la conversion de /home/oussema/Documents/project/assets/urdf/shadow_hand_description/franka_description/robots/franka_panda_allegro_free_right.urdf
+   Sortie: 
+   Erreur: Traceback (most recent call last):
+  File "/home/oussema/Documents/project/venv/bin/urdf2mjcf", line 5, in <module>
+    from urdf2mjcf.convert import main
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/__init__.py", line 3, in <module>
+    from .convert import convert_urdf_to_mjcf as run
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/convert.py", line 55
+    ef self_heal_urdf_xml(urdf_path: Path) -> None:
+       ^^^^^^^^^^^^^^^^^^
+SyntaxError: invalid syntax
+
+⚠️ Attempting fallback conversion
+🔄 Using basic XML fallback conversion
+Conversion: /home/oussema/Documents/project/assets/urdf/shadow_hand_description/franka_description/robots/franka_panda_gripper.urdf -> /home/oussema/Documents/project/assets/mujoco_urdf/shadow_hand_description/franka_description/robots/franka_panda_gripper.xml
+❌ Erreur lors de la conversion de /home/oussema/Documents/project/assets/urdf/shadow_hand_description/franka_description/robots/franka_panda_gripper.urdf
+   Sortie: 
+   Erreur: Traceback (most recent call last):
+  File "/home/oussema/Documents/project/venv/bin/urdf2mjcf", line 5, in <module>
+    from urdf2mjcf.convert import main
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/__init__.py", line 3, in <module>
+    from .convert import convert_urdf_to_mjcf as run
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/convert.py", line 55
+    ef self_heal_urdf_xml(urdf_path: Path) -> None:
+       ^^^^^^^^^^^^^^^^^^
+SyntaxError: invalid syntax
+
+⚠️ Attempting fallback conversion
+🔄 Using basic XML fallback conversion
+Conversion: /home/oussema/Documents/project/assets/urdf/shadow_hand_description/franka_description/robots/franka_panda.urdf -> /home/oussema/Documents/project/assets/mujoco_urdf/shadow_hand_description/franka_description/robots/franka_panda.xml
+❌ Erreur lors de la conversion de /home/oussema/Documents/project/assets/urdf/shadow_hand_description/franka_description/robots/franka_panda.urdf
+   Sortie: 
+   Erreur: Traceback (most recent call last):
+  File "/home/oussema/Documents/project/venv/bin/urdf2mjcf", line 5, in <module>
+    from urdf2mjcf.convert import main
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/__init__.py", line 3, in <module>
+    from .convert import convert_urdf_to_mjcf as run
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/convert.py", line 55
+    ef self_heal_urdf_xml(urdf_path: Path) -> None:
+       ^^^^^^^^^^^^^^^^^^
+SyntaxError: invalid syntax
+
+⚠️ Attempting fallback conversion
+🔄 Using basic XML fallback conversion
+Conversion: /home/oussema/Documents/project/assets/urdf/shadow_hand_description/franka_description/robots/franka_panda_allegro_fixed.urdf -> /home/oussema/Documents/project/assets/mujoco_urdf/shadow_hand_description/franka_description/robots/franka_panda_allegro_fixed.xml
+❌ Erreur lors de la conversion de /home/oussema/Documents/project/assets/urdf/shadow_hand_description/franka_description/robots/franka_panda_allegro_fixed.urdf
+   Sortie: 
+   Erreur: Traceback (most recent call last):
+  File "/home/oussema/Documents/project/venv/bin/urdf2mjcf", line 5, in <module>
+    from urdf2mjcf.convert import main
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/__init__.py", line 3, in <module>
+    from .convert import convert_urdf_to_mjcf as run
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/convert.py", line 55
+    ef self_heal_urdf_xml(urdf_path: Path) -> None:
+       ^^^^^^^^^^^^^^^^^^
+SyntaxError: invalid syntax
+
+⚠️ Attempting fallback conversion
+🔄 Using basic XML fallback conversion
+Conversion: /home/oussema/Documents/project/assets/urdf/shadow_hand_description/franka_description/robots/allegro.urdf -> /home/oussema/Documents/project/assets/mujoco_urdf/shadow_hand_description/franka_description/robots/allegro.xml
+❌ Erreur lors de la conversion de /home/oussema/Documents/project/assets/urdf/shadow_hand_description/franka_description/robots/allegro.urdf
+   Sortie: 
+   Erreur: Traceback (most recent call last):
+  File "/home/oussema/Documents/project/venv/bin/urdf2mjcf", line 5, in <module>
+    from urdf2mjcf.convert import main
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/__init__.py", line 3, in <module>
+    from .convert import convert_urdf_to_mjcf as run
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/convert.py", line 55
+    ef self_heal_urdf_xml(urdf_path: Path) -> None:
+       ^^^^^^^^^^^^^^^^^^
+SyntaxError: invalid syntax
+
+⚠️ Attempting fallback conversion
+🔄 Using basic XML fallback conversion
+Conversion: /home/oussema/Documents/project/assets/urdf/shadow_hand_description/franka_description/robots/franka_panda_allegro_isaacsim.urdf -> /home/oussema/Documents/project/assets/mujoco_urdf/shadow_hand_description/franka_description/robots/franka_panda_allegro_isaacsim.xml
+❌ Erreur lors de la conversion de /home/oussema/Documents/project/assets/urdf/shadow_hand_description/franka_description/robots/franka_panda_allegro_isaacsim.urdf
+   Sortie: 
+   Erreur: Traceback (most recent call last):
+  File "/home/oussema/Documents/project/venv/bin/urdf2mjcf", line 5, in <module>
+    from urdf2mjcf.convert import main
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/__init__.py", line 3, in <module>
+    from .convert import convert_urdf_to_mjcf as run
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/convert.py", line 55
+    ef self_heal_urdf_xml(urdf_path: Path) -> None:
+       ^^^^^^^^^^^^^^^^^^
+SyntaxError: invalid syntax
+
+⚠️ Attempting fallback conversion
+🔄 Using basic XML fallback conversion
+Conversion: /home/oussema/Documents/project/assets/urdf/shadow_hand_description/franka_description/robots/franka_panda_allegro_free_left.urdf -> /home/oussema/Documents/project/assets/mujoco_urdf/shadow_hand_description/franka_description/robots/franka_panda_allegro_free_left.xml
+❌ Erreur lors de la conversion de /home/oussema/Documents/project/assets/urdf/shadow_hand_description/franka_description/robots/franka_panda_allegro_free_left.urdf
+   Sortie: 
+   Erreur: Traceback (most recent call last):
+  File "/home/oussema/Documents/project/venv/bin/urdf2mjcf", line 5, in <module>
+    from urdf2mjcf.convert import main
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/__init__.py", line 3, in <module>
+    from .convert import convert_urdf_to_mjcf as run
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/convert.py", line 55
+    ef self_heal_urdf_xml(urdf_path: Path) -> None:
+       ^^^^^^^^^^^^^^^^^^
+SyntaxError: invalid syntax
+
+⚠️ Attempting fallback conversion
+🔄 Using basic XML fallback conversion
+Conversion: /home/oussema/Documents/project/assets/urdf/shadow_hand_description/franka_description/robots/realsense_d435.urdf -> /home/oussema/Documents/project/assets/mujoco_urdf/shadow_hand_description/franka_description/robots/realsense_d435.xml
+❌ Erreur lors de la conversion de /home/oussema/Documents/project/assets/urdf/shadow_hand_description/franka_description/robots/realsense_d435.urdf
+   Sortie: 
+   Erreur: Traceback (most recent call last):
+  File "/home/oussema/Documents/project/venv/bin/urdf2mjcf", line 5, in <module>
+    from urdf2mjcf.convert import main
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/__init__.py", line 3, in <module>
+    from .convert import convert_urdf_to_mjcf as run
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/convert.py", line 55
+    ef self_heal_urdf_xml(urdf_path: Path) -> None:
+       ^^^^^^^^^^^^^^^^^^
+SyntaxError: invalid syntax
+
+⚠️ Attempting fallback conversion
+🔄 Using basic XML fallback conversion
+Conversion: /home/oussema/Documents/project/assets/urdf/shadow_hand_description/franka_description/robots/franka_panda_allegro.urdf -> /home/oussema/Documents/project/assets/mujoco_urdf/shadow_hand_description/franka_description/robots/franka_panda_allegro.xml
+❌ Erreur lors de la conversion de /home/oussema/Documents/project/assets/urdf/shadow_hand_description/franka_description/robots/franka_panda_allegro.urdf
+   Sortie: 
+   Erreur: Traceback (most recent call last):
+  File "/home/oussema/Documents/project/venv/bin/urdf2mjcf", line 5, in <module>
+    from urdf2mjcf.convert import main
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/__init__.py", line 3, in <module>
+    from .convert import convert_urdf_to_mjcf as run
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/convert.py", line 55
+    ef self_heal_urdf_xml(urdf_path: Path) -> None:
+       ^^^^^^^^^^^^^^^^^^
+SyntaxError: invalid syntax
+
+⚠️ Attempting fallback conversion
+🔄 Using basic XML fallback conversion
+Conversion: /home/oussema/Documents/project/assets/urdf/shadow_hand_description/franka_description/allegro_hand_description/allegro_hand_free.urdf -> /home/oussema/Documents/project/assets/mujoco_urdf/shadow_hand_description/franka_description/allegro_hand_description/allegro_hand_free.xml
+❌ Erreur lors de la conversion de /home/oussema/Documents/project/assets/urdf/shadow_hand_description/franka_description/allegro_hand_description/allegro_hand_free.urdf
+   Sortie: 
+   Erreur: Traceback (most recent call last):
+  File "/home/oussema/Documents/project/venv/bin/urdf2mjcf", line 5, in <module>
+    from urdf2mjcf.convert import main
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/__init__.py", line 3, in <module>
+    from .convert import convert_urdf_to_mjcf as run
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/convert.py", line 55
+    ef self_heal_urdf_xml(urdf_path: Path) -> None:
+       ^^^^^^^^^^^^^^^^^^
+SyntaxError: invalid syntax
+
+⚠️ Attempting fallback conversion
+🔄 Using basic XML fallback conversion
+Conversion: /home/oussema/Documents/project/assets/urdf/shadow_hand_description/franka_description/allegro_hand_description/franka_panda_allegro.urdf -> /home/oussema/Documents/project/assets/mujoco_urdf/shadow_hand_description/franka_description/allegro_hand_description/franka_panda_allegro.xml
+❌ Erreur lors de la conversion de /home/oussema/Documents/project/assets/urdf/shadow_hand_description/franka_description/allegro_hand_description/franka_panda_allegro.urdf
+   Sortie: 
+   Erreur: Traceback (most recent call last):
+  File "/home/oussema/Documents/project/venv/bin/urdf2mjcf", line 5, in <module>
+    from urdf2mjcf.convert import main
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/__init__.py", line 3, in <module>
+    from .convert import convert_urdf_to_mjcf as run
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/convert.py", line 55
+    ef self_heal_urdf_xml(urdf_path: Path) -> None:
+       ^^^^^^^^^^^^^^^^^^
+SyntaxError: invalid syntax
+
+⚠️ Attempting fallback conversion
+🔄 Using basic XML fallback conversion
+Conversion: /home/oussema/Documents/project/assets/urdf/shadow_hand_description/ability_hand/ability_hand_left_glb.urdf -> /home/oussema/Documents/project/assets/mujoco_urdf/shadow_hand_description/ability_hand/ability_hand_left_glb.xml
+❌ Erreur lors de la conversion de /home/oussema/Documents/project/assets/urdf/shadow_hand_description/ability_hand/ability_hand_left_glb.urdf
+   Sortie: 
+   Erreur: Traceback (most recent call last):
+  File "/home/oussema/Documents/project/venv/bin/urdf2mjcf", line 5, in <module>
+    from urdf2mjcf.convert import main
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/__init__.py", line 3, in <module>
+    from .convert import convert_urdf_to_mjcf as run
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/convert.py", line 55
+    ef self_heal_urdf_xml(urdf_path: Path) -> None:
+       ^^^^^^^^^^^^^^^^^^
+SyntaxError: invalid syntax
+
+⚠️ Attempting fallback conversion
+🔄 Using basic XML fallback conversion
+Conversion: /home/oussema/Documents/project/assets/urdf/shadow_hand_description/ability_hand/ability_hand_right_glb.urdf -> /home/oussema/Documents/project/assets/mujoco_urdf/shadow_hand_description/ability_hand/ability_hand_right_glb.xml
+❌ Erreur lors de la conversion de /home/oussema/Documents/project/assets/urdf/shadow_hand_description/ability_hand/ability_hand_right_glb.urdf
+   Sortie: 
+   Erreur: Traceback (most recent call last):
+  File "/home/oussema/Documents/project/venv/bin/urdf2mjcf", line 5, in <module>
+    from urdf2mjcf.convert import main
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/__init__.py", line 3, in <module>
+    from .convert import convert_urdf_to_mjcf as run
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/convert.py", line 55
+    ef self_heal_urdf_xml(urdf_path: Path) -> None:
+       ^^^^^^^^^^^^^^^^^^
+SyntaxError: invalid syntax
+
+⚠️ Attempting fallback conversion
+🔄 Using basic XML fallback conversion
+Conversion: /home/oussema/Documents/project/assets/urdf/shadow_hand_description/ability_hand/ability_hand_right.urdf -> /home/oussema/Documents/project/assets/mujoco_urdf/shadow_hand_description/ability_hand/ability_hand_right.xml
+❌ Erreur lors de la conversion de /home/oussema/Documents/project/assets/urdf/shadow_hand_description/ability_hand/ability_hand_right.urdf
+   Sortie: 
+   Erreur: Traceback (most recent call last):
+  File "/home/oussema/Documents/project/venv/bin/urdf2mjcf", line 5, in <module>
+    from urdf2mjcf.convert import main
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/__init__.py", line 3, in <module>
+    from .convert import convert_urdf_to_mjcf as run
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/convert.py", line 55
+    ef self_heal_urdf_xml(urdf_path: Path) -> None:
+       ^^^^^^^^^^^^^^^^^^
+SyntaxError: invalid syntax
+
+⚠️ Attempting fallback conversion
+🔄 Using basic XML fallback conversion
+Conversion: /home/oussema/Documents/project/assets/urdf/shadow_hand_description/ability_hand/ability_hand_left.urdf -> /home/oussema/Documents/project/assets/mujoco_urdf/shadow_hand_description/ability_hand/ability_hand_left.xml
+❌ Erreur lors de la conversion de /home/oussema/Documents/project/assets/urdf/shadow_hand_description/ability_hand/ability_hand_left.urdf
+   Sortie: 
+   Erreur: Traceback (most recent call last):
+  File "/home/oussema/Documents/project/venv/bin/urdf2mjcf", line 5, in <module>
+    from urdf2mjcf.convert import main
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/__init__.py", line 3, in <module>
+    from .convert import convert_urdf_to_mjcf as run
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/convert.py", line 55
+    ef self_heal_urdf_xml(urdf_path: Path) -> None:
+       ^^^^^^^^^^^^^^^^^^
+SyntaxError: invalid syntax
+
+⚠️ Attempting fallback conversion
+🔄 Using basic XML fallback conversion
+Conversion: /home/oussema/Documents/project/assets/urdf/shadow_hand/shadow_hand_right_glb.urdf -> /home/oussema/Documents/project/assets/mujoco_urdf/shadow_hand/shadow_hand_right_glb.xml
+❌ Erreur lors de la conversion de /home/oussema/Documents/project/assets/urdf/shadow_hand/shadow_hand_right_glb.urdf
+   Sortie: 
+   Erreur: Traceback (most recent call last):
+  File "/home/oussema/Documents/project/venv/bin/urdf2mjcf", line 5, in <module>
+    from urdf2mjcf.convert import main
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/__init__.py", line 3, in <module>
+    from .convert import convert_urdf_to_mjcf as run
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/convert.py", line 55
+    ef self_heal_urdf_xml(urdf_path: Path) -> None:
+       ^^^^^^^^^^^^^^^^^^
+SyntaxError: invalid syntax
+
+⚠️ Attempting fallback conversion
+🔄 Using basic XML fallback conversion
+Conversion: /home/oussema/Documents/project/assets/urdf/shadow_hand/shadow_hand_left_for_ik.urdf -> /home/oussema/Documents/project/assets/mujoco_urdf/shadow_hand/shadow_hand_left_for_ik.xml
+❌ Erreur lors de la conversion de /home/oussema/Documents/project/assets/urdf/shadow_hand/shadow_hand_left_for_ik.urdf
+   Sortie: 
+   Erreur: Traceback (most recent call last):
+  File "/home/oussema/Documents/project/venv/bin/urdf2mjcf", line 5, in <module>
+    from urdf2mjcf.convert import main
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/__init__.py", line 3, in <module>
+    from .convert import convert_urdf_to_mjcf as run
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/convert.py", line 55
+    ef self_heal_urdf_xml(urdf_path: Path) -> None:
+       ^^^^^^^^^^^^^^^^^^
+SyntaxError: invalid syntax
+
+⚠️ Attempting fallback conversion
+🔄 Using basic XML fallback conversion
+Conversion: /home/oussema/Documents/project/assets/urdf/shadow_hand/shadow_hand_right_for_ik.urdf -> /home/oussema/Documents/project/assets/mujoco_urdf/shadow_hand/shadow_hand_right_for_ik.xml
+❌ Erreur lors de la conversion de /home/oussema/Documents/project/assets/urdf/shadow_hand/shadow_hand_right_for_ik.urdf
+   Sortie: 
+   Erreur: Traceback (most recent call last):
+  File "/home/oussema/Documents/project/venv/bin/urdf2mjcf", line 5, in <module>
+    from urdf2mjcf.convert import main
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/__init__.py", line 3, in <module>
+    from .convert import convert_urdf_to_mjcf as run
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/convert.py", line 55
+    ef self_heal_urdf_xml(urdf_path: Path) -> None:
+       ^^^^^^^^^^^^^^^^^^
+SyntaxError: invalid syntax
+
+⚠️ Attempting fallback conversion
+🔄 Using basic XML fallback conversion
+Conversion: /home/oussema/Documents/project/assets/urdf/shadow_hand/bimanual.urdf -> /home/oussema/Documents/project/assets/mujoco_urdf/shadow_hand/bimanual.xml
+❌ Erreur lors de la conversion de /home/oussema/Documents/project/assets/urdf/shadow_hand/bimanual.urdf
+   Sortie: 
+   Erreur: Traceback (most recent call last):
+  File "/home/oussema/Documents/project/venv/bin/urdf2mjcf", line 5, in <module>
+    from urdf2mjcf.convert import main
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/__init__.py", line 3, in <module>
+    from .convert import convert_urdf_to_mjcf as run
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/convert.py", line 55
+    ef self_heal_urdf_xml(urdf_path: Path) -> None:
+       ^^^^^^^^^^^^^^^^^^
+SyntaxError: invalid syntax
+
+⚠️ Attempting fallback conversion
+🔄 Using basic XML fallback conversion
+Conversion: /home/oussema/Documents/project/assets/urdf/shadow_hand/shadow_hand_left_glb.urdf -> /home/oussema/Documents/project/assets/mujoco_urdf/shadow_hand/shadow_hand_left_glb.xml
+❌ Erreur lors de la conversion de /home/oussema/Documents/project/assets/urdf/shadow_hand/shadow_hand_left_glb.urdf
+   Sortie: 
+   Erreur: Traceback (most recent call last):
+  File "/home/oussema/Documents/project/venv/bin/urdf2mjcf", line 5, in <module>
+    from urdf2mjcf.convert import main
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/__init__.py", line 3, in <module>
+    from .convert import convert_urdf_to_mjcf as run
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/convert.py", line 55
+    ef self_heal_urdf_xml(urdf_path: Path) -> None:
+       ^^^^^^^^^^^^^^^^^^
+SyntaxError: invalid syntax
+
+⚠️ Attempting fallback conversion
+🔄 Using basic XML fallback conversion
+Conversion: /home/oussema/Documents/project/assets/urdf/shadow_hand/shadow_hand_right.urdf -> /home/oussema/Documents/project/assets/mujoco_urdf/shadow_hand/shadow_hand_right.xml
+❌ Erreur lors de la conversion de /home/oussema/Documents/project/assets/urdf/shadow_hand/shadow_hand_right.urdf
+   Sortie: 
+   Erreur: Traceback (most recent call last):
+  File "/home/oussema/Documents/project/venv/bin/urdf2mjcf", line 5, in <module>
+    from urdf2mjcf.convert import main
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/__init__.py", line 3, in <module>
+    from .convert import convert_urdf_to_mjcf as run
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/convert.py", line 55
+    ef self_heal_urdf_xml(urdf_path: Path) -> None:
+       ^^^^^^^^^^^^^^^^^^
+SyntaxError: invalid syntax
+
+⚠️ Attempting fallback conversion
+🔄 Using basic XML fallback conversion
+Conversion: /home/oussema/Documents/project/assets/urdf/shadow_hand/shadow_hand_left.urdf -> /home/oussema/Documents/project/assets/mujoco_urdf/shadow_hand/shadow_hand_left.xml
+❌ Erreur lors de la conversion de /home/oussema/Documents/project/assets/urdf/shadow_hand/shadow_hand_left.urdf
+   Sortie: 
+   Erreur: Traceback (most recent call last):
+  File "/home/oussema/Documents/project/venv/bin/urdf2mjcf", line 5, in <module>
+    from urdf2mjcf.convert import main
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/__init__.py", line 3, in <module>
+    from .convert import convert_urdf_to_mjcf as run
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/convert.py", line 55
+    ef self_heal_urdf_xml(urdf_path: Path) -> None:
+       ^^^^^^^^^^^^^^^^^^
+SyntaxError: invalid syntax
+
+⚠️ Attempting fallback conversion
+🔄 Using basic XML fallback conversion
+Conversion: /home/oussema/Documents/project/assets/urdf/shadow_hand/shadow_hand_right_free.urdf -> /home/oussema/Documents/project/assets/mujoco_urdf/shadow_hand/shadow_hand_right_free.xml
+❌ Erreur lors de la conversion de /home/oussema/Documents/project/assets/urdf/shadow_hand/shadow_hand_right_free.urdf
+   Sortie: 
+   Erreur: Traceback (most recent call last):
+  File "/home/oussema/Documents/project/venv/bin/urdf2mjcf", line 5, in <module>
+    from urdf2mjcf.convert import main
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/__init__.py", line 3, in <module>
+    from .convert import convert_urdf_to_mjcf as run
+  File "/home/oussema/Documents/project/venv/lib/python3.10/site-packages/urdf2mjcf/convert.py", line 55
+    ef self_heal_urdf_xml(urdf_path: Path) -> None:
+       ^^^^^^^^^^^^^^^^^^
+SyntaxError: invalid syntax
+
+⚠️ Attempting fallback conversion
+🔄 Using basic XML fallback conversion
+Copie des meshes: /home/oussema/Documents/project/assets/urdf/mano-urdf/urdf/meshes -> /home/oussema/Documents/project/assets/mujoco_urdf/mano-urdf/urdf/meshes
+Copie des meshes: /home/oussema/Documents/project/assets/urdf/shadow_hand_description/meshes -> /home/oussema/Documents/project/assets/mujoco_urdf/shadow_hand_description/meshes
+Copie des meshes: /home/oussema/Documents/project/assets/urdf/shadow_hand_description/schunk_hand/meshes -> /home/oussema/Documents/project/assets/mujoco_urdf/shadow_hand_description/schunk_hand/meshes
+Copie des meshes: /home/oussema/Documents/project/assets/urdf/shadow_hand_description/shadow_hand/meshes -> /home/oussema/Documents/project/assets/mujoco_urdf/shadow_hand_description/shadow_hand/meshes
+Copie des meshes: /home/oussema/Documents/project/assets/urdf/shadow_hand_description/allegro_hand_description/meshes -> /home/oussema/Documents/project/assets/mujoco_urdf/shadow_hand_description/allegro_hand_description/meshes
+Copie des meshes: /home/oussema/Documents/project/assets/urdf/shadow_hand_description/ur_e_description/meshes -> /home/oussema/Documents/project/assets/mujoco_urdf/shadow_hand_description/ur_e_description/meshes
+Copie des meshes: /home/oussema/Documents/project/assets/urdf/shadow_hand_description/franka_description/meshes -> /home/oussema/Documents/project/assets/mujoco_urdf/shadow_hand_description/franka_description/meshes
+Copie des meshes: /home/oussema/Documents/project/assets/urdf/shadow_hand_description/franka_description/allegro_hand_description/meshes -> /home/oussema/Documents/project/assets/mujoco_urdf/shadow_hand_description/franka_description/allegro_hand_description/meshes
+Copie des meshes: /home/oussema/Documents/project/assets/urdf/shadow_hand_description/ability_hand/meshes -> /home/oussema/Documents/project/assets/mujoco_urdf/shadow_hand_description/ability_hand/meshes
+Copie des meshes: /home/oussema/Documents/project/assets/urdf/shadow_hand/meshes -> /home/oussema/Documents/project/assets/mujoco_urdf/shadow_hand/meshes
