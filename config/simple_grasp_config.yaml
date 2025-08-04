@@ -1,0 +1,85 @@
+# Configuration simplifiée pour l'entraînement du grasping
+# =============================================================================
+
+# Configuration de l'environnement
+env:
+  # Chemin vers le fichier XML MuJoCo (optionnel, un modèle simple sera créé si non trouvé)
+  xml_path: "assets/scenes/complete_scene.xml"
+  
+  # Mode de rendu ("human", "rgb_array", None)
+  render_mode: null
+  
+  # Résolution de la vidéo
+  width: 640
+  height: 480
+  
+  # Paramètres de simulation
+  max_steps_per_episode: 1000
+  
+  # Capteurs tactiles (noms dans le modèle MuJoCo)
+  touch_sensors:
+    - "touch1_sensor"
+    - "touch2_sensor"
+  
+  # Nom du corps du cube dans le modèle
+  cube_body_name: "cube"
+
+# Configuration de l'agent SAC
+agent:
+  # Architecture du réseau de neurones
+  hidden_sizes: [256, 256]
+  
+  # Hyperparamètres d'apprentissage
+  lr: 3e-4          # Taux d'apprentissage
+  gamma: 0.99       # Facteur de discount
+  tau: 0.005        # Paramètre de mise à jour des réseaux cibles
+  alpha: 0.2        # Paramètre d'entropie pour l'exploration
+
+# Configuration de l'entraînement
+training:
+  # Nombre d'épisodes d'entraînement
+  max_episodes: 1000
+  
+  # Nombre maximum d'étapes par épisode
+  max_steps_per_episode: 1000
+  
+  # Fréquence de mise à jour de l'agent (tous les N steps)
+  update_frequency: 1
+  
+  # Taille du batch pour l'entraînement
+  batch_size: 256
+  
+  # Fréquence de sauvegarde du modèle (tous les N épisodes)
+  save_frequency: 100
+  
+  # Fréquence d'enregistrement vidéo (tous les N épisodes)
+  eval_frequency: 50
+
+# Configuration de la tâche de grasping
+task:
+  # Récompenses
+  contact_reward: 10.0      # Récompense pour le premier contact
+  grasp_reward: 50.0        # Récompense pour le grasping réussi
+  lift_reward_weight: 1.0   # Poids de la récompense pour soulever
+  
+  # Seuils
+  contact_threshold: 0.1    # Seuil pour détecter le contact
+  success_height: 0.1       # Hauteur minimale pour considérer le succès
+  
+  # Enregistrement vidéo
+  record_video: true
+  video_path: "videos"
+
+# Répertoire de sortie
+output_dir: "results"
+
+# Configuration du système
+system:
+  # Utiliser GPU si disponible
+  use_gpu: true
+  
+  # Nombre de threads pour les calculs
+  num_threads: 4
+  
+  # Niveau de verbosité (0=minimal, 1=normal, 2=détaillé)
+  verbose: 1

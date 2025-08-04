@@ -1,0 +1,117 @@
+# Configuration pour le modèle G1 avec vrais capteurs et joints
+# =============================================================================
+
+# Configuration de l'environnement
+env:
+  # Chemin vers le modèle G1 simplifié
+  xml_path: "g1_simple.xml"
+  
+  # Mode de rendu ("human", "rgb_array", None)
+  render_mode: null
+  
+  # Résolution de la vidéo
+  width: 640
+  height: 480
+  
+  # Paramètres de simulation
+  max_steps_per_episode: 1000
+  
+  # Capteurs de force du modèle G1 (vrais capteurs)
+  force_sensors:
+    # Main droite - capteurs de force
+    - "right_thumb_force_sensor_0"
+    - "right_thumb_force_sensor_1"
+    - "right_thumb_force_sensor_2"
+    - "right_index_force_sensor_0"
+    - "right_index_force_sensor_1"
+    - "right_index_force_sensor_2"
+    - "right_middle_force_sensor_0"
+    - "right_middle_force_sensor_1"
+    - "right_middle_force_sensor_2"
+    - "right_ring_force_sensor_0"
+    - "right_ring_force_sensor_1"
+    - "right_ring_force_sensor_2"
+  
+  # Capteurs tactiles du modèle G1
+  touch_sensors:
+    # Main droite - capteurs tactiles
+    - "right_thumb_tip_sensor"
+    - "right_index_tip_sensor"
+    - "right_middle_tip_sensor"
+    - "right_ring_tip_sensor"
+  
+  # Nom du corps du cube dans le modèle
+  cube_body_name: "cube"
+  
+  # Joints des doigts pour le grasping
+  finger_joints:
+    # Main droite - joints des doigts
+    - "right_thumb_joint_0"
+    - "right_thumb_joint_1"
+    - "right_index_joint_0"
+    - "right_index_joint_1"
+    - "right_middle_joint_0"
+    - "right_middle_joint_1"
+    - "right_ring_joint_0"
+    - "right_ring_joint_1"
+
+# Configuration de l'agent SAC
+agent:
+  # Architecture du réseau de neurones
+  hidden_sizes: [512, 512]
+  
+  # Hyperparamètres d'apprentissage
+  lr: 3e-4          # Taux d'apprentissage
+  gamma: 0.99       # Facteur de discount
+  tau: 0.005        # Paramètre de mise à jour des réseaux cibles
+  alpha: 0.2        # Paramètre d'entropie pour l'exploration
+
+# Configuration de l'entraînement
+training:
+  # Nombre d'épisodes d'entraînement
+  max_episodes: 1000
+  
+  # Nombre maximum d'étapes par épisode
+  max_steps_per_episode: 1000
+  
+  # Fréquence de mise à jour de l'agent (tous les N steps)
+  update_frequency: 1
+  
+  # Taille du batch pour l'entraînement
+  batch_size: 256
+  
+  # Fréquence de sauvegarde du modèle (tous les N épisodes)
+  save_frequency: 100
+  
+  # Fréquence d'enregistrement vidéo (tous les N épisodes)
+  eval_frequency: 50
+
+# Configuration de la tâche de grasping
+task:
+  # Récompenses
+  contact_reward: 10.0      # Récompense pour le premier contact
+  grasp_reward: 50.0        # Récompense pour le grasping réussi
+  lift_reward_weight: 1.0   # Poids de la récompense pour soulever
+  
+  # Seuils
+  contact_threshold: 0.1    # Seuil pour détecter le contact (force sensor)
+  touch_threshold: 0.5      # Seuil pour détecter le contact (touch sensor)
+  success_height: 0.1       # Hauteur minimale pour considérer le succès
+  
+  # Enregistrement vidéo
+  record_video: true
+  video_path: "videos"
+
+# Répertoire de sortie
+output_dir: "results_g1"
+
+# Configuration du système
+system:
+  # Utiliser GPU si disponible
+  use_gpu: true
+  
+  # Nombre de threads pour les calculs
+  num_threads: 4
+  
+  # Niveau de verbosité (0=minimal, 1=normal, 2=détaillé)
+  verbose: 1
