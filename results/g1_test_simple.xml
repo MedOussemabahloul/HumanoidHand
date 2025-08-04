@@ -1,0 +1,228 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mujoco model="g1_test">
+  <compiler angle="radian" coordinate="local" />
+  <option timestep="0.002" iterations="50" solver="Newton" tolerance="1e-10">
+    <flag warmstart="enable" energy="enable" />
+  </option>
+  <size nconmax="100" njmax="1000" nstack="600000" />
+  <asset>
+    <texture type="skybox" builtin="flat" rgb1="0 0 0" rgb2="0 0 0" width="512" height="3072" />
+    <texture type="2d" name="groundplane" builtin="checker" mark="edge" rgb1="0.2 0.3 0.4" rgb2="0.1 0.2 0.3" markrgb="0.8 0.8 0.8" width="300" height="300" />
+    <material name="groundplane" texture="groundplane" texuniform="true" texrepeat="5 5" reflectance="0.2" />
+  </asset>
+  <worldbody>
+    <light cutoff="100" diffuse="1 1 1" dir="-0 0 -1.3" directional="true" exponent="1" pos="0 0 1.3" specular=".1 .1 .1" />
+    <geom name="floor" size="0 0 0.05" type="plane" material="groundplane" />
+    <body name="table" pos="0.5 0 0.01">
+      <geom name="table_top" type="box" size="0.4 0.3 0.02" rgba="0.8 0.6 0.4 1" pos="0 0 0" />
+    </body>
+    <body name="cube" pos="0.3 0 0.05">
+      <joint name="cube_free" type="slide" frictionloss="0.01" />
+      <geom name="cube_geom" type="box" size="0.025 0.025 0.025" rgba="0.2 0.8 0.2 1" density="1000" friction="1 0.1 0.1" />
+    </body>
+    
+    <!-- Robot G1 simplifié -->
+    <body name="robot_base" pos="0 0 0.1">
+      <geom name="base_geom" type="cylinder" size="0.1 0.05" rgba="0.5 0.5 0.5 1" />
+      
+      <!-- Bras gauche -->
+      <body name="left_shoulder" pos="0 0.1 0.2">
+        <joint name="left_shoulder_pitch_joint" type="hinge" axis="0 1 0" range="-3.14 3.14" />
+        <geom name="left_shoulder_geom" type="sphere" size="0.02" rgba="0.7 0.7 0.7 1" />
+        
+        <body name="left_upper_arm" pos="0 0.05 0">
+          <joint name="left_elbow_joint" type="hinge" axis="0 1 0" range="-3.14 3.14" />
+          <geom name="left_upper_arm_geom" type="cylinder" size="0.02 0.08" rgba="0.7 0.7 0.7 1" />
+          
+          <body name="left_forearm" pos="0 0.08 0">
+            <joint name="left_wrist_joint" type="hinge" axis="0 1 0" range="-3.14 3.14" />
+            <geom name="left_forearm_geom" type="cylinder" size="0.015 0.06" rgba="0.7 0.7 0.7 1" />
+            
+            <body name="left_hand" pos="0 0.06 0">
+              <geom name="left_hand_geom" type="sphere" size="0.025" rgba="0.8 0.8 0.8 1" />
+              
+              <!-- Doigts gauche -->
+              <body name="left_thumb" pos="0.02 0 0">
+                <joint name="left_thumb_joint_0" type="hinge" axis="0 1 0" range="0 1.5" />
+                <geom name="left_thumb_0_geom" type="sphere" size="0.008" rgba="0.6 0.6 0.6 1" />
+                <body name="left_thumb_1" pos="0.015 0 0">
+                  <joint name="left_thumb_joint_1" type="hinge" axis="0 1 0" range="0 1.5" />
+                  <geom name="left_thumb_1_geom" type="sphere" size="0.006" rgba="0.6 0.6 0.6 1" />
+                  <site name="left_thumb_tip_site" pos="0.01 0 0" size="0.003" type="sphere" />
+                </body>
+              </body>
+              
+              <body name="left_index" pos="0 0.02 0">
+                <joint name="left_index_joint_0" type="hinge" axis="0 1 0" range="0 1.5" />
+                <geom name="left_index_0_geom" type="sphere" size="0.008" rgba="0.6 0.6 0.6 1" />
+                <body name="left_index_1" pos="0.015 0 0">
+                  <joint name="left_index_joint_1" type="hinge" axis="0 1 0" range="0 1.5" />
+                  <geom name="left_index_1_geom" type="sphere" size="0.006" rgba="0.6 0.6 0.6 1" />
+                  <site name="left_index_tip_site" pos="0.01 0 0" size="0.003" type="sphere" />
+                </body>
+              </body>
+              
+              <body name="left_middle" pos="0 0.025 0">
+                <joint name="left_middle_joint_0" type="hinge" axis="0 1 0" range="0 1.5" />
+                <geom name="left_middle_0_geom" type="sphere" size="0.008" rgba="0.6 0.6 0.6 1" />
+                <body name="left_middle_1" pos="0.015 0 0">
+                  <joint name="left_middle_joint_1" type="hinge" axis="0 1 0" range="0 1.5" />
+                  <geom name="left_middle_1_geom" type="sphere" size="0.006" rgba="0.6 0.6 0.6 1" />
+                  <site name="left_middle_tip_site" pos="0.01 0 0" size="0.003" type="sphere" />
+                </body>
+              </body>
+              
+              <body name="left_ring" pos="0 0.03 0">
+                <joint name="left_ring_joint_0" type="hinge" axis="0 1 0" range="0 1.5" />
+                <geom name="left_ring_0_geom" type="sphere" size="0.008" rgba="0.6 0.6 0.6 1" />
+                <body name="left_ring_1" pos="0.015 0 0">
+                  <joint name="left_ring_joint_1" type="hinge" axis="0 1 0" range="0 1.5" />
+                  <geom name="left_ring_1_geom" type="sphere" size="0.006" rgba="0.6 0.6 0.6 1" />
+                  <site name="left_ring_tip_site" pos="0.01 0 0" size="0.003" type="sphere" />
+                </body>
+              </body>
+            </body>
+          </body>
+        </body>
+      </body>
+      
+      <!-- Bras droit -->
+      <body name="right_shoulder" pos="0 -0.1 0.2">
+        <joint name="right_shoulder_pitch_joint" type="hinge" axis="0 1 0" range="-3.14 3.14" />
+        <geom name="right_shoulder_geom" type="sphere" size="0.02" rgba="0.7 0.7 0.7 1" />
+        
+        <body name="right_upper_arm" pos="0 -0.05 0">
+          <joint name="right_elbow_joint" type="hinge" axis="0 1 0" range="-3.14 3.14" />
+          <geom name="right_upper_arm_geom" type="cylinder" size="0.02 0.08" rgba="0.7 0.7 0.7 1" />
+          
+          <body name="right_forearm" pos="0 -0.08 0">
+            <joint name="right_wrist_joint" type="hinge" axis="0 1 0" range="-3.14 3.14" />
+            <geom name="right_forearm_geom" type="cylinder" size="0.015 0.06" rgba="0.7 0.7 0.7 1" />
+            
+            <body name="right_hand" pos="0 -0.06 0">
+              <geom name="right_hand_geom" type="sphere" size="0.025" rgba="0.8 0.8 0.8 1" />
+              
+              <!-- Doigts droite -->
+              <body name="right_thumb" pos="0.02 0 0">
+                <joint name="right_thumb_joint_0" type="hinge" axis="0 1 0" range="0 1.5" />
+                <geom name="right_thumb_0_geom" type="sphere" size="0.008" rgba="0.6 0.6 0.6 1" />
+                <body name="right_thumb_1" pos="0.015 0 0">
+                  <joint name="right_thumb_joint_1" type="hinge" axis="0 1 0" range="0 1.5" />
+                  <geom name="right_thumb_1_geom" type="sphere" size="0.006" rgba="0.6 0.6 0.6 1" />
+                  <site name="right_thumb_tip_site" pos="0.01 0 0" size="0.003" type="sphere" />
+                </body>
+              </body>
+              
+              <body name="right_index" pos="0 -0.02 0">
+                <joint name="right_index_joint_0" type="hinge" axis="0 1 0" range="0 1.5" />
+                <geom name="right_index_0_geom" type="sphere" size="0.008" rgba="0.6 0.6 0.6 1" />
+                <body name="right_index_1" pos="0.015 0 0">
+                  <joint name="right_index_joint_1" type="hinge" axis="0 1 0" range="0 1.5" />
+                  <geom name="right_index_1_geom" type="sphere" size="0.006" rgba="0.6 0.6 0.6 1" />
+                  <site name="right_index_tip_site" pos="0.01 0 0" size="0.003" type="sphere" />
+                </body>
+              </body>
+              
+              <body name="right_middle" pos="0 -0.025 0">
+                <joint name="right_middle_joint_0" type="hinge" axis="0 1 0" range="0 1.5" />
+                <geom name="right_middle_0_geom" type="sphere" size="0.008" rgba="0.6 0.6 0.6 1" />
+                <body name="right_middle_1" pos="0.015 0 0">
+                  <joint name="right_middle_joint_1" type="hinge" axis="0 1 0" range="0 1.5" />
+                  <geom name="right_middle_1_geom" type="sphere" size="0.006" rgba="0.6 0.6 0.6 1" />
+                  <site name="right_middle_tip_site" pos="0.01 0 0" size="0.003" type="sphere" />
+                </body>
+              </body>
+              
+              <body name="right_ring" pos="0 -0.03 0">
+                <joint name="right_ring_joint_0" type="hinge" axis="0 1 0" range="0 1.5" />
+                <geom name="right_ring_0_geom" type="sphere" size="0.008" rgba="0.6 0.6 0.6 1" />
+                <body name="right_ring_1" pos="0.015 0 0">
+                  <joint name="right_ring_joint_1" type="hinge" axis="0 1 0" range="0 1.5" />
+                  <geom name="right_ring_1_geom" type="sphere" size="0.006" rgba="0.6 0.6 0.6 1" />
+                  <site name="right_ring_tip_site" pos="0.01 0 0" size="0.003" type="sphere" />
+                </body>
+              </body>
+            </body>
+          </body>
+        </body>
+      </body>
+    </body>
+  </worldbody>
+  
+  <actuator>
+    <position name="act_cube_free" joint="cube_free" gear="1" kp="100" kv="10" />
+    <position name="act_left_shoulder_pitch_joint" joint="left_shoulder_pitch_joint" gear="1" kp="100" kv="10" />
+    <position name="act_left_elbow_joint" joint="left_elbow_joint" gear="1" kp="100" kv="10" />
+    <position name="act_left_wrist_joint" joint="left_wrist_joint" gear="1" kp="100" kv="10" />
+    <position name="act_right_shoulder_pitch_joint" joint="right_shoulder_pitch_joint" gear="1" kp="100" kv="10" />
+    <position name="act_right_elbow_joint" joint="right_elbow_joint" gear="1" kp="100" kv="10" />
+    <position name="act_right_wrist_joint" joint="right_wrist_joint" gear="1" kp="100" kv="10" />
+    <position name="act_left_thumb_joint_0" joint="left_thumb_joint_0" gear="1" kp="100" kv="10" />
+    <position name="act_left_thumb_joint_1" joint="left_thumb_joint_1" gear="1" kp="100" kv="10" />
+    <position name="act_left_index_joint_0" joint="left_index_joint_0" gear="1" kp="100" kv="10" />
+    <position name="act_left_index_joint_1" joint="left_index_joint_1" gear="1" kp="100" kv="10" />
+    <position name="act_left_middle_joint_0" joint="left_middle_joint_0" gear="1" kp="100" kv="10" />
+    <position name="act_left_middle_joint_1" joint="left_middle_joint_1" gear="1" kp="100" kv="10" />
+    <position name="act_left_ring_joint_0" joint="left_ring_joint_0" gear="1" kp="100" kv="10" />
+    <position name="act_left_ring_joint_1" joint="left_ring_joint_1" gear="1" kp="100" kv="10" />
+    <position name="act_right_thumb_joint_0" joint="right_thumb_joint_0" gear="1" kp="100" kv="10" />
+    <position name="act_right_thumb_joint_1" joint="right_thumb_joint_1" gear="1" kp="100" kv="10" />
+    <position name="act_right_index_joint_0" joint="right_index_joint_0" gear="1" kp="100" kv="10" />
+    <position name="act_right_index_joint_1" joint="right_index_joint_1" gear="1" kp="100" kv="10" />
+    <position name="act_right_middle_joint_0" joint="right_middle_joint_0" gear="1" kp="100" kv="10" />
+    <position name="act_right_middle_joint_1" joint="right_middle_joint_1" gear="1" kp="100" kv="10" />
+    <position name="act_right_ring_joint_0" joint="right_ring_joint_0" gear="1" kp="100" kv="10" />
+    <position name="act_right_ring_joint_1" joint="right_ring_joint_1" gear="1" kp="100" kv="10" />
+  </actuator>
+  
+  <sensor>
+    <jointpos name="pos_cube_free" joint="cube_free" />
+    <jointvel name="vel_cube_free" joint="cube_free" />
+    <jointpos name="pos_left_shoulder_pitch_joint" joint="left_shoulder_pitch_joint" />
+    <jointvel name="vel_left_shoulder_pitch_joint" joint="left_shoulder_pitch_joint" />
+    <jointpos name="pos_left_elbow_joint" joint="left_elbow_joint" />
+    <jointvel name="vel_left_elbow_joint" joint="left_elbow_joint" />
+    <jointpos name="pos_left_wrist_joint" joint="left_wrist_joint" />
+    <jointvel name="vel_left_wrist_joint" joint="left_wrist_joint" />
+    <jointpos name="pos_right_shoulder_pitch_joint" joint="right_shoulder_pitch_joint" />
+    <jointvel name="vel_right_shoulder_pitch_joint" joint="right_shoulder_pitch_joint" />
+    <jointpos name="pos_right_elbow_joint" joint="right_elbow_joint" />
+    <jointvel name="vel_right_elbow_joint" joint="right_elbow_joint" />
+    <jointpos name="pos_right_wrist_joint" joint="right_wrist_joint" />
+    <jointvel name="vel_right_wrist_joint" joint="right_wrist_joint" />
+    <jointpos name="pos_left_thumb_joint_0" joint="left_thumb_joint_0" />
+    <jointvel name="vel_left_thumb_joint_0" joint="left_thumb_joint_0" />
+    <jointpos name="pos_left_thumb_joint_1" joint="left_thumb_joint_1" />
+    <jointvel name="vel_left_thumb_joint_1" joint="left_thumb_joint_1" />
+    <jointpos name="pos_left_index_joint_0" joint="left_index_joint_0" />
+    <jointvel name="vel_left_index_joint_0" joint="left_index_joint_0" />
+    <jointpos name="pos_left_index_joint_1" joint="left_index_joint_1" />
+    <jointvel name="vel_left_index_joint_1" joint="left_index_joint_1" />
+    <jointpos name="pos_left_middle_joint_0" joint="left_middle_joint_0" />
+    <jointvel name="vel_left_middle_joint_0" joint="left_middle_joint_0" />
+    <jointpos name="pos_left_middle_joint_1" joint="left_middle_joint_1" />
+    <jointvel name="vel_left_middle_joint_1" joint="left_middle_joint_1" />
+    <jointpos name="pos_left_ring_joint_0" joint="left_ring_joint_0" />
+    <jointvel name="vel_left_ring_joint_0" joint="left_ring_joint_0" />
+    <jointpos name="pos_left_ring_joint_1" joint="left_ring_joint_1" />
+    <jointvel name="vel_left_ring_joint_1" joint="left_ring_joint_1" />
+    <jointpos name="pos_right_thumb_joint_0" joint="right_thumb_joint_0" />
+    <jointvel name="vel_right_thumb_joint_0" joint="right_thumb_joint_0" />
+    <jointpos name="pos_right_thumb_joint_1" joint="right_thumb_joint_1" />
+    <jointvel name="vel_right_thumb_joint_1" joint="right_thumb_joint_1" />
+    <jointpos name="pos_right_index_joint_0" joint="right_index_joint_0" />
+    <jointvel name="vel_right_index_joint_0" joint="right_index_joint_0" />
+    <jointpos name="pos_right_index_joint_1" joint="right_index_joint_1" />
+    <jointvel name="vel_right_index_joint_1" joint="right_index_joint_1" />
+    <jointpos name="pos_right_middle_joint_0" joint="right_middle_joint_0" />
+    <jointvel name="vel_right_middle_joint_0" joint="right_middle_joint_0" />
+    <jointpos name="pos_right_middle_joint_1" joint="right_middle_joint_1" />
+    <jointvel name="vel_right_middle_joint_1" joint="right_middle_joint_1" />
+    <jointpos name="pos_right_ring_joint_0" joint="right_ring_joint_0" />
+    <jointvel name="vel_right_ring_joint_0" joint="right_ring_joint_0" />
+    <jointpos name="pos_right_ring_joint_1" joint="right_ring_joint_1" />
+    <jointvel name="vel_right_ring_joint_1" joint="right_ring_joint_1" />
+    <framepos name="cube_pos" objtype="body" objname="cube" />
+    <framequat name="cube_quat" objtype="body" objname="cube" />
+  </sensor>
+</mujoco>
