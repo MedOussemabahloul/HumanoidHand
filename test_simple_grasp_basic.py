@@ -1,148 +1,137 @@
 #!/usr/bin/env python3
 """
-Test basique du système de saisie G1
-Vérifie que les modules se chargent correctement
+Test basique du système de saisie G1 - Version locale
 """
 
 import sys
+import os
 from pathlib import Path
 
-def test_imports():
-    """Teste les imports des modules principaux"""
-    print("🧪 Test des imports...")
+def test_directory_structure():
+    """Vérifie la structure des dossiers"""
+    print("📁 Test de la structure...")
     
-    try:
-        # Test des imports système
-        import os
-        import time
-        import json
-        print("✅ Modules système: OK")
-        
-        # Test de la structure des fichiers
-        workspace = Path("/workspace")
-        
-        files_to_check = [
-            "envs/simple_grasp_env.py",
-            "agents/improved_sac_agent.py", 
-            "utils/video_recorder.py",
-            "train_simple_grasp.py"
-        ]
-        
-        for file_path in files_to_check:
-            full_path = workspace / file_path
-            if full_path.exists():
-                print(f"✅ {file_path}: Trouvé")
-            else:
-                print(f"❌ {file_path}: Manquant")
-        
-        # Test du modèle G1
-        model_path = workspace / "results/g1_combined.xml"
-        if model_path.exists():
-            print(f"✅ Modèle G1: {model_path}")
+    required_dirs = ["envs", "agents", "utils", "results", "training_results"]
+    for dir_name in required_dirs:
+        if Path(dir_name).exists():
+            print(f"✅ {dir_name}/: OK")
         else:
-            print(f"❌ Modèle G1 manquant: {model_path}")
-        
-        return True
-        
-    except Exception as e:
-        print(f"❌ Erreur lors des tests: {e}")
-        return False
-
-def test_environment_config():
-    """Teste la configuration de l'environnement"""
-    print("\n🔧 Test de configuration...")
-    
-    try:
-        # Ajouter les chemins
-        sys.path.append('/workspace')
-        sys.path.append('/workspace/envs')
-        sys.path.append('/workspace/agents')
-        sys.path.append('/workspace/utils')
-        
-        print("✅ Chemins Python configurés")
-        
-        # Test de lecture du modèle
-        model_path = "/workspace/results/g1_combined.xml"
-        if Path(model_path).exists():
-            with open(model_path, 'r') as f:
-                content = f.read()
-                if 'mujoco' in content.lower() and 'model' in content.lower():
-                    print("✅ Modèle MuJoCo valide")
-                else:
-                    print("⚠️  Modèle MuJoCo possiblement invalide")
-        
-        return True
-        
-    except Exception as e:
-        print(f"❌ Erreur de configuration: {e}")
-        return False
-
-def create_minimal_training_config():
-    """Crée une configuration minimale pour tester"""
-    print("\n📝 Création de configuration de test...")
-    
-    config = {
-        "model_path": "/workspace/results/g1_combined.xml",
-        "max_episode_steps": 100,  # Court pour le test
-        "curriculum_level": 1,
-        "total_episodes": 3,  # Très court
-        "learning_rate": 3e-4,
-        "batch_size": 32,  # Plus petit
-        "buffer_size": 1000,  # Plus petit
-        "updates_per_episode": 1,
-        "hidden_sizes": [64, 64],  # Plus petit
-        "curriculum_threshold": 0.7,
-        "episodes_per_level": 10,
-        "log_interval": 1,  # Log chaque épisode
-        "save_interval": 50,
-        "video_interval": 50,
-        "video_fps": 15,
-        "output_dir": "/workspace/test_minimal"
-    }
-    
-    # Sauvegarder la config
-    config_path = Path("/workspace/test_config.json")
-    with open(config_path, 'w') as f:
-        json.dump(config, f, indent=2)
-    
-    print(f"✅ Configuration sauvegardée: {config_path}")
-    return config
-
-def main():
-    """Test principal"""
-    print("🤖 TEST SIMPLIFIÉ DU SYSTÈME DE SAISIE G1")
-    print("=" * 50)
-    
-    # Tests de base
-    if not test_imports():
-        print("❌ Échec des tests d'import")
-        return False
-    
-    if not test_environment_config():
-        print("❌ Échec des tests de configuration")
-        return False
-    
-    # Créer une configuration de test
-    config = create_minimal_training_config()
-    
-    print("\n✅ TOUS LES TESTS DE BASE RÉUSSIS!")
-    print("\n🚀 Système prêt pour l'entraînement")
-    print("\nPour lancer l'entraînement complet:")
-    print("1. Installer les dépendances Python (numpy, torch, etc.)")
-    print("2. Exécuter: python3 train_simple_grasp.py --episodes 10")
-    
-    print("\n📋 RÉSUMÉ DU SYSTÈME:")
-    print("✅ Environnement de saisie simplifié avec détection de contact")
-    print("✅ Agent SAC avec replay buffer et target networks")
-    print("✅ Système de récompenses pour approche, contact, saisie et levage")
-    print("✅ Curriculum learning automatique")
-    print("✅ Enregistrement vidéo des épisodes")
-    print("✅ Sauvegarde des modèles et métriques")
-    print("✅ Graphiques d'entraînement")
+            print(f"❌ {dir_name}/: Manquant")
     
     return True
 
+def test_files():
+    """Vérifie que les fichiers principaux existent"""
+    print("\n📄 Test des fichiers...")
+    
+    required_files = [
+        "envs/simple_grasp_env.py",
+        "agents/improved_sac_agent.py",
+        "utils/video_recorder.py", 
+        "train_simple_grasp.py"
+    ]
+    
+    all_good = True
+    for file_path in required_files:
+        if Path(file_path).exists():
+            print(f"✅ {file_path}: OK")
+        else:
+            print(f"❌ {file_path}: Manquant")
+            all_good = False
+    
+    return all_good
+
+def test_model():
+    """Vérifie la présence du modèle"""
+    print("\n🤖 Test du modèle...")
+    
+    model_path = Path("results/g1_combined.xml")
+    if model_path.exists():
+        print(f"✅ Modèle trouvé: {model_path}")
+        return True
+    else:
+        print(f"❌ Modèle manquant: {model_path}")
+        print("💡 Placez votre modèle g1_combined.xml dans le dossier results/")
+        return False
+
+def test_dependencies():
+    """Teste les dépendances Python"""
+    print("\n📦 Test des dépendances...")
+    
+    deps = {
+        "numpy": "numpy",
+        "torch": "torch", 
+        "gymnasium": "gymnasium",
+        "mujoco": "mujoco"
+    }
+    
+    missing = []
+    for name, module in deps.items():
+        try:
+            __import__(module)
+            print(f"✅ {name}: OK")
+        except ImportError:
+            print(f"❌ {name}: Manquant")
+            missing.append(name)
+    
+    if missing:
+        print(f"\n💡 Pour installer les dépendances manquantes:")
+        print(f"   pip install {' '.join(missing)}")
+    
+    return len(missing) == 0
+
+def create_sample_config():
+    """Crée un exemple de configuration"""
+    print("\n⚙️  Création de la configuration...")
+    
+    config = {
+        "model_path": "results/g1_combined.xml",
+        "episodes": 100,
+        "learning_rate": 0.0003,
+        "output_dir": "training_results"
+    }
+    
+    try:
+        import json
+        with open("config_example.json", 'w') as f:
+            json.dump(config, f, indent=2)
+        print("✅ config_example.json créé")
+    except Exception as e:
+        print(f"⚠️  Erreur lors de la création: {e}")
+
+def main():
+    """Test principal"""
+    print("🤖 TEST DU SYSTÈME DE SAISIE G1")
+    print("=" * 50)
+    
+    # Tests
+    structure_ok = test_directory_structure()
+    files_ok = test_files()
+    model_ok = test_model()  
+    deps_ok = test_dependencies()
+    
+    # Créer un exemple de config
+    create_sample_config()
+    
+    print("\n" + "=" * 50)
+    
+    if files_ok and structure_ok:
+        print("✅ SYSTÈME PRÊT!")
+        print("\n🚀 Pour lancer l'entraînement:")
+        print("   python3 train_simple_grasp.py --episodes 100")
+        
+        if not model_ok:
+            print("\n⚠️  N'oubliez pas de placer votre modèle dans results/")
+        
+        if not deps_ok:
+            print("\n⚠️  Installez d'abord les dépendances manquantes")
+            
+    else:
+        print("❌ CONFIGURATION INCOMPLÈTE")
+        print("   Relancez setup_local_training.py")
+    
+    return files_ok and structure_ok
+
 if __name__ == "__main__":
-    import json
     success = main()
     sys.exit(0 if success else 1)

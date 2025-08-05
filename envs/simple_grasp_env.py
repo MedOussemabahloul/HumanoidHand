@@ -20,7 +20,7 @@ class SimpleGraspEnv(gym.Env):
     metadata = {"render_modes": ["human", "rgb_array"], "render_fps": 60}
 
     def __init__(self, 
-                 xml_path="/workspace/results/g1_combined.xml",
+                 xml_path="results/g1_combined.xml",
                  render_mode=None,
                  max_episode_steps=500,
                  curriculum_level=1):
@@ -56,20 +56,11 @@ class SimpleGraspEnv(gym.Env):
     def _load_model(self):
         """Charge le modèle MuJoCo"""
         try:
-            # Changer vers le dossier results pour les chemins relatifs
-            original_cwd = Path.cwd()
-            results_dir = Path(self.xml_path).parent
-            import os
-            os.chdir(results_dir)
-            
-            try:
-                self.model = MjModel.from_xml_path(Path(self.xml_path).name)
-                self.data = MjData(self.model)
-                print(f"✅ Modèle chargé: {self.xml_path}")
-                print(f"   Capteurs: {self.model.nsensor}")
-                print(f"   Actuateurs: {self.model.nu}")
-            finally:
-                os.chdir(original_cwd)
+            self.model = MjModel.from_xml_path(self.xml_path)
+            self.data = MjData(self.model)
+            print(f"✅ Modèle chargé: {self.xml_path}")
+            print(f"   Capteurs: {self.model.nsensor}")
+            print(f"   Actuateurs: {self.model.nu}")
                 
         except Exception as e:
             raise RuntimeError(f"Erreur lors du chargement du modèle: {e}")

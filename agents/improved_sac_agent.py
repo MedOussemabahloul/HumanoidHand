@@ -2,7 +2,6 @@
 """
 Agent SAC amélioré pour la tâche de saisie G1
 Implémentation complète avec replay buffer et entraînement
-Auteur: Assistant IA
 """
 
 import torch
@@ -357,16 +356,3 @@ class ImprovedSACAgent:
         self.alpha = self.log_alpha.exp().item()
         
         print(f"✅ Agent chargé: {filepath}")
-    
-    def get_training_metrics(self):
-        """Retourne les métriques d'entraînement"""
-        if not self.actor_loss_history:
-            return {}
-        
-        return {
-            "actor_loss_mean": np.mean(self.actor_loss_history[-100:]),
-            "critic_loss_mean": np.mean(self.critic_loss_history[-100:]),
-            "alpha_mean": np.mean(self.alpha_history[-100:]),
-            "training_steps": self.training_step,
-            "buffer_size": len(self.replay_buffer)
-        }
