@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<mujoco model="g1_fingers">
+<mujoco model="g1_fingers_stable">
   <asset>
     <mesh name="left_thumb_0_mesh" file="meshes/left_thumb_1.STL" />
     <mesh name="left_thumb_1_mesh" file="meshes/left_thumb_2.STL" />
@@ -42,81 +42,127 @@
     <mesh name="right_ring_force_sensor_1_mesh" file="meshes/right_ring_force_sensor_2.STL" />
     <mesh name="right_ring_force_sensor_2_mesh" file="meshes/right_ring_force_sensor_3.STL" />
   </asset>
+  
   <worldbody>
+    <!-- CORRECTION: Doigts main GAUCHE avec paramètres optimisés -->
     <body name="left_index_0" pos="0.03 0.05 0.02">
-      <joint name="left_index_joint_0" type="hinge" axis="0 1 0" range="0 1.5" damping="8.0" frictionloss="0.8" />
-      <geom type="mesh" mesh="left_index_0_mesh" contype="1" conaffinity="1" />
+      <!-- CORRECTION: Inertie explicite + amortissement élevé -->
+      <inertial pos="0.01 0 0" mass="0.015" diaginertia="2e-6 1e-6 1e-6" />
+      <joint name="left_index_joint_0" type="hinge" axis="0 1 0" range="0 1.5" 
+             damping="8.0" frictionloss="0.8" stiffness="15" class="finger" />
+      <geom type="mesh" mesh="left_index_0_mesh" contype="1" conaffinity="1" class="finger" />
       <body name="left_index_1" pos="0.02 0 0">
-        <joint name="left_index_joint_1" type="hinge" axis="0 1 0" range="0 1.5" damping="6.0" frictionloss="0.6" />
-        <geom type="mesh" mesh="left_index_1_mesh" contype="1" conaffinity="1" />
+        <inertial pos="0.01 0 0" mass="0.010" diaginertia="1e-6 5e-7 5e-7" />
+        <joint name="left_index_joint_1" type="hinge" axis="0 1 0" range="0 1.5" 
+               damping="6.0" frictionloss="0.6" stiffness="10" class="finger" />
+        <geom type="mesh" mesh="left_index_1_mesh" contype="1" conaffinity="1" class="finger" />
         <site name="left_index_tip_site" pos="0.02 0 0" size="0.003" type="sphere" />
       </body>
     </body>
+    
     <body name="left_middle_0" pos="0.035 0.05 0.025">
-      <joint name="left_middle_joint_0" type="hinge" axis="0 1 0" range="0 1.5" damping="8.0" frictionloss="0.8" />
-      <geom type="mesh" mesh="left_middle_0_mesh" contype="1" conaffinity="1" />
+      <inertial pos="0.01 0 0" mass="0.015" diaginertia="2e-6 1e-6 1e-6" />
+      <joint name="left_middle_joint_0" type="hinge" axis="0 1 0" range="0 1.5" 
+             damping="8.0" frictionloss="0.8" stiffness="15" class="finger" />
+      <geom type="mesh" mesh="left_middle_0_mesh" contype="1" conaffinity="1" class="finger" />
       <body name="left_middle_1" pos="0.02 0 0">
-        <joint name="left_middle_joint_1" type="hinge" axis="0 1 0" range="0 1.5" damping="6.0" frictionloss="0.6" />
-        <geom type="mesh" mesh="left_middle_1_mesh" contype="1" conaffinity="1" />
+        <inertial pos="0.01 0 0" mass="0.010" diaginertia="1e-6 5e-7 5e-7" />
+        <joint name="left_middle_joint_1" type="hinge" axis="0 1 0" range="0 1.5" 
+               damping="6.0" frictionloss="0.6" stiffness="10" class="finger" />
+        <geom type="mesh" mesh="left_middle_1_mesh" contype="1" conaffinity="1" class="finger" />
         <site name="left_middle_tip_site" pos="0.02 0 0" size="0.003" type="sphere" />
       </body>
     </body>
+    
     <body name="left_ring_0" pos="0.04 0.05 0.025">
-      <joint name="left_ring_joint_0" type="hinge" axis="0 1 0" range="0 1.5" damping="8.0" frictionloss="0.8" />
-      <geom type="mesh" mesh="left_ring_0_mesh" contype="1" conaffinity="1" />
+      <inertial pos="0.01 0 0" mass="0.015" diaginertia="2e-6 1e-6 1e-6" />
+      <joint name="left_ring_joint_0" type="hinge" axis="0 1 0" range="0 1.5" 
+             damping="8.0" frictionloss="0.8" stiffness="15" class="finger" />
+      <geom type="mesh" mesh="left_ring_0_mesh" contype="1" conaffinity="1" class="finger" />
       <body name="left_ring_1" pos="0.02 0 0">
-        <joint name="left_ring_joint_1" type="hinge" axis="0 1 0" range="0 1.5" damping="6.0" frictionloss="0.6" />
-        <geom type="mesh" mesh="left_ring_1_mesh" contype="1" conaffinity="1" />
+        <inertial pos="0.01 0 0" mass="0.010" diaginertia="1e-6 5e-7 5e-7" />
+        <joint name="left_ring_joint_1" type="hinge" axis="0 1 0" range="0 1.5" 
+               damping="6.0" frictionloss="0.6" stiffness="10" class="finger" />
+        <geom type="mesh" mesh="left_ring_1_mesh" contype="1" conaffinity="1" class="finger" />
         <site name="left_ring_tip_site" pos="0.02 0 0" size="0.003" type="sphere" />
       </body>
     </body>
+    
     <body name="left_thumb_0" pos="0.02 0.04 0.015">
-      <joint name="left_thumb_joint_0" type="hinge" axis="0 1 0" range="0 1.5" damping="10.0" frictionloss="1.0" />
-      <geom type="mesh" mesh="left_thumb_0_mesh" contype="1" conaffinity="1" />
+      <!-- CORRECTION: Pouce plus lourd et plus stable -->
+      <inertial pos="0.01 0 0" mass="0.020" diaginertia="3e-6 1.5e-6 1.5e-6" />
+      <joint name="left_thumb_joint_0" type="hinge" axis="0 1 0" range="0 1.5" 
+             damping="10.0" frictionloss="1.0" stiffness="20" class="finger" />
+      <geom type="mesh" mesh="left_thumb_0_mesh" contype="1" conaffinity="1" class="finger" />
       <body name="left_thumb_1" pos="0.02 0 0">
-        <joint name="left_thumb_joint_1" type="hinge" axis="0 1 0" range="0 1.5" damping="6.0" frictionloss="0.6" />
-        <geom type="mesh" mesh="left_thumb_1_mesh" contype="1" conaffinity="1" />
+        <inertial pos="0.01 0 0" mass="0.015" diaginertia="2e-6 1e-6 1e-6" />
+        <joint name="left_thumb_joint_1" type="hinge" axis="0 1 0" range="0 1.5" 
+               damping="8.0" frictionloss="0.8" stiffness="15" class="finger" />
+        <geom type="mesh" mesh="left_thumb_1_mesh" contype="1" conaffinity="1" class="finger" />
         <site name="left_thumb_tip_site" pos="0.02 0 0" size="0.003" type="sphere" />
       </body>
     </body>
+    
+    <!-- CORRECTION: Doigts main DROITE avec paramètres optimisés -->
     <body name="right_index_0" pos="-0.03 -0.05 0.02">
-      <joint name="right_index_joint_0" type="hinge" axis="0 1 0" range="0 1.5" damping="8.0" frictionloss="0.8" />
-      <geom type="mesh" mesh="right_index_0_mesh" contype="1" conaffinity="1" />
+      <inertial pos="0.01 0 0" mass="0.015" diaginertia="2e-6 1e-6 1e-6" />
+      <joint name="right_index_joint_0" type="hinge" axis="0 1 0" range="0 1.5" 
+             damping="8.0" frictionloss="0.8" stiffness="15" class="finger" />
+      <geom type="mesh" mesh="right_index_0_mesh" contype="1" conaffinity="1" class="finger" />
       <body name="right_index_1" pos="0.02 0 0">
-        <joint name="right_index_joint_1" type="hinge" axis="0 1 0" range="0 1.5" damping="6.0" frictionloss="0.6" />
-        <geom type="mesh" mesh="right_index_1_mesh" contype="1" conaffinity="1" />
+        <inertial pos="0.01 0 0" mass="0.010" diaginertia="1e-6 5e-7 5e-7" />
+        <joint name="right_index_joint_1" type="hinge" axis="0 1 0" range="0 1.5" 
+               damping="6.0" frictionloss="0.6" stiffness="10" class="finger" />
+        <geom type="mesh" mesh="right_index_1_mesh" contype="1" conaffinity="1" class="finger" />
         <site name="right_index_tip_site" pos="0.02 0 0" size="0.003" type="sphere" />
       </body>
     </body>
+    
     <body name="right_middle_0" pos="-0.035 -0.05 0.025">
-      <joint name="right_middle_joint_0" type="hinge" axis="0 1 0" range="0 1.5" damping="8.0" frictionloss="0.8" />
-      <geom type="mesh" mesh="right_middle_0_mesh" contype="1" conaffinity="1" />
+      <inertial pos="0.01 0 0" mass="0.015" diaginertia="2e-6 1e-6 1e-6" />
+      <joint name="right_middle_joint_0" type="hinge" axis="0 1 0" range="0 1.5" 
+             damping="8.0" frictionloss="0.8" stiffness="15" class="finger" />
+      <geom type="mesh" mesh="right_middle_0_mesh" contype="1" conaffinity="1" class="finger" />
       <body name="right_middle_1" pos="0.02 0 0">
-        <joint name="right_middle_joint_1" type="hinge" axis="0 1 0" range="0 1.5" damping="6.0" frictionloss="0.6" />
-        <geom type="mesh" mesh="right_middle_1_mesh" contype="1" conaffinity="1" />
+        <inertial pos="0.01 0 0" mass="0.010" diaginertia="1e-6 5e-7 5e-7" />
+        <joint name="right_middle_joint_1" type="hinge" axis="0 1 0" range="0 1.5" 
+               damping="6.0" frictionloss="0.6" stiffness="10" class="finger" />
+        <geom type="mesh" mesh="right_middle_1_mesh" contype="1" conaffinity="1" class="finger" />
         <site name="right_middle_tip_site" pos="0.02 0 0" size="0.003" type="sphere" />
       </body>
     </body>
+    
     <body name="right_ring_0" pos="-0.04 -0.05 0.025">
-      <joint name="right_ring_joint_0" type="hinge" axis="0 1 0" range="0 1.5" damping="8.0" frictionloss="0.8" />
-      <geom type="mesh" mesh="right_ring_0_mesh" contype="1" conaffinity="1" />
+      <inertial pos="0.01 0 0" mass="0.015" diaginertia="2e-6 1e-6 1e-6" />
+      <joint name="right_ring_joint_0" type="hinge" axis="0 1 0" range="0 1.5" 
+             damping="8.0" frictionloss="0.8" stiffness="15" class="finger" />
+      <geom type="mesh" mesh="right_ring_0_mesh" contype="1" conaffinity="1" class="finger" />
       <body name="right_ring_1" pos="0.02 0 0">
-        <joint name="right_ring_joint_1" type="hinge" axis="0 1 0" range="0 1.5" damping="6.0" frictionloss="0.6" />
-        <geom type="mesh" mesh="right_ring_1_mesh" contype="1" conaffinity="1" />
+        <inertial pos="0.01 0 0" mass="0.010" diaginertia="1e-6 5e-7 5e-7" />
+        <joint name="right_ring_joint_1" type="hinge" axis="0 1 0" range="0 1.5" 
+               damping="6.0" frictionloss="0.6" stiffness="10" class="finger" />
+        <geom type="mesh" mesh="right_ring_1_mesh" contype="1" conaffinity="1" class="finger" />
         <site name="right_ring_tip_site" pos="0.02 0 0" size="0.003" type="sphere" />
       </body>
     </body>
+    
     <body name="right_thumb_0" pos="-0.02 -0.05 0.015">
-      <joint name="right_thumb_joint_0" type="hinge" axis="0 1 0" range="0 1.5" damping="10.0" frictionloss="1.0" />
-      <geom type="mesh" mesh="right_thumb_0_mesh" contype="1" conaffinity="1" />
+      <inertial pos="0.01 0 0" mass="0.020" diaginertia="3e-6 1.5e-6 1.5e-6" />
+      <joint name="right_thumb_joint_0" type="hinge" axis="0 1 0" range="0 1.5" 
+             damping="10.0" frictionloss="1.0" stiffness="20" class="finger" />
+      <geom type="mesh" mesh="right_thumb_0_mesh" contype="1" conaffinity="1" class="finger" />
       <body name="right_thumb_1" pos="0.02 0 0">
-        <joint name="right_thumb_joint_1" type="hinge" axis="0 1 0" range="0 1.5" damping="6.0" frictionloss="0.6" />
-        <geom type="mesh" mesh="right_thumb_1_mesh" contype="1" conaffinity="1" />
+        <inertial pos="0.01 0 0" mass="0.015" diaginertia="2e-6 1e-6 1e-6" />
+        <joint name="right_thumb_joint_1" type="hinge" axis="0 1 0" range="0 1.5" 
+               damping="8.0" frictionloss="0.8" stiffness="15" class="finger" />
+        <geom type="mesh" mesh="right_thumb_1_mesh" contype="1" conaffinity="1" class="finger" />
         <site name="right_thumb_tip_site" pos="0.02 0 0" size="0.003" type="sphere" />
       </body>
     </body>
+    
+    <!-- CORRECTION: Capteurs de force avec masses réduites -->
     <body name="left_thumb_force_sensors" pos="0.02 0 0">
-      <inertial pos="0 0 0" mass="0.001" diaginertia="1e-8 1e-8 1e-8" />
+      <inertial pos="0 0 0" mass="0.0005" diaginertia="5e-9 5e-9 5e-9" />
       <site name="left_thumb_force_sensor_0_site" pos="0 0 0" size="0.003" type="sphere" />
       <geom type="mesh" mesh="left_thumb_force_sensor_0_mesh" rgba="0.8 0.2 0.2 0.3" contype="0" conaffinity="0" />
       <site name="left_thumb_force_sensor_1_site" pos="0 0 0" size="0.003" type="sphere" />
@@ -124,8 +170,9 @@
       <site name="left_thumb_force_sensor_2_site" pos="0 0 0" size="0.003" type="sphere" />
       <geom type="mesh" mesh="left_thumb_force_sensor_2_mesh" rgba="0.2 0.2 0.8 0.3" contype="0" conaffinity="0" />
     </body>
+    
     <body name="left_index_force_sensors" pos="0.02 0 0">
-      <inertial pos="0 0 0" mass="0.001" diaginertia="1e-8 1e-8 1e-8" />
+      <inertial pos="0 0 0" mass="0.0005" diaginertia="5e-9 5e-9 5e-9" />
       <site name="left_index_force_sensor_0_site" pos="0 0 0" size="0.003" type="sphere" />
       <geom type="mesh" mesh="left_index_force_sensor_0_mesh" rgba="0.8 0.2 0.2 0.3" contype="0" conaffinity="0" />
       <site name="left_index_force_sensor_1_site" pos="0 0 0" size="0.003" type="sphere" />
@@ -133,8 +180,9 @@
       <site name="left_index_force_sensor_2_site" pos="0 0 0" size="0.003" type="sphere" />
       <geom type="mesh" mesh="left_index_force_sensor_2_mesh" rgba="0.2 0.2 0.8 0.3" contype="0" conaffinity="0" />
     </body>
+    
     <body name="left_middle_force_sensors" pos="0.02 0 0">
-      <inertial pos="0 0 0" mass="0.001" diaginertia="1e-8 1e-8 1e-8" />
+      <inertial pos="0 0 0" mass="0.0005" diaginertia="5e-9 5e-9 5e-9" />
       <site name="left_middle_force_sensor_0_site" pos="0 0 0" size="0.003" type="sphere" />
       <geom type="mesh" mesh="left_middle_force_sensor_0_mesh" rgba="0.8 0.2 0.2 0.3" contype="0" conaffinity="0" />
       <site name="left_middle_force_sensor_1_site" pos="0 0 0" size="0.003" type="sphere" />
@@ -142,8 +190,9 @@
       <site name="left_middle_force_sensor_2_site" pos="0 0 0" size="0.003" type="sphere" />
       <geom type="mesh" mesh="left_middle_force_sensor_2_mesh" rgba="0.2 0.2 0.8 0.3" contype="0" conaffinity="0" />
     </body>
+    
     <body name="left_ring_force_sensors" pos="0.02 0 0">
-      <inertial pos="0 0 0" mass="0.001" diaginertia="1e-8 1e-8 1e-8" />
+      <inertial pos="0 0 0" mass="0.0005" diaginertia="5e-9 5e-9 5e-9" />
       <site name="left_ring_force_sensor_0_site" pos="0 0 0" size="0.003" type="sphere" />
       <geom type="mesh" mesh="left_ring_force_sensor_0_mesh" rgba="0.8 0.2 0.2 0.3" contype="0" conaffinity="0" />
       <site name="left_ring_force_sensor_1_site" pos="0 0 0" size="0.003" type="sphere" />
@@ -151,8 +200,9 @@
       <site name="left_ring_force_sensor_2_site" pos="0 0 0" size="0.003" type="sphere" />
       <geom type="mesh" mesh="left_ring_force_sensor_2_mesh" rgba="0.2 0.2 0.8 0.3" contype="0" conaffinity="0" />
     </body>
+    
     <body name="right_thumb_force_sensors" pos="0.02 0 0">
-      <inertial pos="0 0 0" mass="0.001" diaginertia="1e-8 1e-8 1e-8" />
+      <inertial pos="0 0 0" mass="0.0005" diaginertia="5e-9 5e-9 5e-9" />
       <site name="right_thumb_force_sensor_0_site" pos="0 0 0" size="0.003" type="sphere" />
       <geom type="mesh" mesh="right_thumb_force_sensor_0_mesh" rgba="0.8 0.2 0.2 0.3" contype="0" conaffinity="0" />
       <site name="right_thumb_force_sensor_1_site" pos="0 0 0" size="0.003" type="sphere" />
@@ -160,8 +210,9 @@
       <site name="right_thumb_force_sensor_2_site" pos="0 0 0" size="0.003" type="sphere" />
       <geom type="mesh" mesh="right_thumb_force_sensor_2_mesh" rgba="0.2 0.2 0.8 0.3" contype="0" conaffinity="0" />
     </body>
+    
     <body name="right_index_force_sensors" pos="0.02 0 0">
-      <inertial pos="0 0 0" mass="0.001" diaginertia="1e-8 1e-8 1e-8" />
+      <inertial pos="0 0 0" mass="0.0005" diaginertia="5e-9 5e-9 5e-9" />
       <site name="right_index_force_sensor_0_site" pos="0 0 0" size="0.003" type="sphere" />
       <geom type="mesh" mesh="right_index_force_sensor_0_mesh" rgba="0.8 0.2 0.2 0.3" contype="0" conaffinity="0" />
       <site name="right_index_force_sensor_1_site" pos="0 0 0" size="0.003" type="sphere" />
@@ -169,8 +220,9 @@
       <site name="right_index_force_sensor_2_site" pos="0 0 0" size="0.003" type="sphere" />
       <geom type="mesh" mesh="right_index_force_sensor_2_mesh" rgba="0.2 0.2 0.8 0.3" contype="0" conaffinity="0" />
     </body>
+    
     <body name="right_middle_force_sensors" pos="0.02 0 0">
-      <inertial pos="0 0 0" mass="0.001" diaginertia="1e-8 1e-8 1e-8" />
+      <inertial pos="0 0 0" mass="0.0005" diaginertia="5e-9 5e-9 5e-9" />
       <site name="right_middle_force_sensor_0_site" pos="0 0 0" size="0.003" type="sphere" />
       <geom type="mesh" mesh="right_middle_force_sensor_0_mesh" rgba="0.8 0.2 0.2 0.3" contype="0" conaffinity="0" />
       <site name="right_middle_force_sensor_1_site" pos="0 0 0" size="0.003" type="sphere" />
@@ -178,8 +230,9 @@
       <site name="right_middle_force_sensor_2_site" pos="0 0 0" size="0.003" type="sphere" />
       <geom type="mesh" mesh="right_middle_force_sensor_2_mesh" rgba="0.2 0.2 0.8 0.3" contype="0" conaffinity="0" />
     </body>
+    
     <body name="right_ring_force_sensors" pos="0.02 0 0">
-      <inertial pos="0 0 0" mass="0.001" diaginertia="1e-8 1e-8 1e-8" />
+      <inertial pos="0 0 0" mass="0.0005" diaginertia="5e-9 5e-9 5e-9" />
       <site name="right_ring_force_sensor_0_site" pos="0 0 0" size="0.003" type="sphere" />
       <geom type="mesh" mesh="right_ring_force_sensor_0_mesh" rgba="0.8 0.2 0.2 0.3" contype="0" conaffinity="0" />
       <site name="right_ring_force_sensor_1_site" pos="0 0 0" size="0.003" type="sphere" />
@@ -188,6 +241,7 @@
       <geom type="mesh" mesh="right_ring_force_sensor_2_mesh" rgba="0.2 0.2 0.8 0.3" contype="0" conaffinity="0" />
     </body>
   </worldbody>
+  
   <sensor>
     <touch name="left_thumb_tip_sensor" site="left_thumb_tip_site" />
     <touch name="left_index_tip_sensor" site="left_index_tip_site" />
@@ -197,6 +251,7 @@
     <touch name="right_index_tip_sensor" site="right_index_tip_site" />
     <touch name="right_middle_tip_sensor" site="right_middle_tip_site" />
     <touch name="right_ring_tip_sensor" site="right_ring_tip_site" />
+    
     <force name="left_thumb_force_sensor_0" site="left_thumb_force_sensor_0_site" />
     <force name="left_thumb_force_sensor_1" site="left_thumb_force_sensor_1_site" />
     <force name="left_thumb_force_sensor_2" site="left_thumb_force_sensor_2_site" />
@@ -222,22 +277,24 @@
     <force name="right_ring_force_sensor_1" site="right_ring_force_sensor_1_site" />
     <force name="right_ring_force_sensor_2" site="right_ring_force_sensor_2_site" />
   </sensor>
+  
   <actuator>
-    <position name="act_left_thumb_0" joint="left_thumb_joint_0" kp="25" kv="4" />
-    <position name="act_left_thumb_1" joint="left_thumb_joint_1" kp="20" kv="3" />
-    <position name="act_left_index_0" joint="left_index_joint_0" kp="20" kv="3" />
-    <position name="act_left_index_1" joint="left_index_joint_1" kp="15" kv="2" />
-    <position name="act_left_middle_0" joint="left_middle_joint_0" kp="20" kv="3" />
-    <position name="act_left_middle_1" joint="left_middle_joint_1" kp="15" kv="2" />
-    <position name="act_left_ring_0" joint="left_ring_joint_0" kp="20" kv="3" />
-    <position name="act_left_ring_1" joint="left_ring_joint_1" kp="15" kv="2" />
-    <position name="act_right_thumb_0" joint="right_thumb_joint_0" kp="25" kv="4" />
-    <position name="act_right_thumb_1" joint="right_thumb_joint_1" kp="20" kv="3" />
-    <position name="act_right_index_0" joint="right_index_joint_0" kp="20" kv="3" />
-    <position name="act_right_index_1" joint="right_index_joint_1" kp="15" kv="2" />
-    <position name="act_right_middle_0" joint="right_middle_joint_0" kp="20" kv="3" />
-    <position name="act_right_middle_1" joint="right_middle_joint_1" kp="15" kv="2" />
-    <position name="act_right_ring_0" joint="right_ring_joint_0" kp="20" kv="3" />
-    <position name="act_right_ring_1" joint="right_ring_joint_1" kp="15" kv="2" />
+    <!-- CORRECTION: Actuateurs avec gains optimisés -->
+    <position name="act_left_thumb_0" joint="left_thumb_joint_0" kp="25" kv="4" class="finger" />
+    <position name="act_left_thumb_1" joint="left_thumb_joint_1" kp="20" kv="3" class="finger" />
+    <position name="act_left_index_0" joint="left_index_joint_0" kp="20" kv="3" class="finger" />
+    <position name="act_left_index_1" joint="left_index_joint_1" kp="15" kv="2" class="finger" />
+    <position name="act_left_middle_0" joint="left_middle_joint_0" kp="20" kv="3" class="finger" />
+    <position name="act_left_middle_1" joint="left_middle_joint_1" kp="15" kv="2" class="finger" />
+    <position name="act_left_ring_0" joint="left_ring_joint_0" kp="20" kv="3" class="finger" />
+    <position name="act_left_ring_1" joint="left_ring_joint_1" kp="15" kv="2" class="finger" />
+    <position name="act_right_thumb_0" joint="right_thumb_joint_0" kp="25" kv="4" class="finger" />
+    <position name="act_right_thumb_1" joint="right_thumb_joint_1" kp="20" kv="3" class="finger" />
+    <position name="act_right_index_0" joint="right_index_joint_0" kp="20" kv="3" class="finger" />
+    <position name="act_right_index_1" joint="right_index_joint_1" kp="15" kv="2" class="finger" />
+    <position name="act_right_middle_0" joint="right_middle_joint_0" kp="20" kv="3" class="finger" />
+    <position name="act_right_middle_1" joint="right_middle_joint_1" kp="15" kv="2" class="finger" />
+    <position name="act_right_ring_0" joint="right_ring_joint_0" kp="20" kv="3" class="finger" />
+    <position name="act_right_ring_1" joint="right_ring_joint_1" kp="15" kv="2" class="finger" />
   </actuator>
 </mujoco>

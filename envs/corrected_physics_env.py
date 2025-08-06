@@ -10,7 +10,7 @@ from gymnasium import spaces
 import mujoco
 from mujoco import MjModel, MjData, mj_step, mj_resetData, mj_forward
 
-class CorrectedUltraStableGraspEnv(gym.Env):
+class CorrectedPhysicsGraspEnv(gym.Env):
     """Environnement avec correction physique des doigts (sans blocage)"""
     metadata = {"render_modes": ["human", "rgb_array"], "render_fps": 60}
 
