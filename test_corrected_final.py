@@ -50,7 +50,7 @@ def test_corrected_system():
                 print(f"   👁️  Obs: {env.observation_space.shape}")
                 
                 # Vérifier que TOUS les DOFs problématiques sont identifiés
-                expected = [15, 16, 17, 18, 19, 20, 21, 22, 29, 30]
+                expected = [15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30]
                 missing = set(expected) - set(env.finger_dofs)
                 
                 if not missing:
