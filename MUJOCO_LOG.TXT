@@ -328,3 +328,1710 @@ WARNING: Nan, Inf or huge value in QACC at DOF 18. The simulation is unstable. T
 Sun Aug  3 19:45:13 2025
 WARNING: Nan, Inf or huge value in QACC at DOF 18. The simulation is unstable. Time = 0.0040.
 
+Mon Aug  4 18:32:11 2025
+WARNING: Nan, Inf or huge value in QACC at DOF 18. The simulation is unstable. Time = 0.0040.
+
+Wed Aug  6 09:06:59 2025
+WARNING: Nan, Inf or huge value in QACC at DOF 24. The simulation is unstable. Time = 0.0060.
+
+Wed Aug  6 09:06:59 2025
+WARNING: Nan, Inf or huge value in QACC at DOF 15. The simulation is unstable. Time = 0.0080.
+
+Wed Aug  6 09:06:59 2025
+WARNING: Nan, Inf or huge value in QACC at DOF 20. The simulation is unstable. Time = 0.0060.
+
+Wed Aug  6 09:06:59 2025
+WARNING: Nan, Inf or huge value in QACC at DOF 16. The simulation is unstable. Time = 0.0060.
+
+Wed Aug  6 09:06:59 2025
+WARNING: Nan, Inf or huge value in QACC at DOF 20. The simulation is unstable. Time = 0.0040.
+
+Wed Aug  6 09:06:59 2025
+WARNING: Nan, Inf or huge value in QACC at DOF 18. The simulation is unstable. Time = 0.0040.
+
+Wed Aug  6 09:06:59 2025
+WARNING: Nan, Inf or huge value in QACC at DOF 16. The simulation is unstable. Time = 0.0060.
+
+Wed Aug  6 09:06:59 2025
+WARNING: Nan, Inf or huge value in QACC at DOF 20. The simulation is unstable. Time = 0.0060.
+
+Wed Aug  6 09:06:59 2025
+WARNING: Nan, Inf or huge value in QACC at DOF 20. The simulation is unstable. Time = 0.0040.
+
+Wed Aug  6 09:06:59 2025
+WARNING: Nan, Inf or huge value in QACC at DOF 15. The simulation is unstable. Time = 0.0080.
+
+Wed Aug  6 09:06:59 2025
+WARNING: Nan, Inf or huge value in QACC at DOF 20. The simulation is unstable. Time = 0.0060.
+
+Wed Aug  6 09:06:59 2025
+WARNING: Nan, Inf or huge value in QACC at DOF 16. The simulation is unstable. Time = 0.0060.
+
+Wed Aug  6 09:07:00 2025
+WARNING: Nan, Inf or huge value in QACC at DOF 18. The simulation is unstable. Time = 0.0060.
+
+Wed Aug  6 09:07:00 2025
+WARNING: Nan, Inf or huge value in QACC at DOF 18. The simulation is unstable. Time = 0.0060.
+
+Wed Aug  6 09:07:00 2025
+WARNING: Nan, Inf or huge value in QACC at DOF 15. The simulation is unstable. Time = 0.0080.
+
+Wed Aug  6 09:07:00 2025
+WARNING: Nan, Inf or huge value in QACC at DOF 20. The simulation is unstable. Time = 0.0040.
+
+Wed Aug  6 09:07:00 2025
+WARNING: Nan, Inf or huge value in QACC at DOF 20. The simulation is unstable. Time = 0.0040.
+
+Wed Aug  6 09:07:00 2025
+WARNING: Nan, Inf or huge value in QACC at DOF 16. The simulation is unstable. Time = 0.0060.
+
+Wed Aug  6 09:07:00 2025
+WARNING: Nan, Inf or huge value in QACC at DOF 18. The simulation is unstable. Time = 0.0080.
+
+Wed Aug  6 09:07:00 2025
+WARNING: Nan, Inf or huge value in QACC at DOF 18. The simulation is unstable. Time = 0.0060.
+
+Wed Aug  6 09:07:00 2025
+WARNING: Nan, Inf or huge value in QACC at DOF 20. The simulation is unstable. Time = 0.0060.
+
+Wed Aug  6 09:07:00 2025
+WARNING: Nan, Inf or huge value in QACC at DOF 16. The simulation is unstable. Time = 0.0060.
+
+Wed Aug  6 09:07:00 2025
+WARNING: Nan, Inf or huge value in QACC at DOF 16. The simulation is unstable. Time = 0.0060.
+
+Wed Aug  6 09:07:00 2025
+WARNING: Nan, Inf or huge value in QACC at DOF 16. The simulation is unstable. Time = 0.0060.
+
+Wed Aug  6 09:07:00 2025
+WARNING: Nan, Inf or huge value in QACC at DOF 20. The simulation is unstable. Time = 0.0040.
+
+Wed Aug  6 09:07:00 2025
+WARNING: Nan, Inf or huge value in QACC at DOF 18. The simulation is unstable. Time = 0.0060.
+
+Wed Aug  6 09:07:00 2025
+WARNING: Nan, Inf or huge value in QACC at DOF 16. The simulation is unstable. Time = 0.0060.
+
+Wed Aug  6 09:07:00 2025
+WARNING: Nan, Inf or huge value in QACC at DOF 20. The simulation is unstable. Time = 0.0060.
+
+Wed Aug  6 09:07:00 2025
+WARNING: Nan, Inf or huge value in QACC at DOF 19. The simulation is unstable. Time = 0.0060.
+
+Wed Aug  6 09:07:00 2025
+WARNING: Nan, Inf or huge value in QACC at DOF 18. The simulation is unstable. Time = 0.0060.
+
+Wed Aug  6 09:07:00 2025
+WARNING: Nan, Inf or huge value in QACC at DOF 15. The simulation is unstable. Time = 0.0060.
+
+Wed Aug  6 09:07:00 2025
+WARNING: Nan, Inf or huge value in QACC at DOF 19. The simulation is unstable. Time = 0.0040.
+
+Wed Aug  6 09:07:00 2025
+WARNING: Nan, Inf or huge value in QACC at DOF 20. The simulation is unstable. Time = 0.0040.
+
+Wed Aug  6 09:07:00 2025
+WARNING: Nan, Inf or huge value in QACC at DOF 16. The simulation is unstable. Time = 0.0060.
+
+Wed Aug  6 09:07:00 2025
+WARNING: Nan, Inf or huge value in QACC at DOF 16. The simulation is unstable. Time = 0.0060.
+
+Wed Aug  6 09:07:00 2025
+WARNING: Nan, Inf or huge value in QACC at DOF 20. The simulation is unstable. Time = 0.0060.
+
+Wed Aug  6 09:07:00 2025
+WARNING: Nan, Inf or huge value in QACC at DOF 18. The simulation is unstable. Time = 0.0060.
+
+Wed Aug  6 09:07:00 2025
+WARNING: Nan, Inf or huge value in QACC at DOF 16. The simulation is unstable. Time = 0.0060.
+
+Wed Aug  6 09:07:00 2025
+WARNING: Nan, Inf or huge value in QACC at DOF 18. The simulation is unstable. Time = 0.0060.
+
+Wed Aug  6 09:07:00 2025
+WARNING: Nan, Inf or huge value in QACC at DOF 17. The simulation is unstable. Time = 0.0060.
+
+Wed Aug  6 09:07:00 2025
+WARNING: Nan, Inf or huge value in QACC at DOF 16. The simulation is unstable. Time = 0.0060.
+
+Wed Aug  6 09:07:00 2025
+WARNING: Nan, Inf or huge value in QACC at DOF 18. The simulation is unstable. Time = 0.0060.
+
+Wed Aug  6 09:07:00 2025
+WARNING: Nan, Inf or huge value in QACC at DOF 18. The simulation is unstable. Time = 0.0060.
+
+Wed Aug  6 09:07:00 2025
+WARNING: Nan, Inf or huge value in QACC at DOF 16. The simulation is unstable. Time = 0.0060.
+
+Wed Aug  6 09:07:00 2025
+WARNING: Nan, Inf or huge value in QACC at DOF 16. The simulation is unstable. Time = 0.0060.
+
+Wed Aug  6 09:07:00 2025
+WARNING: Nan, Inf or huge value in QACC at DOF 18. The simulation is unstable. Time = 0.0060.
+
+Wed Aug  6 09:07:00 2025
+WARNING: Nan, Inf or huge value in QACC at DOF 16. The simulation is unstable. Time = 0.0060.
+
+Wed Aug  6 09:07:00 2025
+WARNING: Nan, Inf or huge value in QACC at DOF 20. The simulation is unstable. Time = 0.0040.
+
+Wed Aug  6 09:07:00 2025
+WARNING: Nan, Inf or huge value in QACC at DOF 16. The simulation is unstable. Time = 0.0060.
+
+Wed Aug  6 09:07:00 2025
+WARNING: Nan, Inf or huge value in QACC at DOF 20. The simulation is unstable. Time = 0.0040.
+
+Wed Aug  6 09:07:01 2025
+WARNING: Nan, Inf or huge value in QACC at DOF 18. The simulation is unstable. Time = 0.0040.
+
+Wed Aug  6 09:07:02 2025
+WARNING: Nan, Inf or huge value in QACC at DOF 16. The simulation is unstable. Time = 0.0060.
+
+Wed Aug  6 09:07:02 2025
+WARNING: Nan, Inf or huge value in QACC at DOF 18. The simulation is unstable. Time = 0.0080.
+
+Wed Aug  6 09:07:02 2025
+WARNING: Nan, Inf or huge value in QACC at DOF 15. The simulation is unstable. Time = 0.0060.
+
+Wed Aug  6 09:07:02 2025
+WARNING: Nan, Inf or huge value in QACC at DOF 18. The simulation is unstable. Time = 0.0060.
+
+Wed Aug  6 09:35:47 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:47 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 18. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:47 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:47 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:47 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:47 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:48 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:48 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:48 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:48 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:48 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:48 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:48 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:48 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:48 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:48 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:49 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:49 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:49 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:49 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:49 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:49 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 16. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:49 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:49 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:49 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:49 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:50 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:50 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:50 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:50 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:50 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:50 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:50 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:50 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 19. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:50 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:50 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:51 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:51 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 18. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:51 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:51 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:51 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:51 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:51 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:51 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:51 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:51 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:52 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 16. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:52 2025
+WARNING: Nan, Inf or huge value in QACC at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:52 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:52 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 18. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:52 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:52 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:52 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:52 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:52 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:52 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 20. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:52 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:53 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:53 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:53 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:53 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:53 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:53 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 16. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:53 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 16. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:53 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:53 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 17. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:53 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 18. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:54 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:54 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 19. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:54 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 16. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:54 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:54 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:54 2025
+WARNING: Nan, Inf or huge value in QACC at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:54 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:54 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:54 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:55 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:55 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:55 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:55 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:55 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:55 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:55 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:55 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:55 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:56 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:56 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 16. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:56 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:56 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:56 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 16. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:56 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:56 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:56 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:56 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:56 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:57 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:57 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:57 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:57 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:57 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:57 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:57 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:57 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 17. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:57 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:57 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:58 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:58 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:58 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:58 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:58 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 16. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:58 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 17. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:58 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:58 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:59 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:59 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 16. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:59 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:59 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 16. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:59 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:59 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:59 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:59 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:35:59 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:00 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 17. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:00 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 20. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:00 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:00 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:00 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:00 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:00 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:00 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:00 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:00 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:01 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:01 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:01 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 20. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:01 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:01 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:01 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:01 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:01 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:01 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:01 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:02 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:02 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:02 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:02 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:02 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 20. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:02 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:02 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 16. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:02 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:02 2025
+WARNING: Nan, Inf or huge value in QACC at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:02 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:02 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 18. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:03 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:03 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:03 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:03 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 18. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:03 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:03 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:03 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:03 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:03 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:04 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:04 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:04 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:04 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:04 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:04 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:04 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 17. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:04 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:04 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:04 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:05 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 19. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:05 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:05 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:05 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 18. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:05 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:05 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 16. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:05 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:05 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:05 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:06 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:06 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:06 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:06 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:06 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:06 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 20. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:06 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:06 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:06 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 17. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:06 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:07 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:07 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 17. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:07 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:07 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:07 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:07 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:07 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 18. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:07 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:07 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:08 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 19. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:08 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:08 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 16. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:08 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:09 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 16. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:09 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 16. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:09 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:09 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:09 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:10 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:10 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:10 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:10 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:10 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:10 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:10 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:10 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:10 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:11 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:11 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:11 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:11 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:11 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:11 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:11 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:11 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 19. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:11 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:11 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:12 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:12 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:12 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 16. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:12 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:12 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 17. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:12 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 19. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:12 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:12 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:12 2025
+WARNING: Nan, Inf or huge value in QACC at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:12 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:12 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 16. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:13 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:13 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:13 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 20. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:13 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:13 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:13 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:13 2025
+WARNING: Nan, Inf or huge value in QACC at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:13 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:13 2025
+WARNING: Nan, Inf or huge value in QACC at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:13 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:13 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:14 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:14 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:14 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:14 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:14 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:14 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:14 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 19. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:14 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 18. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:14 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:15 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:15 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 18. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:15 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:15 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:15 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:15 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:15 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:15 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:15 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:15 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:16 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:16 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:16 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:16 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 16. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:16 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 18. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:16 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:16 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:16 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 16. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:16 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:16 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:17 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:17 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:17 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 16. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:17 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:17 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:17 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:17 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 16. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:17 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:17 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 18. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:17 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:18 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:18 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:18 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:18 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:18 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 20. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:18 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:18 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:18 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 20. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:18 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:19 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:19 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:19 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 20. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:19 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 16. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:19 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:19 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 18. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:19 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:19 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:19 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:19 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:20 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:20 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:20 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:20 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:20 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:20 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 16. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:20 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:20 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:20 2025
+WARNING: Nan, Inf or huge value in QACC at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:20 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:20 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:21 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 20. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:21 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:21 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:21 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:21 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:21 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:21 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:21 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:21 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:21 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:22 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:22 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:22 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:22 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:22 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:22 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:22 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:22 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:22 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:22 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:23 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:23 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:23 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 18. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:23 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:23 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:23 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 17. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:23 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:23 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:23 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:23 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:24 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:24 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 18. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:24 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:24 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:24 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:24 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 18. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:24 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:24 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:24 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 20. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:25 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 18. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:25 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:25 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:25 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:25 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:25 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:25 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:25 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:25 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:25 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:26 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:26 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:26 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 17. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:26 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:26 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:26 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 20. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:26 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 16. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:26 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:26 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:27 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:27 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:27 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:27 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:27 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:27 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:27 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:27 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:27 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:27 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:28 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:28 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:28 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:28 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:28 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 17. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:28 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:28 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:28 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 18. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:28 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:28 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:29 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:29 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:29 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:29 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:29 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:29 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:29 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:29 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:29 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:30 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:30 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 20. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:30 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:30 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:31 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 17. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:31 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:31 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:31 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 16. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:31 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:31 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:31 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:31 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:31 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:31 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:32 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:32 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 18. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:32 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:32 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:32 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 18. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:32 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:32 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:32 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:32 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:32 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:33 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:33 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:33 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:33 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 16. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:33 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 17. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:33 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:33 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 20. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:33 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:33 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:33 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:34 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 16. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:34 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 18. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:34 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:34 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:34 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:34 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:34 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:34 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:34 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:34 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:35 2025
+WARNING: Nan, Inf or huge value in QACC at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:35 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:35 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:35 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:35 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:35 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:35 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:35 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:35 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:35 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:36 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:36 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 18. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:36 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:36 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:36 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 19. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:36 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:36 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:36 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 16. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:36 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:37 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 18. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:37 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 19. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:37 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:37 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:37 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:37 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:37 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 16. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:37 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 19. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:37 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:37 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:38 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:38 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:38 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:38 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 16. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:38 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:38 2025
+WARNING: Nan, Inf or huge value in QACC at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:38 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:38 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 16. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:38 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:38 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:38 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:39 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:39 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:39 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:39 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:39 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:39 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:39 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:39 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:39 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:40 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:40 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 16. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:40 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:40 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 20. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:40 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:40 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 19. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:40 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 20. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:40 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:40 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:40 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:41 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 09:36:41 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 15. The simulation is unstable. Time = 0.0050.
+
+Wed Aug  6 10:06:51 2025
+WARNING: Nan, Inf or huge value in QACC at DOF 17. The simulation is unstable. Time = 0.0080.
+
+Wed Aug  6 10:08:45 2025
+WARNING: Nan, Inf or huge value in QACC at DOF 17. The simulation is unstable. Time = 0.0080.
+
