@@ -123,14 +123,5 @@
     <jointvel name="vel_right_thumb_joint_1" joint="right_thumb_joint_1" />
     <framepos name="cube_pos" objtype="body" objname="cube" />
     <framequat name="cube_quat" objtype="body" objname="cube" />
-    <!-- Capteurs tactiles des doigts pour détecter le contact -->
-    <touch name="left_thumb_tip_contact" site="left_thumb_tip_site" />
-    <touch name="left_index_tip_contact" site="left_index_tip_site" />
-    <touch name="left_middle_tip_contact" site="left_middle_tip_site" />
-    <touch name="left_ring_tip_contact" site="left_ring_tip_site" />
-    <touch name="right_thumb_tip_contact" site="right_thumb_tip_site" />
-    <touch name="right_index_tip_contact" site="right_index_tip_site" />
-    <touch name="right_middle_tip_contact" site="right_middle_tip_site" />
-    <touch name="right_ring_tip_contact" site="right_ring_tip_site" />
   </sensor>
 </mujoco>
