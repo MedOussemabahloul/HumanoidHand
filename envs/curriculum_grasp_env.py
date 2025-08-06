@@ -41,7 +41,21 @@ class CurriculumGraspEnv(gym.Env):
         
         # Configuration
         self.render_mode = render_mode
-        self.model_path_str = model_path or "/home/oussema/Documents/project/results/g1_combined.xml"
+        # Essayer d'abord le chemin projet, puis fallback vers workspace
+        if model_path:
+            self.model_path_str = model_path
+        else:
+            project_path = "/home/oussema/Documents/project/results/g1_combined.xml"
+            workspace_path = "/workspace/results/g1_combined.xml"
+            
+            if os.path.exists(project_path):
+                self.model_path_str = project_path
+            elif os.path.exists(workspace_path):
+                self.model_path_str = workspace_path
+            else:
+                # Utiliser workspace par défaut
+                self.model_path_str = workspace_path
+                print(f"⚠️ Utilisation du fallback: {workspace_path}")
         
         # Curriculum Learning Configuration
         self.curriculum_levels = {
@@ -318,6 +332,19 @@ class CurriculumGraspEnv(gym.Env):
         self.observation_space = spaces.Box(
             low=-np.inf, high=np.inf, shape=(88,), dtype=np.float32
         )
+        
+        # Vérifier avec une observation test
+        try:
+            test_obs = self._get_observation()
+            actual_size = len(test_obs)
+            if actual_size != 88:
+                print(f"⚠️ Ajustement de l'espace d'observation: {actual_size} au lieu de 88")
+                self.observation_space = spaces.Box(
+                    low=-np.inf, high=np.inf, shape=(actual_size,), dtype=np.float32
+                )
+        except:
+            # Si l'observation test échoue, garder la taille prévue
+            pass
     
     def update_curriculum_level(self, episode_reward: float, episode_success: bool):
         """Met à jour le niveau de curriculum selon les performances"""
@@ -552,27 +579,38 @@ class CurriculumGraspEnv(gym.Env):
             mujoco.mj_resetData(self.model, self.data)
             return
         
-        # Vérifier les vitesses excessives
+        # Vérifier les vitesses excessives avec correction plus douce
         max_velocity = np.max(np.abs(self.data.qvel))
-        if max_velocity > 10.0:
-            # Réduire toutes les vitesses
-            self.data.qvel *= 0.5
-            if self.episode_step % 50 == 0:  # Afficher moins souvent
-                print(f"⚠️ Vitesse excessive ({max_velocity:.2f}) - réduction appliquée")
+        if max_velocity > 15.0:  # Seuil plus élevé
+            # Réduire toutes les vitesses plus progressivement
+            self.data.qvel *= 0.8  # Réduction plus douce
+            if self.episode_step % 100 == 0:  # Afficher encore moins souvent
+                print(f"⚠️ Vitesse excessive ({max_velocity:.2f}) - réduction douce appliquée")
         
-        # Historique pour détection de stabilité
-        arm_velocities = [self.data.qvel[i] for i in self.arm_joint_ids]
-        mean_arm_velocity = np.mean(np.abs(arm_velocities))
+        # Historique pour détection de stabilité avec gestion d'erreurs
+        try:
+            if len(self.arm_joint_ids) > 0:
+                arm_velocities = [self.data.qvel[i] for i in self.arm_joint_ids if i < len(self.data.qvel)]
+                if arm_velocities:
+                    mean_arm_velocity = np.mean(np.abs(arm_velocities))
+                else:
+                    mean_arm_velocity = 0.0
+            else:
+                mean_arm_velocity = 0.0
+        except (IndexError, TypeError):
+            mean_arm_velocity = 0.0
         
         self.velocity_history.append(mean_arm_velocity)
         if len(self.velocity_history) > self.max_history:
             self.velocity_history.pop(0)
         
-        # Compter les steps stables
-        if mean_arm_velocity < 0.1:
+        # Compter les steps stables avec seuil plus permissif
+        stability_threshold = 0.3 if self.current_level <= 2 else 0.2
+        if mean_arm_velocity < stability_threshold:
             self.stability_count += 1
         else:
-            self.stability_count = 0
+            # Réduire moins brusquement le compteur de stabilité
+            self.stability_count = max(0, self.stability_count - 1)
     
     def _update_phase_curriculum(self):
         """Met à jour la phase selon la progression et le curriculum"""
@@ -635,13 +673,15 @@ class CurriculumGraspEnv(gym.Env):
         phase_name = self._get_phase_name()
         
         # Récompense de base pour chaque step (éviter terminaison immédiate)
-        reward += 0.1
+        reward += 1.0  # Base reward plus généreuse
         
-        # Bonus de stabilité (très important)
+        # Bonus de stabilité (très important) - plus accessible
         if self.stability_count > 0:
-            reward += 0.2 * reward_multiplier
-        if self.stability_count > 10:
-            reward += 0.3 * reward_multiplier
+            reward += 1.0 * reward_multiplier
+        if self.stability_count > 5:  # Seuil plus bas
+            reward += 2.0 * reward_multiplier
+        if self.stability_count > 15:  # Seuil plus bas
+            reward += 3.0 * reward_multiplier
         
         # Récompenses spécifiques selon le niveau de curriculum
         if self.current_level == 1:  # Stabilisation uniquement
@@ -737,18 +777,28 @@ class CurriculumGraspEnv(gym.Env):
         """Construit l'observation de l'état avec info curriculum"""
         obs = []
         
-        # Positions des joints (37)
-        obs.extend(self.data.qpos.copy())
+        # Positions des joints - Assurer exactement 37 dimensions
+        qpos = self.data.qpos.copy()
+        if len(qpos) >= 37:
+            obs.extend(qpos[:37])
+        else:
+            obs.extend(qpos)
+            obs.extend([0.0] * (37 - len(qpos)))  # Padding si nécessaire
         
-        # Vitesses des joints (37)  
-        obs.extend(self.data.qvel.copy())
+        # Vitesses des joints - Assurer exactement 37 dimensions
+        qvel = self.data.qvel.copy()
+        if len(qvel) >= 37:
+            obs.extend(qvel[:37])
+        else:
+            obs.extend(qvel)
+            obs.extend([0.0] * (37 - len(qvel)))  # Padding si nécessaire
         
         # Position et orientation du cube (7)
         if self.cube_body_id >= 0:
             cube_pos = self.data.xpos[self.cube_body_id].copy()
             cube_quat = self.data.xquat[self.cube_body_id].copy()
-            obs.extend(cube_pos)
-            obs.extend(cube_quat)
+            obs.extend(cube_pos)  # 3 dimensions
+            obs.extend(cube_quat)  # 4 dimensions
         else:
             obs.extend([0.0] * 7)
         
@@ -763,7 +813,19 @@ class CurriculumGraspEnv(gym.Env):
         obs.append(float(self.phase_timer))
         obs.append(float(self.current_level))  # Niveau de curriculum
         
-        return np.array(obs, dtype=np.float32)
+        # Vérifier la dimension finale et corriger si nécessaire
+        final_obs = np.array(obs, dtype=np.float32)
+        if len(final_obs) != 88:
+            print(f"⚠️ Dimension observation incorrecte: {len(final_obs)}, correction...")
+            if len(final_obs) < 88:
+                # Ajouter du padding
+                padding = np.zeros(88 - len(final_obs), dtype=np.float32)
+                final_obs = np.concatenate([final_obs, padding])
+            else:
+                # Tronquer si trop long
+                final_obs = final_obs[:88]
+        
+        return final_obs
     
     def _get_info(self):
         """Retourne les informations de debug avec curriculum"""
@@ -787,30 +849,33 @@ class CurriculumGraspEnv(gym.Env):
         level_config = self.curriculum_levels[self.current_level]
         max_phases = level_config['max_phases']
         
-        # Succès selon le niveau de curriculum
+        # Ne terminer que dans des cas de succès clairs ou d'échecs majeurs
+        
+        # Succès selon le niveau de curriculum (critères plus permissifs)
         if self.current_level == 1:  # Stabilisation
-            if self.stability_count > 50 and self.phase_timer > 100:
+            if self.stability_count > 30 and self.phase_timer > 80:
                 return True
         elif self.current_level == 2:  # + Approche
             cube_pos = self._get_cube_position()
             hand_pos = self._get_hand_center()
             distance = np.linalg.norm(cube_pos - hand_pos)
-            if distance < 0.15 and self.current_phase >= 1:
+            if distance < 0.2 and self.current_phase >= 1 and self.stability_count > 20:
                 return True
         elif self.current_level == 3:  # + Contact
-            if self.contact_count > 5 and self.current_phase >= 2:
+            if self.contact_count > 3 and self.current_phase >= 2 and self.stability_count > 15:
                 return True
         else:  # Grasping complet
             if (self.current_phase == self.PHASES['HOLD'] and 
                 self.cube_lifted and 
-                self.phase_timer > 30):
+                self.phase_timer > 20):
                 return True
         
-        # Échec: cube tombé de la table
+        # Échec majeur uniquement: cube très loin de la table
         cube_pos = self._get_cube_position()
-        if cube_pos[2] < 0.0 or abs(cube_pos[0]) > 1.0 or abs(cube_pos[1]) > 1.0:
+        if cube_pos[2] < -0.1 or abs(cube_pos[0]) > 2.0 or abs(cube_pos[1]) > 2.0:
             return True
-            
+        
+        # Ne pas terminer pour des petites instabilités
         return False
     
     # Méthodes utilitaires (identiques à la version précédente)

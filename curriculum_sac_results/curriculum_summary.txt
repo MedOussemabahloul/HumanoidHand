@@ -1,0 +1,18 @@
+🎓 RÉSUMÉ DE L'ENTRAÎNEMENT CURRICULUM
+==================================================
+
+Niveau final atteint: 3
+Épisodes totaux: 10
+Temps d'entraînement: 6.79s
+
+Taux de succès par niveau:
+  Niveau 1: 100.0%
+  Niveau 2: 100.0%
+
+Meilleures récompenses par niveau:
+  Niveau 1: 100.00
+  Niveau 2: 1082.92
+
+Transitions de niveau:
+  Niveau 1 → 2 (épisode 5)
+  Niveau 2 → 3 (épisode 10)

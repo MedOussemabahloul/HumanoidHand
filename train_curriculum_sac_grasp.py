@@ -59,8 +59,19 @@ class CurriculumGraspingTrainer:
     def __init__(self, total_timesteps: int = 200000):
         self.total_timesteps = total_timesteps
         
-        # Configuration des dossiers
-        self.results_dir = "/home/oussema/Documents/project/curriculum_sac_results"
+        # Configuration des dossiers avec fallback
+        project_results = "/home/oussema/Documents/project/curriculum_sac_results"
+        workspace_results = "/workspace/curriculum_sac_results"
+        
+        # Essayer d'utiliser le répertoire projet, sinon workspace
+        try:
+            if os.path.exists("/home/oussema/Documents/project"):
+                self.results_dir = project_results
+            else:
+                self.results_dir = workspace_results
+        except:
+            self.results_dir = workspace_results
+        
         self.models_dir = os.path.join(self.results_dir, "models")
         self.logs_dir = os.path.join(self.results_dir, "logs")
         self.videos_dir = os.path.join(self.results_dir, "videos")
@@ -100,7 +111,7 @@ class CurriculumGraspingTrainer:
         
         def _make_env():
             env = CurriculumGraspEnv(
-                model_path="/home/oussema/Documents/project/results/g1_combined.xml",
+                model_path=None,  # Laisser l'environnement gérer le fallback
                 render_mode=None
             )
             return env
@@ -170,7 +181,7 @@ class CurriculumGraspingTrainer:
         if self.model is None:
             # Créer un nouvel environnement vectorisé temporaire pour l'initialisation
             temp_env = make_vec_env(lambda: CurriculumGraspEnv(
-                model_path="/home/oussema/Documents/project/results/g1_combined.xml",
+                model_path=None,  # Laisser l'environnement gérer le fallback
                 render_mode=None
             ), n_envs=1)
             
@@ -178,7 +189,7 @@ class CurriculumGraspingTrainer:
                 "MlpPolicy",
                 temp_env,
                 **sac_params,
-                tensorboard_log=self.logs_dir
+                tensorboard_log=None  # Pas de tensorboard par défaut
             )
             
             temp_env.close()
@@ -208,8 +219,8 @@ class CurriculumGraspingTrainer:
             self.create_curriculum_environment()
             self.create_adaptive_sac_model()
             
-            # Configuration du logging
-            logger = configure(self.logs_dir, ["stdout", "csv", "tensorboard"])
+            # Configuration du logging (sans tensorboard pour éviter les dépendances)
+            logger = configure(self.logs_dir, ["stdout", "csv"])
             
             total_episodes = 0
             timesteps_used = 0
@@ -390,7 +401,7 @@ class CurriculumGraspingTrainer:
             
             # Créer un environnement de test pour ce niveau
             test_env = CurriculumGraspEnv(
-                model_path="/home/oussema/Documents/project/results/g1_combined.xml",
+                model_path=None,  # Laisser l'environnement gérer le fallback
                 render_mode=None
             )
             test_env.current_level = test_level
