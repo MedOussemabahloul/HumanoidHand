@@ -40,7 +40,7 @@ def test_corrected_system():
                 env = CorrectedUltraStableGraspEnv(
                     xml_path="results/g1_combined.xml",
                     max_episode_steps=10,
-                    block_fingers=True
+                    fix_physics=True
                 )
                 
                 print(f"\n📊 IDENTIFICATION CORRIGÉE VALIDÉE:")
