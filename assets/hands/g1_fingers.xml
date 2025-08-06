@@ -44,73 +44,73 @@
   </asset>
   <worldbody>
     <body name="left_index_0" pos="0.03 0.05 0.02">
-      <joint name="left_index_joint_0" type="hinge" axis="0 1 0" range="0 1.5" damping="8.0" frictionloss="0.8" />
-      <geom type="mesh" mesh="left_index_0_mesh" contype="1" conaffinity="1" />
+      <joint name="left_index_joint_0" type="hinge" axis="0 1 0" range="0 1.2" damping="15.0" frictionloss="1.5" stiffness="5" />
+      <geom type="mesh" mesh="left_index_0_mesh" contype="1" conaffinity="1" friction="1.5 0.1 0.05" />
       <body name="left_index_1" pos="0.02 0 0">
-        <joint name="left_index_joint_1" type="hinge" axis="0 1 0" range="0 1.5" damping="6.0" frictionloss="0.6" />
+        <joint name="left_index_joint_1" type="hinge" axis="0 1 0" range="0 1.2" damping="12.0" frictionloss="1.2" stiffness="3" />
         <geom type="mesh" mesh="left_index_1_mesh" contype="1" conaffinity="1" />
         <site name="left_index_tip_site" pos="0.02 0 0" size="0.003" type="sphere" />
       </body>
     </body>
     <body name="left_middle_0" pos="0.035 0.05 0.025">
-      <joint name="left_middle_joint_0" type="hinge" axis="0 1 0" range="0 1.5" damping="8.0" frictionloss="0.8" />
-      <geom type="mesh" mesh="left_middle_0_mesh" contype="1" conaffinity="1" />
+      <joint name="left_middle_joint_0" type="hinge" axis="0 1 0" range="0 1.2" damping="15.0" frictionloss="1.5" stiffness="5" />
+      <geom type="mesh" mesh="left_middle_0_mesh" contype="1" conaffinity="1" friction="1.5 0.1 0.05" />
       <body name="left_middle_1" pos="0.02 0 0">
-        <joint name="left_middle_joint_1" type="hinge" axis="0 1 0" range="0 1.5" damping="6.0" frictionloss="0.6" />
+        <joint name="left_middle_joint_1" type="hinge" axis="0 1 0" range="0 1.2" damping="12.0" frictionloss="1.2" stiffness="3" />
         <geom type="mesh" mesh="left_middle_1_mesh" contype="1" conaffinity="1" />
         <site name="left_middle_tip_site" pos="0.02 0 0" size="0.003" type="sphere" />
       </body>
     </body>
     <body name="left_ring_0" pos="0.04 0.05 0.025">
-      <joint name="left_ring_joint_0" type="hinge" axis="0 1 0" range="0 1.5" damping="8.0" frictionloss="0.8" />
-      <geom type="mesh" mesh="left_ring_0_mesh" contype="1" conaffinity="1" />
+      <joint name="left_ring_joint_0" type="hinge" axis="0 1 0" range="0 1.2" damping="15.0" frictionloss="1.5" stiffness="5" />
+      <geom type="mesh" mesh="left_ring_0_mesh" contype="1" conaffinity="1" friction="1.5 0.1 0.05" />
       <body name="left_ring_1" pos="0.02 0 0">
-        <joint name="left_ring_joint_1" type="hinge" axis="0 1 0" range="0 1.5" damping="6.0" frictionloss="0.6" />
+        <joint name="left_ring_joint_1" type="hinge" axis="0 1 0" range="0 1.2" damping="12.0" frictionloss="1.2" stiffness="3" />
         <geom type="mesh" mesh="left_ring_1_mesh" contype="1" conaffinity="1" />
         <site name="left_ring_tip_site" pos="0.02 0 0" size="0.003" type="sphere" />
       </body>
     </body>
     <body name="left_thumb_0" pos="0.02 0.04 0.015">
-      <joint name="left_thumb_joint_0" type="hinge" axis="0 1 0" range="0 1.5" damping="10.0" frictionloss="1.0" />
-      <geom type="mesh" mesh="left_thumb_0_mesh" contype="1" conaffinity="1" />
+      <joint name="left_thumb_joint_0" type="hinge" axis="0 1 0" range="0 1.2" damping="18.0" frictionloss="1.8" stiffness="6" />
+      <geom type="mesh" mesh="left_thumb_0_mesh" contype="1" conaffinity="1" friction="1.5 0.1 0.05" />
       <body name="left_thumb_1" pos="0.02 0 0">
-        <joint name="left_thumb_joint_1" type="hinge" axis="0 1 0" range="0 1.5" damping="6.0" frictionloss="0.6" />
+        <joint name="left_thumb_joint_1" type="hinge" axis="0 1 0" range="0 1.2" damping="15.0" frictionloss="1.5" stiffness="4" />
         <geom type="mesh" mesh="left_thumb_1_mesh" contype="1" conaffinity="1" />
         <site name="left_thumb_tip_site" pos="0.02 0 0" size="0.003" type="sphere" />
       </body>
     </body>
     <body name="right_index_0" pos="-0.03 -0.05 0.02">
-      <joint name="right_index_joint_0" type="hinge" axis="0 1 0" range="0 1.5" damping="8.0" frictionloss="0.8" />
-      <geom type="mesh" mesh="right_index_0_mesh" contype="1" conaffinity="1" />
+      <joint name="right_index_joint_0" type="hinge" axis="0 1 0" range="0 1.2" damping="15.0" frictionloss="1.5" stiffness="5" />
+      <geom type="mesh" mesh="right_index_0_mesh" contype="1" conaffinity="1" friction="1.5 0.1 0.05" />
       <body name="right_index_1" pos="0.02 0 0">
-        <joint name="right_index_joint_1" type="hinge" axis="0 1 0" range="0 1.5" damping="6.0" frictionloss="0.6" />
+        <joint name="right_index_joint_1" type="hinge" axis="0 1 0" range="0 1.2" damping="12.0" frictionloss="1.2" stiffness="3" />
         <geom type="mesh" mesh="right_index_1_mesh" contype="1" conaffinity="1" />
         <site name="right_index_tip_site" pos="0.02 0 0" size="0.003" type="sphere" />
       </body>
     </body>
     <body name="right_middle_0" pos="-0.035 -0.05 0.025">
-      <joint name="right_middle_joint_0" type="hinge" axis="0 1 0" range="0 1.5" damping="8.0" frictionloss="0.8" />
-      <geom type="mesh" mesh="right_middle_0_mesh" contype="1" conaffinity="1" />
+      <joint name="right_middle_joint_0" type="hinge" axis="0 1 0" range="0 1.2" damping="15.0" frictionloss="1.5" stiffness="5" />
+      <geom type="mesh" mesh="right_middle_0_mesh" contype="1" conaffinity="1" friction="1.5 0.1 0.05" />
       <body name="right_middle_1" pos="0.02 0 0">
-        <joint name="right_middle_joint_1" type="hinge" axis="0 1 0" range="0 1.5" damping="6.0" frictionloss="0.6" />
+        <joint name="right_middle_joint_1" type="hinge" axis="0 1 0" range="0 1.2" damping="12.0" frictionloss="1.2" stiffness="3" />
         <geom type="mesh" mesh="right_middle_1_mesh" contype="1" conaffinity="1" />
         <site name="right_middle_tip_site" pos="0.02 0 0" size="0.003" type="sphere" />
       </body>
     </body>
     <body name="right_ring_0" pos="-0.04 -0.05 0.025">
-      <joint name="right_ring_joint_0" type="hinge" axis="0 1 0" range="0 1.5" damping="8.0" frictionloss="0.8" />
-      <geom type="mesh" mesh="right_ring_0_mesh" contype="1" conaffinity="1" />
+      <joint name="right_ring_joint_0" type="hinge" axis="0 1 0" range="0 1.2" damping="15.0" frictionloss="1.5" stiffness="5" />
+      <geom type="mesh" mesh="right_ring_0_mesh" contype="1" conaffinity="1" friction="1.5 0.1 0.05" />
       <body name="right_ring_1" pos="0.02 0 0">
-        <joint name="right_ring_joint_1" type="hinge" axis="0 1 0" range="0 1.5" damping="6.0" frictionloss="0.6" />
+        <joint name="right_ring_joint_1" type="hinge" axis="0 1 0" range="0 1.2" damping="12.0" frictionloss="1.2" stiffness="3" />
         <geom type="mesh" mesh="right_ring_1_mesh" contype="1" conaffinity="1" />
         <site name="right_ring_tip_site" pos="0.02 0 0" size="0.003" type="sphere" />
       </body>
     </body>
     <body name="right_thumb_0" pos="-0.02 -0.05 0.015">
-      <joint name="right_thumb_joint_0" type="hinge" axis="0 1 0" range="0 1.5" damping="10.0" frictionloss="1.0" />
-      <geom type="mesh" mesh="right_thumb_0_mesh" contype="1" conaffinity="1" />
+      <joint name="right_thumb_joint_0" type="hinge" axis="0 1 0" range="0 1.2" damping="18.0" frictionloss="1.8" stiffness="6" />
+      <geom type="mesh" mesh="right_thumb_0_mesh" contype="1" conaffinity="1" friction="1.5 0.1 0.05" />
       <body name="right_thumb_1" pos="0.02 0 0">
-        <joint name="right_thumb_joint_1" type="hinge" axis="0 1 0" range="0 1.5" damping="6.0" frictionloss="0.6" />
+        <joint name="right_thumb_joint_1" type="hinge" axis="0 1 0" range="0 1.2" damping="15.0" frictionloss="1.5" stiffness="4" />
         <geom type="mesh" mesh="right_thumb_1_mesh" contype="1" conaffinity="1" />
         <site name="right_thumb_tip_site" pos="0.02 0 0" size="0.003" type="sphere" />
       </body>
