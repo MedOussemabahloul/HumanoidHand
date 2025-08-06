@@ -44,7 +44,7 @@ class CorrectedTrainer:
         self.env = CorrectedUltraStableGraspEnv(
             xml_path=config['model_path'],
             max_episode_steps=config['max_episode_steps'],
-            block_fingers=config['block_fingers']
+            fix_physics=config['fix_physics']
         )
         
         print("🧠 Initialisation agent SAC...")
@@ -310,8 +310,9 @@ class CorrectedTrainer:
         return {
             'model_path': 'results/g1_combined.xml',
             'max_episode_steps': 25,       # Très court
-            'block_fingers': True,         # Doigts bloqués
+            'block_fingers': False,         # Doigts bloqués
             'total_episodes': 100,
+            'fix_physics': True,
             'learning_rate': 5e-6,         # Très bas
             'batch_size': 8,               # Très petit
             'buffer_size': 1000,           # Petit

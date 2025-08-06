@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
-<mujoco model="g1_manipulation">
+<mujoco model="g1_combined">
   <compiler angle="radian" coordinate="local" />
-  <option timestep="0.002" iterations="50" solver="Newton" tolerance="1e-10">
+  <option timestep="0.005" iterations="100" solver="PGS" tolerance="1e-6">
     <flag warmstart="enable" energy="enable" />
   </option>
   <size nconmax="100" njmax="1000" nstack="600000" />
@@ -21,7 +21,7 @@
       <geom name="table_leg4" type="box" size="0.02 0.02 0.2" rgba="0.6 0.4 0.2 1" pos="-0.35 -0.25 -0.2" />
     </body>
     <body name="cube" pos="0.3 0 0.05">
-      <joint name="cube_free" type="slide" frictionloss="0.01" />
+      <joint name="cube_free" type="slide" frictionloss="0.6" />
       <geom name="cube_geom" type="box" size="0.025 0.025 0.025" rgba="0.2 0.8 0.2 1" density="1000" friction="1 0.1 0.1" />
     </body>
   </worldbody>
@@ -43,22 +43,22 @@
     <position name="act_right_wrist_roll_joint" joint="right_wrist_roll_joint" gear="1" kp="100" kv="10" />
     <position name="act_right_wrist_pitch_joint" joint="right_wrist_pitch_joint" gear="1" kp="100" kv="10" />
     <position name="act_right_wrist_yaw_joint" joint="right_wrist_yaw_joint" gear="1" kp="100" kv="10" />
-    <position name="act_left_index_joint_0" joint="left_index_joint_0" gear="1" kp="100" kv="10" />
-    <position name="act_left_index_joint_1" joint="left_index_joint_1" gear="1" kp="100" kv="10" />
-    <position name="act_left_middle_joint_0" joint="left_middle_joint_0" gear="1" kp="100" kv="10" />
-    <position name="act_left_middle_joint_1" joint="left_middle_joint_1" gear="1" kp="100" kv="10" />
-    <position name="act_left_ring_joint_0" joint="left_ring_joint_0" gear="1" kp="100" kv="10" />
-    <position name="act_left_ring_joint_1" joint="left_ring_joint_1" gear="1" kp="100" kv="10" />
-    <position name="act_left_thumb_joint_0" joint="left_thumb_joint_0" gear="1" kp="100" kv="10" />
-    <position name="act_left_thumb_joint_1" joint="left_thumb_joint_1" gear="1" kp="100" kv="10" />
-    <position name="act_right_index_joint_0" joint="right_index_joint_0" gear="1" kp="100" kv="10" />
-    <position name="act_right_index_joint_1" joint="right_index_joint_1" gear="1" kp="100" kv="10" />
-    <position name="act_right_middle_joint_0" joint="right_middle_joint_0" gear="1" kp="100" kv="10" />
-    <position name="act_right_middle_joint_1" joint="right_middle_joint_1" gear="1" kp="100" kv="10" />
-    <position name="act_right_ring_joint_0" joint="right_ring_joint_0" gear="1" kp="100" kv="10" />
-    <position name="act_right_ring_joint_1" joint="right_ring_joint_1" gear="1" kp="100" kv="10" />
-    <position name="act_right_thumb_joint_0" joint="right_thumb_joint_0" gear="1" kp="100" kv="10" />
-    <position name="act_right_thumb_joint_1" joint="right_thumb_joint_1" gear="1" kp="100" kv="10" />
+    <position name="act_left_index_joint_0" joint="left_index_joint_0" gear="1" kp="20" kv="3" />
+    <position name="act_left_index_joint_1" joint="left_index_joint_1" gear="1" kp="15" kv="2" />
+    <position name="act_left_middle_joint_0" joint="left_middle_joint_0" gear="1" kp="20" kv="3" />
+    <position name="act_left_middle_joint_1" joint="left_middle_joint_1" gear="1" kp="15" kv="2" />
+    <position name="act_left_ring_joint_0" joint="left_ring_joint_0" gear="1" kp="20" kv="3" />
+    <position name="act_left_ring_joint_1" joint="left_ring_joint_1" gear="1" kp="15" kv="2" />
+    <position name="act_left_thumb_joint_0" joint="left_thumb_joint_0" gear="1" kp="25" kv="4" />
+    <position name="act_left_thumb_joint_1" joint="left_thumb_joint_1" gear="1" kp="20" kv="3" />
+    <position name="act_right_index_joint_0" joint="right_index_joint_0" gear="1" kp="20" kv="3" />
+    <position name="act_right_index_joint_1" joint="right_index_joint_1" gear="1" kp="15" kv="2" />
+    <position name="act_right_middle_joint_0" joint="right_middle_joint_0" gear="1" kp="20" kv="3" />
+    <position name="act_right_middle_joint_1" joint="right_middle_joint_1" gear="1" kp="15" kv="2" />
+    <position name="act_right_ring_joint_0" joint="right_ring_joint_0" gear="1" kp="20" kv="3" />
+    <position name="act_right_ring_joint_1" joint="right_ring_joint_1" gear="1" kp="15" kv="2" />
+    <position name="act_right_thumb_joint_0" joint="right_thumb_joint_0" gear="1" kp="25" kv="4" />
+    <position name="act_right_thumb_joint_1" joint="right_thumb_joint_1" gear="1" kp="20" kv="3" />
   </actuator>
   <sensor>
     <jointpos name="pos_cube_free" joint="cube_free" />
