@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 <mujoco model="g1_fingers">
-  <default class="finger">
+  <default>
     <joint type="hinge" damping="0.01" frictionloss="0.01" range="0 1.5"/>
     <geom contype="1" conaffinity="1"/>
   </default>
