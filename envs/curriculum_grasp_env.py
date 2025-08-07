@@ -471,6 +471,9 @@ class CurriculumGraspEnv(gym.Env):
         # Appliquer scaling adaptatif selon la phase et le niveau de curriculum
         action = self._apply_curriculum_scaling(action)
         
+        # Scaling plus conservateur pour éviter vitesses excessives
+        action = action * 0.3  # Réduire l'amplitude des actions
+        
         # Appliquer les actions avec smooth control
         self._apply_smooth_actions(action)
         
@@ -660,7 +663,17 @@ class CurriculumGraspEnv(gym.Env):
         phase_name = self._get_phase_name()
         
         # Récompense de base pour chaque step (éviter terminaison immédiate)
-        reward += 0.1
+        reward += 0.2  # Augmenter la récompense de base
+        
+        # Bonus pour vitesses faibles (encourage stabilité)
+        arm_velocities = [abs(self.data.qvel[i]) for i in self.arm_joint_ids]
+        avg_velocity = np.mean(arm_velocities)
+        if avg_velocity < 1.0:  # Vitesse très faible
+            reward += 1.0
+        elif avg_velocity < 5.0:  # Vitesse modérée
+            reward += 0.5
+        elif avg_velocity > 20.0:  # Pénalité pour vitesse excessive
+            reward -= 2.0
         
         # Bonus de stabilité (très important)
         if self.stability_count > 0:
