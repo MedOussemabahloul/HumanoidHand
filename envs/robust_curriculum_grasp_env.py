@@ -402,39 +402,58 @@ class RobustCurriculumGraspEnv(gym.Env):
         return scaled_action
 
     def _apply_smooth_actions(self, action):
-        """Applique les actions avec lissage"""
         try:
-            # Séparer les actions des bras et des doigts
             arm_actions = action[:len(self.arm_joint_ids)]
             finger_actions = action[len(self.arm_joint_ids):len(self.arm_joint_ids) + len(self.finger_joint_ids)]
-            
-            # Appliquer aux joints des bras
             for i, joint_id in enumerate(self.arm_joint_ids):
                 if i < len(arm_actions) and i < len(self.data.ctrl):
                     current_pos = float(self.data.qpos[joint_id])
                     current_vel = float(self.data.qvel[joint_id])
-                    
-                    # Scaling adaptatif basé sur le niveau
+                    # Clipping strict de l'action
+                    act = float(np.clip(arm_actions[i], -0.5, 0.5))
+                    # Scaling adaptatif
                     action_scale = 0.05 if self.current_level <= 2 else 0.1
-                    target_pos = current_pos + float(arm_actions[i]) * action_scale
-                    
-                    # Limiter le changement maximum
+                    # Si vitesse > 8, scaling réduit
+                    if abs(current_vel) > 8.0:
+                        action_scale *= 0.5
+                    target_pos = current_pos + act * action_scale
                     max_change = 0.02 if self.current_level <= 2 else 0.03
                     target_pos = np.clip(target_pos, current_pos - max_change, current_pos + max_change)
-                    
                     # Appliquer avec contrôle de vitesse
-                    if abs(current_vel) > 5.0:  # Vitesse excessive
+                    if abs(current_vel) > 10.0:
+                        if not hasattr(self, '_vel_excess_count'):
+                            self._vel_excess_count = {}
+                        self._vel_excess_count[joint_id] = self._vel_excess_count.get(joint_id, 0) + 1
+                        if self._vel_excess_count[joint_id] > 10:
+                            print(f"🚨 Vitesse persistante >10 sur joint {joint_id} - forçage qvel=0 !")
+                            self.data.qvel[joint_id] = 0.0
+                            self._vel_excess_count[joint_id] = 0
                         target_pos = current_pos  # Ne pas bouger
-                    
+                    else:
+                        if hasattr(self, '_vel_excess_count'):
+                            self._vel_excess_count[joint_id] = 0
                     self.data.ctrl[i] = target_pos
-            
-            # Appliquer aux joints des doigts
             for i, joint_id in enumerate(self.finger_joint_ids):
                 if i < len(finger_actions) and (14 + i) < len(self.data.ctrl):
                     current_pos = float(self.data.qpos[joint_id])
-                    target_pos = current_pos + float(finger_actions[i]) * 0.1
+                    current_vel = float(self.data.qvel[joint_id])
+                    act = float(np.clip(finger_actions[i], -0.5, 0.5))
+                    action_scale = 0.1
+                    if abs(current_vel) > 8.0:
+                        action_scale *= 0.5
+                    target_pos = current_pos + act * action_scale
+                    if abs(current_vel) > 10.0:
+                        if not hasattr(self, '_vel_excess_count_f'): self._vel_excess_count_f = {}
+                        self._vel_excess_count_f[joint_id] = self._vel_excess_count_f.get(joint_id, 0) + 1
+                        if self._vel_excess_count_f[joint_id] > 10:
+                            print(f"🚨 Vitesse persistante >10 sur doigt {joint_id} - forçage qvel=0 !")
+                            self.data.qvel[joint_id] = 0.0
+                            self._vel_excess_count_f[joint_id] = 0
+                        target_pos = current_pos
+                    else:
+                        if hasattr(self, '_vel_excess_count_f'):
+                            self._vel_excess_count_f[joint_id] = 0
                     self.data.ctrl[14 + i] = target_pos
-                    
         except Exception as e:
             if self.episode_step % 100 == 0:
                 print(f"⚠️ Erreur application actions: {e}")
@@ -578,6 +597,15 @@ class RobustCurriculumGraspEnv(gym.Env):
             
             if max_velocity > 5.0:
                 reward -= 2.0
+            
+            # Pénalité forte pour les vitesses excessives
+            max_velocity = 0.0
+            for joint_id in self.arm_joint_ids + self.finger_joint_ids:
+                if joint_id < len(self.data.qvel):
+                    velocity = abs(float(self.data.qvel[joint_id]))
+                    max_velocity = max(max_velocity, velocity)
+            if max_velocity > 10.0:
+                reward -= 10.0  # pénalité forte
             
             # Multiplicateur du curriculum
             current_config = self.curriculum_levels[self.current_level]
