@@ -392,7 +392,8 @@ class RobustCurriculumGraspEnv(gym.Env):
         mujoco.mj_resetData(self.model, self.data)
         
         # Initialiser les contrôles à zéro
-        self.data.ctrl[:] = 0.0
+        if hasattr(self.data, 'ctrl') and self.data.ctrl is not None:
+            self.data.ctrl[:] = 0.0
         
         # Reset des variables d'état
         self.episode_step = 0
@@ -411,8 +412,11 @@ class RobustCurriculumGraspEnv(gym.Env):
                 np.random.uniform(-0.1, 0.1),  # y
                 0.02  # z
             ])
-            if self.cube_body_id >= 0:
-                self.data.qpos[self.cube_body_id*7:self.cube_body_id*7+3] = cube_pos
+            if self.cube_body_id >= 0 and self.cube_body_id < len(self.data.qpos):
+                # Calculer l'index correct pour la position du cube
+                cube_start_idx = self.cube_body_id * 7
+                if cube_start_idx + 3 <= len(self.data.qpos):
+                    self.data.qpos[cube_start_idx:cube_start_idx+3] = cube_pos
         
         # Reset de la capture vidéo
         if self.video_capture and self.video_writer is not None:
@@ -508,8 +512,8 @@ class RobustCurriculumGraspEnv(gym.Env):
         # Appliquer aux bras avec limitation de vitesse
         for i, joint_id in enumerate(self.arm_joint_ids):
             if i < len(arm_actions) and i < len(self.data.ctrl):
-                current_pos = self.data.qpos[joint_id]
-                current_vel = self.data.qvel[joint_id]
+                current_pos = float(self.data.qpos[joint_id])
+                current_vel = float(self.data.qvel[joint_id])
                 
                 # Limiter la vitesse
                 if abs(current_vel) > max_velocity:
@@ -518,7 +522,7 @@ class RobustCurriculumGraspEnv(gym.Env):
                 
                 # Calculer la position cible avec scaling adaptatif
                 action_scale = 0.05 if self.current_level <= 2 else 0.1
-                target_pos = current_pos + arm_actions[i] * action_scale
+                target_pos = current_pos + float(arm_actions[i]) * action_scale
                 
                 # Limiter le changement de position
                 max_change = 0.02 if self.current_level <= 2 else 0.03
@@ -531,8 +535,8 @@ class RobustCurriculumGraspEnv(gym.Env):
         # Appliquer aux doigts
         for i, joint_id in enumerate(self.finger_joint_ids):
             if i < len(finger_actions) and (14 + i) < len(self.data.ctrl):
-                current_pos = self.data.qpos[joint_id]
-                target_pos = current_pos + finger_actions[i] * 0.1  # Scaling plus petit
+                current_pos = float(self.data.qpos[joint_id])
+                target_pos = current_pos + float(finger_actions[i]) * 0.1  # Scaling plus petit
                 self.data.ctrl[14 + i] = target_pos
     
     def _check_stability(self):
@@ -697,9 +701,10 @@ class RobustCurriculumGraspEnv(gym.Env):
         obs.extend([float(x) for x in hand_pos])
         
         # Vitesse du cube
-        if self.cube_body_id >= 0:
+        if self.cube_body_id >= 0 and self.cube_body_id < len(self.data.cvel):
             cube_vel = self.data.cvel[self.cube_body_id]
-            obs.extend([float(x) for x in cube_vel])
+            obs.extend([float(cube_vel[0]), float(cube_vel[1]), float(cube_vel[2]), 
+                       float(cube_vel[3]), float(cube_vel[4]), float(cube_vel[5])])
         else:
             obs.extend([0.0] * 6)
         
@@ -751,9 +756,10 @@ class RobustCurriculumGraspEnv(gym.Env):
     
     def _get_cube_position(self):
         """Retourne la position du cube"""
-        if self.cube_body_id >= 0:
-            return self.data.xpos[self.cube_body_id].copy()
-        return np.array([0.4, 0.0, 0.02])
+        if self.cube_body_id >= 0 and self.cube_body_id < len(self.data.xpos):
+            pos = self.data.xpos[self.cube_body_id]
+            return np.array([float(pos[0]), float(pos[1]), float(pos[2])], dtype=np.float32)
+        return np.array([0.4, 0.0, 0.02], dtype=np.float32)
     
     def _get_hand_center(self):
         """Retourne la position centrale de la main"""
@@ -761,11 +767,13 @@ class RobustCurriculumGraspEnv(gym.Env):
         finger_positions = []
         for joint_id in self.finger_joint_ids:
             if joint_id < len(self.data.xpos):
-                finger_positions.append(self.data.xpos[joint_id])
+                pos = self.data.xpos[joint_id]
+                finger_positions.append([float(pos[0]), float(pos[1]), float(pos[2])])
         
         if finger_positions:
-            return np.mean(finger_positions, axis=0)
-        return np.array([0.0, 0.0, 0.0])
+            mean_pos = np.mean(finger_positions, axis=0)
+            return np.array([float(mean_pos[0]), float(mean_pos[1]), float(mean_pos[2])], dtype=np.float32)
+        return np.array([0.0, 0.0, 0.0], dtype=np.float32)
     
     def _detect_finger_contact(self):
         """Détecte le contact avec les doigts"""

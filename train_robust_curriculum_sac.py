@@ -72,7 +72,7 @@ class RobustCurriculumGraspingTrainer:
         self.total_timesteps = total_timesteps
         
         # Configuration des dossiers
-        self.results_dir = "/home/oussema/Documents/project/robust_curriculum_sac_results"
+        self.results_dir = "/workspace/robust_curriculum_sac_results"
         self.models_dir = os.path.join(self.results_dir, "models")
         self.logs_dir = os.path.join(self.results_dir, "logs")
         self.videos_dir = os.path.join(self.results_dir, "videos")
@@ -119,7 +119,7 @@ class RobustCurriculumGraspingTrainer:
         try:
             # Créer l'environnement avec capture vidéo
             self.env = RobustCurriculumGraspEnv(
-                model_path="/home/oussema/Documents/project/results/g1_combined.xml",
+                model_path="/workspace/results/g1_combined.xml",
                 render_mode="rgb_array",
                 video_capture=self.video_capture
             )
@@ -199,6 +199,31 @@ class RobustCurriculumGraspingTrainer:
         try:
             print("🖥️  Démarrage du viewer Mujoco...")
             
+            # Vérifier si on est dans un environnement headless
+            if 'DISPLAY' not in os.environ or not os.environ['DISPLAY'] or os.environ.get('DISPLAY') == '':
+                print("⚠️ Environnement headless détecté - viewer Mujoco désactivé")
+                return
+            
+            # Vérifier si on peut créer une fenêtre
+            try:
+                import mujoco.viewer
+                # Test simple pour voir si on peut créer une fenêtre
+                test_model = mujoco.MjModel.from_xml_path(self.env.model_path_str)
+                test_data = mujoco.MjData(test_model)
+                
+                # Essayer de créer une fenêtre de test
+                with mujoco.viewer.launch_passive(test_model, test_data) as test_viewer:
+                    test_viewer.sync()
+                    time.sleep(0.1)
+                    
+            except Exception as test_error:
+                if "could not create window" in str(test_error).lower():
+                    print("⚠️ Impossible de créer une fenêtre - viewer Mujoco désactivé")
+                    return
+                else:
+                    print(f"⚠️ Test viewer échoué: {test_error}")
+                    return
+            
             # Créer un thread pour le viewer
             def run_viewer():
                 try:
@@ -211,12 +236,18 @@ class RobustCurriculumGraspingTrainer:
                         self.mujoco_viewer = viewer
                         while True:
                             try:
-                                # Synchroniser avec les données actuelles
-                                mujoco.mj_copyData(data_copy, self.env.data)
+                                # Synchroniser avec les données actuelles de manière sûre
+                                if hasattr(self.env, 'data') and self.env.data is not None:
+                                    # Copier seulement les positions et vitesses
+                                    data_copy.qpos[:] = self.env.data.qpos[:]
+                                    data_copy.qvel[:] = self.env.data.qvel[:]
+                                    data_copy.ctrl[:] = self.env.data.ctrl[:]
+                                
                                 viewer.sync()
                                 time.sleep(0.01)
                             except Exception as sync_error:
-                                print(f"⚠️ Erreur sync viewer: {sync_error}")
+                                if "mj_copyDataVisual" not in str(sync_error):
+                                    print(f"⚠️ Erreur sync viewer: {sync_error}")
                                 break
                 except Exception as e:
                     print(f"⚠️ Erreur viewer Mujoco: {e}")
@@ -235,8 +266,14 @@ class RobustCurriculumGraspingTrainer:
         
         start_time = time.time()
         
-        # Démarrer le viewer Mujoco
-        self.start_mujoco_viewer()
+        # Démarrer le viewer Mujoco seulement si on n'est pas en headless
+        if 'DISPLAY' in os.environ and os.environ['DISPLAY'] and os.environ['DISPLAY'] != '':
+            try:
+                self.start_mujoco_viewer()
+            except Exception as e:
+                print(f"⚠️ Impossible de démarrer le viewer Mujoco: {e}")
+        else:
+            print("⚠️ Environnement headless - viewer Mujoco désactivé")
         
         # Configuration du logger
         logger = configure(
