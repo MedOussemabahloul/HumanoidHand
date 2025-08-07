@@ -1,0 +1,7 @@
+🎓 RÉSUMÉ DE L'ENTRAÎNEMENT ROBUSTE
+==================================================
+
+Niveau final: 1
+Épisodes totaux: 250
+Temps d'entraînement: 507.03s
+Timesteps: 50000
