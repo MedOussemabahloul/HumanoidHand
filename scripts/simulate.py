@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import os
 import mujoco
-import mujoco.viewer
+from mujoco import viewer as mj_viewer
 
 def launch_combined_scene():
     # 1) Chemins vers tes fichiers XML existants
@@ -29,7 +29,7 @@ def launch_combined_scene():
 
     # 4) Lance le viewer
     print("🖥️  Launching combined Mujoco viewer…")
-    mujoco.viewer.launch(model, data)
+    mj_viewer.launch(model, data)
 
 
 if __name__ == "__main__":

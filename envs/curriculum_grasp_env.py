@@ -585,7 +585,7 @@ class CurriculumGraspEnv(gym.Env):
      if max_velocity > 10.0:
          # Réduire toutes les vitesses
          self.data.qvel *= 0.5
-         if self.episode_step % 50 == 0:  # Afficher moins souvent
+         if self.episode_step % 200 == 0:  # Afficher beaucoup moins souvent
              print(f"⚠️ Vitesse excessive ({max_velocity:.2f}) - réduction appliquée")
      
      # Historique pour détection de stabilité
@@ -935,15 +935,15 @@ class CurriculumGraspEnv(gym.Env):
          # Affichage pour visualisation humaine
          if not hasattr(self, 'viewer') or self.viewer is None:
              try:
-                 import mujoco.viewer
-                 self.viewer = mujoco.viewer.launch_passive(self.model, self.data)
-             except:
+                 from mujoco import viewer as mj_viewer
+                 self.viewer = mj_viewer.launch_passive(self.model, self.data)
+             except Exception:
                  pass
          
          if hasattr(self, 'viewer') and self.viewer is not None:
              try:
                  self.viewer.sync()
-             except:
+             except Exception:
                  pass
                  
      elif self.render_mode == "rgb_array":

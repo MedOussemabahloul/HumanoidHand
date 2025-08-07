@@ -266,6 +266,12 @@ class OptimizedCurriculumTrainer:
           video_path = os.path.join(self.videos_dir, "optimized_demo.mp4")
           fourcc = cv2.VideoWriter_fourcc(*'mp4v')
           video_writer = cv2.VideoWriter(video_path, fourcc, 20, (640, 480))
+          if not video_writer.isOpened():
+              print("⚠️ OpenCV mp4v non disponible, tentative avec 'avc1'")
+              fallback_fourcc = cv2.VideoWriter_fourcc(*'avc1')
+              video_writer = cv2.VideoWriter(video_path, fallback_fourcc, 20, (640, 480))
+          if not video_writer.isOpened():
+              raise RuntimeError(f"Impossible d'ouvrir l'écrivain vidéo: {video_path}")
           
           total_frames = 0
           

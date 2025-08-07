@@ -18,7 +18,7 @@ import json
 
 # Ajouter les chemins
 sys.path.append('/home/oussema/Documents/project/envs')
-sys.path.append('/workspace/envs')
+# sys.path.append('/workspace/envs')  # désactivé
 
 try:
  from envs.curriculum_grasp_env import CurriculumGraspEnv

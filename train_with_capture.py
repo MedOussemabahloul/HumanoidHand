@@ -24,7 +24,7 @@ import matplotlib.pyplot as plt
 warnings.filterwarnings("ignore")
 
 # Ajouter les chemins
-sys.path.append('/workspace/envs')
+sys.path.append('/home/oussema/Documents/project/envs')
 sys.path.append('/workspace')
 
 try:
@@ -64,7 +64,7 @@ class VideoGraspingTrainer:
      self.record_videos = record_videos
      
      # Configuration des dossiers
-     self.results_dir = "/workspace/curriculum_sac_results"
+     self.results_dir = "/home/oussema/Documents/project/curriculum_sac_results"
      self.video_dir = os.path.join(self.results_dir, "videos")
      self.models_dir = os.path.join(self.results_dir, "models")
      

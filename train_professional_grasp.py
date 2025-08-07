@@ -465,8 +465,7 @@ class ProfessionalGraspTrainer:
             cap = cv2.VideoCapture(first_video)
             
             if not cap.isOpened():
-                print("❌ Erreur ouverture vidéo")
-                return
+                raise RuntimeError(f"Impossible d'ouvrir la première vidéo: {first_video}")
             
             # Propriétés vidéo
             fps = int(cap.get(cv2.CAP_PROP_FPS))
@@ -477,10 +476,18 @@ class ProfessionalGraspTrainer:
             # Créer la vidéo finale
             fourcc = cv2.VideoWriter_fourcc(*'mp4v')
             out = cv2.VideoWriter(final_video_path, fourcc, fps, (width, height))
+            if not out.isOpened():
+                print("⚠️ OpenCV mp4v non disponible, tentative avec 'avc1'")
+                fourcc2 = cv2.VideoWriter_fourcc(*'avc1')
+                out = cv2.VideoWriter(final_video_path, fourcc2, fps, (width, height))
+            if not out.isOpened():
+                raise RuntimeError(f"Impossible d'ouvrir l'écrivain vidéo: {final_video_path}")
             
             for video_file in selected_videos:
                 video_path = os.path.join(self.videos_dir, video_file)
                 cap = cv2.VideoCapture(video_path)
+                if not cap.isOpened():
+                    raise RuntimeError(f"Impossible d'ouvrir la vidéo: {video_path}")
                 
                 while True:
                     ret, frame = cap.read()
