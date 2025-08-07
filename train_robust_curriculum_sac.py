@@ -203,11 +203,21 @@ class RobustCurriculumGraspingTrainer:
             def run_viewer():
                 try:
                     import mujoco.viewer
-                    with mujoco.viewer.launch_passive(self.env.model, self.env.data) as viewer:
+                    # Créer une copie des données pour éviter les conflits
+                    model_copy = mujoco.MjModel.from_xml_path(self.env.model_path_str)
+                    data_copy = mujoco.MjData(model_copy)
+                    
+                    with mujoco.viewer.launch_passive(model_copy, data_copy) as viewer:
                         self.mujoco_viewer = viewer
                         while True:
-                            viewer.sync()
-                            time.sleep(0.01)
+                            try:
+                                # Synchroniser avec les données actuelles
+                                mujoco.mj_copyData(data_copy, self.env.data)
+                                viewer.sync()
+                                time.sleep(0.01)
+                            except Exception as sync_error:
+                                print(f"⚠️ Erreur sync viewer: {sync_error}")
+                                break
                 except Exception as e:
                     print(f"⚠️ Erreur viewer Mujoco: {e}")
             
@@ -261,23 +271,29 @@ class RobustCurriculumGraspingTrainer:
                    consecutive_successes < self.env.curriculum_levels[current_level]['episodes_required']):
                 
                 # Entraînement par épisode
-                obs, info = self.env.reset()
-                episode_reward = 0
-                episode_length = 0
-                
-                while True:
-                    # Prédiction de l'action
-                    action, _states = self.model.predict(obs, deterministic=False)
+                try:
+                    obs, info = self.env.reset()
+                    episode_reward = 0
+                    episode_length = 0
                     
-                    # Exécution de l'action
-                    obs, reward, terminated, truncated, info = self.env.step(action)
-                    
-                    episode_reward += reward
-                    episode_length += 1
-                    
-                    # Vérifier la terminaison
-                    if terminated or truncated:
-                        break
+                    while True:
+                        # Prédiction de l'action
+                        action, _states = self.model.predict(obs, deterministic=False)
+                        
+                        # Exécution de l'action
+                        obs, reward, terminated, truncated, info = self.env.step(action)
+                        
+                        episode_reward += reward
+                        episode_length += 1
+                        
+                        # Vérifier la terminaison
+                        if terminated or truncated:
+                            break
+                            
+                except Exception as e:
+                    print(f"⚠️ Erreur lors de l'épisode: {e}")
+                    episode_reward = -10.0  # Récompense négative en cas d'erreur
+                    episode_length = 0
                 
                 # Mise à jour des métriques
                 episode_rewards.append(episode_reward)

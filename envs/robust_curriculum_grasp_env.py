@@ -391,6 +391,9 @@ class RobustCurriculumGraspEnv(gym.Env):
         # Reset des données mujoco
         mujoco.mj_resetData(self.model, self.data)
         
+        # Initialiser les contrôles à zéro
+        self.data.ctrl[:] = 0.0
+        
         # Reset des variables d'état
         self.episode_step = 0
         self.current_phase = 0
@@ -504,7 +507,7 @@ class RobustCurriculumGraspEnv(gym.Env):
         
         # Appliquer aux bras avec limitation de vitesse
         for i, joint_id in enumerate(self.arm_joint_ids):
-            if i < len(arm_actions):
+            if i < len(arm_actions) and i < len(self.data.ctrl):
                 current_pos = self.data.qpos[joint_id]
                 current_vel = self.data.qvel[joint_id]
                 
@@ -513,21 +516,23 @@ class RobustCurriculumGraspEnv(gym.Env):
                     # Réduire la vitesse
                     self.data.qvel[joint_id] *= 0.5
                 
-                # Calculer la position cible
-                target_pos = current_pos + arm_actions[i] * 0.1
+                # Calculer la position cible avec scaling adaptatif
+                action_scale = 0.05 if self.current_level <= 2 else 0.1
+                target_pos = current_pos + arm_actions[i] * action_scale
                 
                 # Limiter le changement de position
-                max_change = 0.03 if self.current_level <= 2 else 0.05
+                max_change = 0.02 if self.current_level <= 2 else 0.03
                 if abs(target_pos - current_pos) > max_change:
                     target_pos = current_pos + np.sign(target_pos - current_pos) * max_change
                 
+                # Appliquer le contrôle
                 self.data.ctrl[i] = target_pos
         
         # Appliquer aux doigts
         for i, joint_id in enumerate(self.finger_joint_ids):
-            if i < len(finger_actions):
+            if i < len(finger_actions) and (14 + i) < len(self.data.ctrl):
                 current_pos = self.data.qpos[joint_id]
-                target_pos = current_pos + finger_actions[i] * 0.2
+                target_pos = current_pos + finger_actions[i] * 0.1  # Scaling plus petit
                 self.data.ctrl[14 + i] = target_pos
     
     def _check_stability(self):
@@ -670,42 +675,50 @@ class RobustCurriculumGraspEnv(gym.Env):
         return reward
     
     def _get_observation(self):
-        """Retourne l'observation actuelle"""
+        """Retourne l'observation actuelle avec types de données cohérents"""
         obs = []
         
         # Position et vitesse des bras
         for joint_id in self.arm_joint_ids:
-            obs.append(self.data.qpos[joint_id])
-            obs.append(self.data.qvel[joint_id])
+            obs.append(float(self.data.qpos[joint_id]))
+            obs.append(float(self.data.qvel[joint_id]))
         
         # Position et vitesse des doigts
         for joint_id in self.finger_joint_ids:
-            obs.append(self.data.qpos[joint_id])
-            obs.append(self.data.qvel[joint_id])
+            obs.append(float(self.data.qpos[joint_id]))
+            obs.append(float(self.data.qvel[joint_id]))
         
         # Position du cube
         cube_pos = self._get_cube_position()
-        obs.extend(cube_pos)
+        obs.extend([float(x) for x in cube_pos])
         
         # Position de la main
         hand_pos = self._get_hand_center()
-        obs.extend(hand_pos)
+        obs.extend([float(x) for x in hand_pos])
         
         # Vitesse du cube
         if self.cube_body_id >= 0:
             cube_vel = self.data.cvel[self.cube_body_id]
-            obs.extend(cube_vel)
+            obs.extend([float(x) for x in cube_vel])
         else:
             obs.extend([0.0] * 6)
         
         # Phase et timer
-        obs.append(self.current_phase)
-        obs.append(self.phase_timer)
+        obs.append(float(self.current_phase))
+        obs.append(float(self.phase_timer))
         
         # Niveau de curriculum
-        obs.append(self.current_level)
+        obs.append(float(self.current_level))
         
-        return np.array(obs, dtype=np.float32)
+        # Convertir en array numpy avec type float32
+        obs_array = np.array(obs, dtype=np.float32)
+        
+        # Vérifier qu'il n'y a pas de NaN ou Inf
+        if np.any(np.isnan(obs_array)) or np.any(np.isinf(obs_array)):
+            print("⚠️ Observation contient NaN/Inf - remplacement par zéros")
+            obs_array = np.nan_to_num(obs_array, nan=0.0, posinf=0.0, neginf=0.0)
+        
+        return obs_array
     
     def _get_info(self):
         """Retourne les informations de l'environnement"""
