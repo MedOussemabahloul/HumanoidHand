@@ -31,8 +31,9 @@ class GraspEnv(gym.Env):
         self.video_dir = video_dir
         self.episode_count = 0
         
-        # Créer le dossier vidéo
-        os.makedirs(video_dir, exist_ok=True)
+        # Créer le dossier vidéo seulement si on enregistre des vidéos
+        if record_video:
+            os.makedirs(video_dir, exist_ok=True)
         
         # Charger le modèle g1_combined.xml
         model_path = "results/g1_combined.xml"
@@ -446,6 +447,9 @@ class GraspEnv(gym.Env):
         """Sauvegarde la vidéo de l'épisode"""
         if not self.video_frames:
             return
+        
+        # Créer le dossier vidéo si nécessaire
+        os.makedirs(self.video_dir, exist_ok=True)
         
         if filename is None:
             filename = f"grasp_episode_{self.episode_count:04d}.mp4"
