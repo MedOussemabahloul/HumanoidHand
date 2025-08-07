@@ -18,8 +18,8 @@ import json
 import argparse
 from datetime import datetime
 
-# Ajouter le workspace au path
-sys.path.append('/workspace')
+# Ajouter le répertoire courant au path
+sys.path.append('.')
 
 def main():
     """Fonction principale d'entraînement"""
@@ -36,7 +36,7 @@ def main():
                        help='Nombre de timesteps (défaut: 100K)')
     parser.add_argument('--quick', action='store_true',
                        help='Test rapide 5K timesteps')
-    parser.add_argument('--results-dir', type=str, default='/workspace/sac_results',
+    parser.add_argument('--results-dir', type=str, default='sac_results',
                        help='Dossier de résultats')
     
     args = parser.parse_args()

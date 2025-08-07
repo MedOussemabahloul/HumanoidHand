@@ -23,7 +23,7 @@ import imageio
 class GraspEnv(gym.Env):
     """Environnement de grasping utilisant g1_combined.xml"""
     
-    def __init__(self, render_mode="rgb_array", record_video=False, video_dir="/workspace/videos"):
+    def __init__(self, render_mode="rgb_array", record_video=False, video_dir="videos"):
         super().__init__()
         
         self.render_mode = render_mode
@@ -35,7 +35,7 @@ class GraspEnv(gym.Env):
         os.makedirs(video_dir, exist_ok=True)
         
         # Charger le modèle g1_combined.xml
-        model_path = "/workspace/results/g1_combined.xml"
+        model_path = "results/g1_combined.xml"
         if not os.path.exists(model_path):
             raise FileNotFoundError(f"Modèle g1_combined.xml non trouvé: {model_path}")
         

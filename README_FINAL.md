@@ -29,11 +29,14 @@
 ### **Documentation**:
 5. **`README_FINAL.md`** - Cette documentation
 
+### **Note importante**:
+- Le fichier `g1_combined.xml` est le **modèle physique MuJoCo** (robot + environnement)
+- Les fichiers `.zip` générés sont les **modèles SAC entraînés** (réseau de neurones)
+
 ## 🚀 **UTILISATION RAPIDE**
 
 ### **1. Entraînement Rapide (5K steps - 2 minutes)**
 ```bash
-cd /workspace
 python3 train_sac_grasp.py --quick
 ```
 
@@ -44,12 +47,12 @@ python3 train_sac_grasp.py --timesteps 100000
 
 ### **3. Test d'un modèle entraîné**
 ```bash
-python3 test_model.py --model /workspace/sac_results/models/best_model.zip
+python3 test_model.py --model sac_results/models/best_model.zip
 ```
 
 ## 📊 **RÉSULTATS GÉNÉRÉS**
 
-Après l'entraînement, vous trouverez dans `/workspace/sac_results/`:
+Après l'entraînement, vous trouverez dans `sac_results/`:
 ```
 sac_results/
 ├── models/
@@ -109,7 +112,7 @@ from grasp_env import GraspEnv
 from stable_baselines3 import SAC
 
 # Charger un modèle entraîné
-model = SAC.load('/workspace/sac_results/models/best_model.zip')
+model = SAC.load('sac_results/models/best_model.zip')
 
 # Créer l'environnement avec vidéo
 env = GraspEnv(render_mode='rgb_array', record_video=True)
@@ -145,7 +148,7 @@ env.close()
 
 Pour tester rapidement le système:
 ```bash
-cd /workspace && python3 train_sac_grasp.py --quick
+python3 train_sac_grasp.py --quick
 ```
 
 Le robot G1 va apprendre à saisir le cube fixe sur la table en 2 minutes et générer automatiquement 3 vidéos de démonstration ! 🎬🤖

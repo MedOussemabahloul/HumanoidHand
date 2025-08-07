@@ -11,18 +11,18 @@ import sys
 import argparse
 import numpy as np
 
-# Ajouter le workspace au path
-sys.path.append('/workspace')
+# Ajouter le répertoire courant au path
+sys.path.append('.')
 
 def main():
     """Fonction principale de test"""
     
     parser = argparse.ArgumentParser(description='🧪 Test du modèle SAC')
-    parser.add_argument('--model', type=str, default='/workspace/sac_results/models/best_model.zip',
+    parser.add_argument('--model', type=str, default='sac_results/models/best_model.zip',
                        help='Chemin vers le modèle')
     parser.add_argument('--episodes', type=int, default=3,
                        help='Nombre d\'épisodes de test')
-    parser.add_argument('--video-dir', type=str, default='/workspace/test_videos',
+    parser.add_argument('--video-dir', type=str, default='test_videos',
                        help='Dossier de vidéos')
     
     args = parser.parse_args()
