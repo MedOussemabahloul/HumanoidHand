@@ -333,7 +333,6 @@ class RobustCurriculumGraspEnv(gym.Env):
             print(f"🎓 Passage au niveau {self.current_level}: {self.curriculum_levels[self.current_level]['name']}")
 
     def reset(self, seed=None, options=None):
-        """Reset de l'environnement"""
         super().reset(seed=seed)
         
         # Reset des données mujoco
@@ -360,6 +359,10 @@ class RobustCurriculumGraspEnv(gym.Env):
         
         # Première observation
         obs = self._get_observation()
+        # --- Correction SB3 : forcer float32 et shape ---
+        obs = np.array(obs, dtype=np.float32).reshape(-1)
+        if obs.shape[0] != self.observation_space.shape[0]:
+            raise RuntimeError(f"Observation shape mismatch: got {obs.shape[0]}, expected {self.observation_space.shape[0]}")
         info = self._get_info()
         
         return obs, info
@@ -391,6 +394,10 @@ class RobustCurriculumGraspEnv(gym.Env):
         
         # Observation et info
         obs = self._get_observation()
+        # --- Correction SB3 : forcer float32 et shape ---
+        obs = np.array(obs, dtype=np.float32).reshape(-1)
+        if obs.shape[0] != self.observation_space.shape[0]:
+            raise RuntimeError(f"Observation shape mismatch: got {obs.shape[0]}, expected {self.observation_space.shape[0]}")
         info = self._get_info()
         
         # Capture vidéo
@@ -641,7 +648,7 @@ class RobustCurriculumGraspEnv(gym.Env):
             # Convertir en array numpy avec type float32
             obs_array = np.array(obs, dtype=np.float32)
             
-            # Vérifier qu'il n'y a pas de NaN ou Inf
+            # --- Robustesse : gestion NaN/Inf ---
             if np.any(np.isnan(obs_array)) or np.any(np.isinf(obs_array)):
                 print("⚠️ Observation contient NaN/Inf - remplacement par zéros")
                 obs_array = np.nan_to_num(obs_array, nan=0.0, posinf=0.0, neginf=0.0)

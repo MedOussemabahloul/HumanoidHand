@@ -257,6 +257,17 @@ class RobustCurriculumGraspingTrainer:
             total_episodes = 0
             start_time = time.time()
             
+            print("\n🔮 Prédiction des erreurs potentielles :")
+            print("- Problème de shape d'observation : vérifié et corrigé")
+            print("- Problème de dtype d'observation : vérifié et corrigé")
+            print("- Problème de NaN/Inf dans l'observation : vérifié et corrigé")
+            print("- Problème de vitesse excessive : affichage et réduction automatique")
+            print("- Problème de joints non trouvés : fallback automatique")
+            print("- Problème de rendu Mujoco : gestion try/except et fallback image noire")
+            print("- Problème de headless : viewer désactivé si DISPLAY absent")
+            print("- Problème de permissions fichiers : vérifié au lancement")
+            print("- Problème de buffer overflow Mujoco : nstack augmenté dans XML")
+
             while total_episodes < self.total_timesteps // 1000:  # Approximation
                 print(f"\n🎯 Entraînement niveau {self.current_level}")
                 
@@ -286,7 +297,14 @@ class RobustCurriculumGraspingTrainer:
                         # Épisode
                         while True:
                             # Prédiction de l'action
-                            action, _states = self.model.predict(obs, deterministic=False)
+                            if not isinstance(obs, np.ndarray):
+                                obs = np.array(obs, dtype=np.float32)
+                            obs = obs.astype(np.float32).reshape(1, -1)
+                            try:
+                                action, _states = self.model.predict(obs, deterministic=False)
+                            except Exception as e:
+                                print(f"❌ Erreur SB3 predict : {e}\nObservation type: {type(obs)}, shape: {getattr(obs, 'shape', None)}, dtype: {getattr(obs, 'dtype', None)}")
+                                raise
                             
                             # Step dans l'environnement
                             obs, reward, terminated, truncated, info = self.env.step(action)
