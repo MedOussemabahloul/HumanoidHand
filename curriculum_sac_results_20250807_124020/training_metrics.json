@@ -1,0 +1,9 @@
+{
+  "start_time": 1754570420.5428371,
+  "total_episodes": 250,
+  "training_time": 507.0299677848816,
+  "success_rates_by_level": {},
+  "best_reward_by_level": {},
+  "level_transitions": [],
+  "final_level": 1
+}
