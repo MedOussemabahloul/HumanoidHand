@@ -311,10 +311,38 @@ class CurriculumGraspEnv(gym.Env):
             low=-1.0, high=1.0, shape=(22,), dtype=np.float32
         )
         
-        # Espace d'observation: positions (37) + vitesses (37) + cube (7) + phase (1) + métriques (6) = 88
+        # Calculer dynamiquement la taille d'observation
+        # Le modèle peut avoir des DOFs différents pour position et vitesse
+        dummy_obs = self._get_dummy_observation()
+        obs_size = len(dummy_obs)
+        
         self.observation_space = spaces.Box(
-            low=-np.inf, high=np.inf, shape=(88,), dtype=np.float32
+            low=-np.inf, high=np.inf, shape=(obs_size,), dtype=np.float32
         )
+        
+        print(f"   👁️  Observation space: {self.observation_space.shape}")
+        print(f"   📊  qpos: {self.model.nq}, qvel: {self.model.nv}")
+    
+    def _get_dummy_observation(self):
+        """Créer une observation factice pour calculer la taille"""
+        obs = []
+        
+        # Positions des joints (nq)
+        obs.extend([0.0] * self.model.nq)
+        
+        # Vitesses des joints (nv)  
+        obs.extend([0.0] * self.model.nv)
+        
+        # Position et orientation du cube (7)
+        obs.extend([0.0] * 7)
+        
+        # Phase actuelle (1)
+        obs.append(0.0)
+        
+        # Métriques additionnelles (6)
+        obs.extend([0.0] * 6)
+        
+        return np.array(obs, dtype=np.float32)
     
     def update_curriculum_level(self, episode_reward: float, episode_success: bool):
         """Met à jour le niveau de curriculum selon les performances"""
@@ -734,11 +762,11 @@ class CurriculumGraspEnv(gym.Env):
         """Construit l'observation de l'état avec info curriculum"""
         obs = []
         
-        # Positions des joints (37)
+        # Positions des joints (nq)
         qpos = self.data.qpos.copy()
         obs.extend(qpos)
         
-        # Vitesses des joints (37)  
+        # Vitesses des joints (nv)  
         qvel = self.data.qvel.copy()
         obs.extend(qvel)
         
@@ -762,20 +790,22 @@ class CurriculumGraspEnv(gym.Env):
         obs.append(float(self.phase_timer))
         obs.append(float(self.current_level))  # Niveau de curriculum
         
-        # Vérification de la dimension et ajustement si nécessaire
         obs_array = np.array(obs, dtype=np.float32)
-        expected_size = self.observation_space.shape[0]
         
+        # Vérification finale (ne devrait plus arriver)
+        expected_size = self.observation_space.shape[0]
         if len(obs_array) != expected_size:
-            print(f"⚠️  Observation size mismatch: {len(obs_array)} != {expected_size}")
-            print(f"   qpos: {len(qpos)}, qvel: {len(qvel)}")
-            # Ajuster à la taille attendue
+            print(f"⚠️  ERREUR CRITIQUE: Observation size {len(obs_array)} != {expected_size}")
+            print(f"   qpos: {len(qpos)} (nq={self.model.nq})")
+            print(f"   qvel: {len(qvel)} (nv={self.model.nv})")
+            print(f"   cube: 7, phase: 1, metrics: 6")
+            print(f"   Total attendu: {self.model.nq + self.model.nv + 7 + 1 + 6}")
+            
+            # Ajustement d'urgence
             if len(obs_array) < expected_size:
-                # Ajouter des zéros si trop petit
                 padding = np.zeros(expected_size - len(obs_array), dtype=np.float32)
                 obs_array = np.concatenate([obs_array, padding])
             else:
-                # Tronquer si trop grand
                 obs_array = obs_array[:expected_size]
         
         return obs_array
