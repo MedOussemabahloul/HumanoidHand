@@ -38,7 +38,7 @@ class CurriculumGraspEnv(gym.Env):
      
      # Configuration
      self.render_mode = render_mode
-     self.model_path_str = model_path or "/home/oussema/Documents/project/results/g1_combined.xml"
+     self.model_path_str = model_path or "/workspace/results/g1_combined.xml"
      
      # Curriculum Learning Configuration
      self.curriculum_levels = {
@@ -580,12 +580,12 @@ class CurriculumGraspEnv(gym.Env):
          mujoco.mj_resetData(self.model, self.data)
          return
      
-     # Vérifier les vitesses excessives
+     # Vérifier les vitesses excessives avec seuil plus strict
      max_velocity = np.max(np.abs(self.data.qvel))
-     if max_velocity > 10.0:
-         # Réduire toutes les vitesses
-         self.data.qvel *= 0.5
-         if self.episode_step % 50 == 0:  # Afficher moins souvent
+     if max_velocity > 5.0:  # Seuil réduit de 10.0 à 5.0
+         # Réduire toutes les vitesses plus agressivement
+         self.data.qvel *= 0.3  # Réduction plus forte (0.5 -> 0.3)
+         if self.episode_step % 100 == 0:  # Afficher encore moins souvent
              print(f"⚠️ Vitesse excessive ({max_velocity:.2f}) - réduction appliquée")
      
      # Historique pour détection de stabilité
@@ -931,19 +931,32 @@ class CurriculumGraspEnv(gym.Env):
  
  def render(self):
      """Rendu de l'environnement pour visualisation et capture vidéo"""
+     # Import global de mujoco pour éviter les erreurs
+     global mujoco
+     
+     if not hasattr(self, '_mujoco_imported'):
+         try:
+             import mujoco
+             self._mujoco_imported = True
+         except ImportError:
+             print("⚠️ MuJoCo non disponible pour le rendu")
+             return np.zeros((480, 640, 3), dtype=np.uint8)
+     
      if self.render_mode == "human":
          # Affichage pour visualisation humaine
          if not hasattr(self, 'viewer') or self.viewer is None:
              try:
                  import mujoco.viewer
                  self.viewer = mujoco.viewer.launch_passive(self.model, self.data)
-             except:
+             except Exception as e:
+                 print(f"⚠️ Erreur viewer: {e}")
                  pass
          
          if hasattr(self, 'viewer') and self.viewer is not None:
              try:
                  self.viewer.sync()
-             except:
+             except Exception as e:
+                 print(f"⚠️ Erreur sync: {e}")
                  pass
                  
      elif self.render_mode == "rgb_array":
