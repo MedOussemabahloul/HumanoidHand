@@ -38,7 +38,7 @@ class CurriculumGraspEnv(gym.Env):
         
         # Configuration
         self.render_mode = render_mode
-        self.model_path_str = model_path or "/home/oussema/Documents/project/results/g1_combined.xml"
+        self.model_path_str = model_path or "/workspace/results/g1_combined.xml"
         
         # Curriculum Learning Configuration
         self.curriculum_levels = {
@@ -735,10 +735,12 @@ class CurriculumGraspEnv(gym.Env):
         obs = []
         
         # Positions des joints (37)
-        obs.extend(self.data.qpos.copy())
+        qpos = self.data.qpos.copy()
+        obs.extend(qpos)
         
         # Vitesses des joints (37)  
-        obs.extend(self.data.qvel.copy())
+        qvel = self.data.qvel.copy()
+        obs.extend(qvel)
         
         # Position et orientation du cube (7)
         if self.cube_body_id >= 0:
@@ -760,7 +762,23 @@ class CurriculumGraspEnv(gym.Env):
         obs.append(float(self.phase_timer))
         obs.append(float(self.current_level))  # Niveau de curriculum
         
-        return np.array(obs, dtype=np.float32)
+        # Vérification de la dimension et ajustement si nécessaire
+        obs_array = np.array(obs, dtype=np.float32)
+        expected_size = self.observation_space.shape[0]
+        
+        if len(obs_array) != expected_size:
+            print(f"⚠️  Observation size mismatch: {len(obs_array)} != {expected_size}")
+            print(f"   qpos: {len(qpos)}, qvel: {len(qvel)}")
+            # Ajuster à la taille attendue
+            if len(obs_array) < expected_size:
+                # Ajouter des zéros si trop petit
+                padding = np.zeros(expected_size - len(obs_array), dtype=np.float32)
+                obs_array = np.concatenate([obs_array, padding])
+            else:
+                # Tronquer si trop grand
+                obs_array = obs_array[:expected_size]
+        
+        return obs_array
     
     def _get_info(self):
         """Retourne les informations de debug avec curriculum"""
@@ -827,13 +845,36 @@ class CurriculumGraspEnv(gym.Env):
         return np.array([0.0, 0.0, 0.0])
     
     def _detect_finger_contact(self):
+        """Détection de contact robuste avec le cube"""
         cube_pos = self._get_cube_position()
+        contact_threshold = 0.06  # Distance de contact plus permissive
+        
+        # Vérifier contact avec sites des doigts
+        finger_contacts = 0
         for site_id in self.finger_sites:
             finger_pos = self.data.site_xpos[site_id]
             distance = np.linalg.norm(cube_pos - finger_pos)
-            if distance < 0.05:
-                return True
-        return False
+            if distance < contact_threshold:
+                finger_contacts += 1
+        
+        # Vérifier aussi les contacts physiques réels via MuJoCo
+        physical_contacts = 0
+        if hasattr(self, 'cube_body_id') and self.cube_body_id >= 0:
+            for i in range(self.data.ncon):
+                contact = self.data.contact[i]
+                # Vérifier si le contact implique le cube
+                body1 = self.model.geom_bodyid[contact.geom1]
+                body2 = self.model.geom_bodyid[contact.geom2]
+                
+                if body1 == self.cube_body_id or body2 == self.cube_body_id:
+                    # Vérifier si l'autre corps est une partie de la main
+                    other_body = body2 if body1 == self.cube_body_id else body1
+                    body_name = mujoco.mj_id2name(self.model, mujoco.mjtObj.mjOBJ_BODY, other_body)
+                    if body_name and ('finger' in body_name.lower() or 'thumb' in body_name.lower() or 'palm' in body_name.lower()):
+                        physical_contacts += 1
+        
+        # Contact détecté si au moins 2 doigts sont proches ou si contact physique
+        return finger_contacts >= 2 or physical_contacts > 0
     
     def _check_grasp_stability(self):
         if not self._detect_finger_contact():
@@ -846,8 +887,64 @@ class CurriculumGraspEnv(gym.Env):
         return cube_pos[2] > 0.08
     
     def render(self):
+        """Rendu de l'environnement pour visualisation et capture vidéo"""
         if self.render_mode == "human":
-            pass
+            # Affichage pour visualisation humaine
+            if not hasattr(self, 'viewer') or self.viewer is None:
+                try:
+                    import mujoco.viewer
+                    self.viewer = mujoco.viewer.launch_passive(self.model, self.data)
+                except:
+                    pass
+            
+            if hasattr(self, 'viewer') and self.viewer is not None:
+                try:
+                    self.viewer.sync()
+                except:
+                    pass
+                    
+        elif self.render_mode == "rgb_array":
+            # Rendu pour capture vidéo
+            try:
+                # Configuration de la caméra pour une vue optimale
+                width, height = 640, 480
+                
+                # Créer un contexte de rendu si nécessaire
+                if not hasattr(self, 'render_context'):
+                    self.render_context = mujoco.MjrContext(self.model, mujoco.mjtFontScale.mjFONTSCALE_150)
+                
+                # Configuration de la scène
+                scene = mujoco.MjvScene(self.model, maxgeom=10000)
+                camera = mujoco.MjvCamera()
+                
+                # Position optimale de la caméra pour voir le grasping
+                camera.type = mujoco.mjtCamera.mjCAMERA_FREE
+                camera.lookat = np.array([0.4, 0.0, 0.05])  # Regarder vers le cube
+                camera.distance = 1.2
+                camera.azimuth = 45
+                camera.elevation = -25
+                
+                # Mettre à jour la scène
+                mujoco.mjv_updateScene(self.model, self.data, mujoco.MjvOption(), None, camera, mujoco.mjtCatBit.mjCAT_ALL, scene)
+                
+                # Créer le viewport
+                viewport = mujoco.MjrRect(0, 0, width, height)
+                
+                # Rendu de la scène
+                mujoco.mjr_render(viewport, scene, self.render_context)
+                
+                # Lire les pixels
+                rgb_array = np.zeros((height, width, 3), dtype=np.uint8)
+                mujoco.mjr_readPixels(rgb_array, None, viewport, self.render_context)
+                
+                # Retourner l'image (flip vertical car OpenGL utilise origine en bas)
+                return np.flipud(rgb_array)
+                
+            except Exception as e:
+                print(f"⚠️  Erreur de rendu: {e}")
+                # Retourner une image noire en cas d'erreur
+                return np.zeros((480, 640, 3), dtype=np.uint8)
+        
         return None
     
     def close(self):

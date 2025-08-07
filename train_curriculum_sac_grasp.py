@@ -20,10 +20,11 @@ import time
 from datetime import datetime
 import warnings
 import matplotlib.pyplot as plt
+import cv2
 warnings.filterwarnings("ignore")
 
 # Ajouter le chemin des environnements
-sys.path.append('/home/oussema/Documents/project/envs')
+sys.path.append('/workspace/envs')
 
 try:
     from envs.curriculum_grasp_env import CurriculumGraspEnv
@@ -60,7 +61,7 @@ class CurriculumGraspingTrainer:
         self.total_timesteps = total_timesteps
         
         # Configuration des dossiers
-        self.results_dir = "/home/oussema/Documents/project/curriculum_sac_results"
+        self.results_dir = "/workspace/curriculum_sac_results"
         self.models_dir = os.path.join(self.results_dir, "models")
         self.logs_dir = os.path.join(self.results_dir, "logs")
         self.videos_dir = os.path.join(self.results_dir, "videos")
@@ -572,6 +573,134 @@ class CurriculumGraspingTrainer:
                             f"(épisode {transition['episode']})\n")
         
         print(f"📄 Résumé sauvé: {summary_path}")
+    
+    def generate_demo_video(self, num_episodes: int = 3, max_steps_per_episode: int = 1000):
+        """Génère une vidéo de démonstration du modèle entraîné"""
+        try:
+            print("🎬 Génération de la vidéo de démonstration...")
+            
+            # Créer un environnement avec rendu pour la vidéo
+            video_env = CurriculumGraspEnv(
+                model_path=self.env.model_path_str,
+                render_mode='rgb_array'
+            )
+            
+            # Définir le niveau au maximum atteint
+            video_env.current_level = self.env.current_level
+            video_env._update_curriculum_config()
+            
+            # Préparer l'enregistrement vidéo
+            video_path = os.path.join(self.results_dir, "demonstration.mp4")
+            fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+            fps = 30
+            frame_size = (640, 480)
+            video_writer = cv2.VideoWriter(video_path, fourcc, fps, frame_size)
+            
+            print(f"📹 Enregistrement dans: {video_path}")
+            
+            total_frames = 0
+            successful_episodes = 0
+            
+            for episode in range(num_episodes):
+                print(f"🎬 Épisode de démonstration {episode + 1}/{num_episodes}")
+                
+                obs, info = video_env.reset()
+                episode_reward = 0
+                episode_success = False
+                
+                for step in range(max_steps_per_episode):
+                    # Utiliser le modèle entraîné pour prédire l'action
+                    action, _ = self.model.predict(obs, deterministic=True)
+                    obs, reward, terminated, truncated, info = video_env.step(action)
+                    episode_reward += reward
+                    
+                    # Capturer la frame
+                    try:
+                        frame = video_env.render()
+                        if frame is not None:
+                            # Redimensionner la frame si nécessaire
+                            if frame.shape[:2] != frame_size[::-1]:
+                                frame = cv2.resize(frame, frame_size)
+                            
+                            # Convertir RGB vers BGR pour OpenCV
+                            if len(frame.shape) == 3:
+                                frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
+                            
+                            video_writer.write(frame)
+                            total_frames += 1
+                    except Exception as frame_error:
+                        print(f"⚠️  Erreur capture frame: {frame_error}")
+                    
+                    if terminated or truncated:
+                        if info.get('successful_grasp', False) or info.get('cube_lifted', False):
+                            episode_success = True
+                            successful_episodes += 1
+                        break
+                
+                print(f"   Récompense: {episode_reward:.2f}, Succès: {episode_success}")
+            
+            video_writer.release()
+            video_env.close()
+            
+            # Vérifier si la vidéo a été créée
+            if os.path.exists(video_path) and os.path.getsize(video_path) > 0:
+                print(f"✅ Vidéo générée avec succès!")
+                print(f"   📁 Chemin: {video_path}")
+                print(f"   🎬 Frames: {total_frames}")
+                print(f"   ✨ Épisodes réussis: {successful_episodes}/{num_episodes}")
+                
+                # Générer aussi une version GIF pour visualisation rapide
+                self._create_gif_from_video(video_path)
+            else:
+                print("❌ Erreur: Vidéo non créée ou vide")
+                
+        except Exception as e:
+            print(f"❌ Erreur lors de la génération vidéo: {e}")
+            import traceback
+            traceback.print_exc()
+    
+    def _create_gif_from_video(self, video_path: str):
+        """Crée un GIF à partir de la vidéo pour visualisation rapide"""
+        try:
+            gif_path = video_path.replace('.mp4', '.gif')
+            
+            # Utiliser OpenCV pour lire la vidéo et créer le GIF
+            cap = cv2.VideoCapture(video_path)
+            frames = []
+            frame_count = 0
+            
+            while True:
+                ret, frame = cap.read()
+                if not ret:
+                    break
+                
+                # Prendre une frame sur 3 pour réduire la taille du GIF
+                if frame_count % 3 == 0:
+                    # Convertir BGR vers RGB
+                    frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+                    # Réduire la résolution pour le GIF
+                    frame_small = cv2.resize(frame_rgb, (320, 240))
+                    frames.append(frame_small)
+                
+                frame_count += 1
+            
+            cap.release()
+            
+            if frames:
+                # Sauvegarder le GIF avec PIL
+                from PIL import Image
+                pil_frames = [Image.fromarray(frame) for frame in frames]
+                pil_frames[0].save(
+                    gif_path,
+                    save_all=True,
+                    append_images=pil_frames[1:],
+                    duration=100,  # ms par frame
+                    loop=0
+                )
+                print(f"🎞️  GIF créé: {gif_path}")
+            
+        except Exception as e:
+            print(f"⚠️  Impossible de créer le GIF: {e}")
 
 def main():
     """Fonction principale d'entraînement avec curriculum"""
@@ -587,6 +716,10 @@ def main():
     try:
         trainer.train_with_curriculum()
         print("\n✅ ENTRAÎNEMENT CURRICULUM COMPLÉTÉ AVEC SUCCÈS!")
+        
+        # Générer une vidéo de démonstration automatiquement
+        print("\n🎬 GÉNÉRATION DE LA VIDÉO DE DÉMONSTRATION...")
+        trainer.generate_demo_video()
         
     except KeyboardInterrupt:
         print("\n⏹️  Entraînement interrompu par l'utilisateur")
