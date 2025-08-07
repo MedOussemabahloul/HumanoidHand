@@ -101,7 +101,7 @@ class OptimizedCurriculumTrainer:
             
             # Forcer le niveau 1 pour commencer par la stabilisation
             self.env.current_level = 1
-            self.env._update_curriculum_config()
+            # Pas besoin d'appeler _update_curriculum_config, c'est fait automatiquement
             
             print("✅ Environnement optimisé créé")
             print(f"   📚 Niveau: {self.env.current_level} - {self.env.curriculum_levels[1]['name']}")
@@ -129,8 +129,7 @@ class OptimizedCurriculumTrainer:
                 ent_coef=0.2,              # Exploration modérée
                 target_update_interval=2,  # Update target plus souvent
                 policy_kwargs=dict(
-                    net_arch=[128, 128],   # Réseaux plus petits
-                    activation_fn=lambda: __import__('torch.nn', fromlist=['Tanh']).Tanh()
+                    net_arch=[128, 128]   # Réseaux plus petits
                 ),
                 verbose=1,
                 device="auto",
@@ -262,7 +261,7 @@ class OptimizedCurriculumTrainer:
             
             video_env = CurriculumGraspEnv(render_mode='rgb_array')
             video_env.current_level = self.env.current_level
-            video_env._update_curriculum_config()
+            # Configuration automatique du curriculum
             
             video_path = os.path.join(self.videos_dir, "optimized_demo.mp4")
             fourcc = cv2.VideoWriter_fourcc(*'mp4v')
