@@ -94,7 +94,7 @@ def check_model_file():
     """Vérifie que le fichier modèle existe"""
     print("\n🤖 Vérification du fichier modèle...")
     
-    model_path = "/home/oussema/Documents/project/results/g1_combined.xml"
+    model_path = "/workspace/results/g1_combined.xml"
     
     if os.path.exists(model_path):
         print(f"✅ Modèle trouvé: {model_path}")
@@ -117,7 +117,7 @@ def check_directories():
     """Vérifie et crée les dossiers nécessaires"""
     print("\n📂 Vérification des dossiers...")
     
-    base_dir = "/home/oussema/Documents/project"
+    base_dir = "/workspace"
     required_dirs = [
         base_dir,
         os.path.join(base_dir, "envs"),
@@ -148,7 +148,7 @@ def check_environment_import():
     
     try:
         # Ajouter le chemin
-        sys.path.append('/home/oussema/Documents/project/envs')
+        sys.path.append('/workspace/envs')
         
         # Importer l'environnement
         from envs.robust_curriculum_grasp_env import RobustCurriculumGraspEnv
@@ -156,7 +156,7 @@ def check_environment_import():
         
         # Test de création
         env = RobustCurriculumGraspEnv(
-            model_path="/home/oussema/Documents/project/results/g1_combined.xml",
+            model_path="/workspace/results/g1_combined.xml",
             render_mode="rgb_array",
             video_capture=False  # Pas de vidéo pour le test
         )
@@ -183,8 +183,8 @@ def check_permissions():
     print("\n🔐 Vérification des permissions...")
     
     test_dirs = [
-        "/home/oussema/Documents/project",
-        "/home/oussema/Documents/project/robust_curriculum_sac_results"
+        "/workspace",
+        "/workspace/robust_curriculum_sac_results"
     ]
     
     for dir_path in test_dirs:
@@ -200,14 +200,14 @@ def check_permissions():
     return True
 
 def run_quick_test():
-    """Lance un test rapide du système"""
+    """Lance un test rapide du système avec le test simplifié"""
     print("\n🧪 Test rapide du système...")
     
     try:
-        # Lancer le test de l'environnement
+        # Lancer le test simplifié de l'environnement
         result = subprocess.run([
             sys.executable,
-            "test_robust_environment.py"
+            "test_simple_environment.py"
         ], capture_output=True, text=True, timeout=60)
         
         if result.returncode == 0:

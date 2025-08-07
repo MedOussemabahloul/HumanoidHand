@@ -59,7 +59,7 @@ def check_dependencies():
 
 def check_model_file():
     """Vérifie que le fichier modèle existe"""
-    model_path = "/home/oussema/Documents/project/results/g1_combined.xml"
+    model_path = "/workspace/results/g1_combined.xml"
     
     if not os.path.exists(model_path):
         print(f"❌ Fichier modèle non trouvé: {model_path}")
@@ -131,7 +131,7 @@ def open_results():
     """Ouvre les résultats de l'entraînement"""
     print("\n📁 Ouverture des résultats...")
     
-    results_dir = "/home/oussema/Documents/project/robust_curriculum_sac_results"
+    results_dir = "/workspace/robust_curriculum_sac_results"
     
     if not os.path.exists(results_dir):
         print(f"❌ Dossier de résultats non trouvé: {results_dir}")
@@ -202,9 +202,9 @@ def main():
     
     print("\n🎉 PROCESSUS TERMINÉ AVEC SUCCÈS!")
     print("=" * 60)
-    print("📁 Résultats disponibles dans: /home/oussema/Documents/project/robust_curriculum_sac_results")
-    print("🎬 Vidéos disponibles dans: /home/oussema/Documents/project/robust_curriculum_sac_results/videos")
-    print("🤖 Modèles disponibles dans: /home/oussema/Documents/project/robust_curriculum_sac_results/models")
+    print("📁 Résultats disponibles dans: /workspace/robust_curriculum_sac_results")
+    print("🎬 Vidéos disponibles dans: /workspace/robust_curriculum_sac_results/videos")
+    print("🤖 Modèles disponibles dans: /workspace/robust_curriculum_sac_results/models")
 
 if __name__ == "__main__":
     main()

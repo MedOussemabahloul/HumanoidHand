@@ -53,7 +53,7 @@ class RobustCurriculumGraspEnv(gym.Env):
         # Configuration
         self.render_mode = render_mode
         self.video_capture = video_capture
-        self.model_path_str = model_path or "/home/oussema/Documents/project/results/g1_combined.xml"
+        self.model_path_str = model_path or "/workspace/results/g1_combined.xml"
         
         # Configuration du curriculum learning
         self.curriculum_levels = {
@@ -250,7 +250,7 @@ class RobustCurriculumGraspEnv(gym.Env):
         return xml_content
     
     def _identify_components(self):
-        """Identifie les composants du modèle"""
+        """Identifie les composants du modèle avec fallback robuste"""
         try:
             # Identifier les joints des bras
             self.arm_joint_ids = []
@@ -269,17 +269,36 @@ class RobustCurriculumGraspEnv(gym.Env):
             # Identifier le cube
             self.cube_body_id = mujoco.mj_name2id(self.model, mujoco.mjtObj.mjOBJ_BODY, 'cube')
             
-            # Identifier les doigts
+            # Identifier les doigts avec plusieurs noms possibles
             self.finger_joint_ids = []
-            finger_joint_names = [
-                'left_index_joint', 'left_middle_joint', 'left_ring_joint', 'left_thumb_joint',
-                'right_index_joint', 'right_middle_joint', 'right_ring_joint', 'right_thumb_joint'
+            finger_joint_names_variants = [
+                # Variante 1: noms standards
+                ['left_index_joint', 'left_middle_joint', 'left_ring_joint', 'left_thumb_joint',
+                 'right_index_joint', 'right_middle_joint', 'right_ring_joint', 'right_thumb_joint'],
+                # Variante 2: noms alternatifs
+                ['left_index', 'left_middle', 'left_ring', 'left_thumb',
+                 'right_index', 'right_middle', 'right_ring', 'right_thumb'],
+                # Variante 3: noms avec suffixe
+                ['left_index_finger', 'left_middle_finger', 'left_ring_finger', 'left_thumb_finger',
+                 'right_index_finger', 'right_middle_finger', 'right_ring_finger', 'right_thumb_finger']
             ]
             
-            for name in finger_joint_names:
-                joint_id = mujoco.mj_name2id(self.model, mujoco.mjtObj.mjOBJ_JOINT, name)
-                if joint_id >= 0:
-                    self.finger_joint_ids.append(joint_id)
+            # Essayer toutes les variantes
+            for variant in finger_joint_names_variants:
+                for name in variant:
+                    joint_id = mujoco.mj_name2id(self.model, mujoco.mjtObj.mjOBJ_JOINT, name)
+                    if joint_id >= 0:
+                        self.finger_joint_ids.append(joint_id)
+                
+                if len(self.finger_joint_ids) > 0:
+                    break  # On a trouvé des joints, on arrête
+            
+            # Si aucun joint de doigt trouvé, utiliser des indices par défaut
+            if len(self.finger_joint_ids) == 0:
+                print("⚠️ Aucun joint de doigt trouvé, utilisation d'indices par défaut")
+                # Utiliser les joints disponibles après les bras
+                available_joints = list(range(len(self.arm_joint_ids), min(22, self.model.nv)))
+                self.finger_joint_ids = available_joints[:8]  # Prendre jusqu'à 8 joints
             
             print(f"✅ Composants identifiés:")
             print(f"  - Joints bras: {len(self.arm_joint_ids)}")
@@ -288,9 +307,10 @@ class RobustCurriculumGraspEnv(gym.Env):
             
         except Exception as e:
             print(f"⚠️ Erreur lors de l'identification des composants: {e}")
-            # Valeurs par défaut
-            self.arm_joint_ids = list(range(14))
-            self.finger_joint_ids = list(range(14, 22))
+            # Valeurs par défaut robustes
+            self.arm_joint_ids = list(range(min(14, self.model.nv)))
+            remaining_joints = list(range(len(self.arm_joint_ids), min(22, self.model.nv)))
+            self.finger_joint_ids = remaining_joints
             self.cube_body_id = -1
     
     def _setup_spaces(self):
@@ -321,7 +341,7 @@ class RobustCurriculumGraspEnv(gym.Env):
         if self.video_capture:
             try:
                 # Créer le dossier vidéo
-                video_dir = "/home/oussema/Documents/project/results/videos"
+                video_dir = "/workspace/results/videos"
                 os.makedirs(video_dir, exist_ok=True)
                 
                 # Nom du fichier vidéo
@@ -511,25 +531,36 @@ class RobustCurriculumGraspEnv(gym.Env):
                 self.data.ctrl[14 + i] = target_pos
     
     def _check_stability(self):
-        """Vérifie et corrige les instabilités"""
+        """Vérifie et corrige les instabilités avec contrôle renforcé"""
         # Vérifier les NaN/Inf
         if np.any(np.isnan(self.data.qpos)) or np.any(np.isinf(self.data.qpos)):
             print("⚠️ Instabilité détectée - récupération...")
             mujoco.mj_resetData(self.model, self.data)
             return
         
-        # Vérifier les vitesses excessives
+        # Vérifier les vitesses excessives avec contrôle renforcé
         max_velocity = np.max(np.abs(self.data.qvel))
         level_config = self.curriculum_levels[self.current_level]
         
+        # Contrôle plus strict des vitesses
         if max_velocity > level_config['max_velocity']:
-            # Réduire toutes les vitesses
-            self.data.qvel *= 0.5
-            if self.episode_step % 100 == 0:  # Afficher moins souvent
+            # Réduire toutes les vitesses plus agressivement
+            self.data.qvel *= 0.3  # Réduction plus forte
+            if self.episode_step % 50 == 0:  # Afficher plus souvent
                 print(f"⚠️ Vitesse excessive ({max_velocity:.2f}) - réduction appliquée")
         
-        # Historique pour détection de stabilité
+        # Contrôle spécifique des bras
         arm_velocities = [abs(self.data.qvel[i]) for i in self.arm_joint_ids]
+        max_arm_velocity = max(arm_velocities) if arm_velocities else 0
+        
+        if max_arm_velocity > 5.0:  # Seuil plus strict pour les bras
+            # Réduire spécifiquement les vitesses des bras
+            for i in self.arm_joint_ids:
+                if abs(self.data.qvel[i]) > 5.0:
+                    self.data.qvel[i] *= 0.2  # Réduction très forte
+            if self.episode_step % 50 == 0:
+                print(f"⚠️ Vitesse bras excessive ({max_arm_velocity:.2f}) - réduction appliquée")
+        
         mean_arm_velocity = np.mean(arm_velocities)
         
         self.velocity_history.append(mean_arm_velocity)
@@ -757,99 +788,87 @@ class RobustCurriculumGraspEnv(gym.Env):
         return cube_pos[2] > 0.08
     
     def _capture_frame(self):
-        """Capture une frame pour la vidéo"""
+        """Capture une frame pour la vidéo avec gestion robuste des erreurs"""
         try:
             if self.video_writer is not None:
-                # Rendu de la scène
-                width, height = 640, 480
+                # Utiliser la fonction render pour capturer la frame
+                frame = self.render()
                 
-                # Créer un contexte de rendu si nécessaire
-                if not hasattr(self, 'render_context'):
-                    self.render_context = mujoco.MjrContext(self.model, mujoco.mjtFontScale.mjFONTSCALE_150)
-                
-                # Configuration de la scène
-                scene = mujoco.MjvScene(self.model, maxgeom=10000)
-                camera = mujoco.MjvCamera()
-                
-                # Position optimale de la caméra
-                camera.type = mujoco.mjtCamera.mjCAMERA_FREE
-                camera.lookat = np.array([0.4, 0.0, 0.05])
-                camera.distance = 1.2
-                camera.azimuth = 45
-                camera.elevation = -25
-                
-                # Mettre à jour la scène
-                mujoco.mjv_updateScene(self.model, self.data, mujoco.MjvOption(), None, camera, mujoco.mjtCatBit.mjCAT_ALL, scene)
-                
-                # Créer le viewport
-                viewport = mujoco.MjrRect(0, 0, width, height)
-                
-                # Rendu de la scène
-                mujoco.mjr_render(viewport, scene, self.render_context)
-                
-                # Lire les pixels
-                rgb_array = np.zeros((height, width, 3), dtype=np.uint8)
-                mujoco.mjr_readPixels(rgb_array, None, viewport, self.render_context)
-                
-                # Convertir BGR pour OpenCV
-                rgb_array = np.flipud(rgb_array)
-                bgr_array = cv2.cvtColor(rgb_array, cv2.COLOR_RGB2BGR)
-                
-                # Écrire la frame
-                self.video_writer.write(bgr_array)
-                self.frame_count += 1
+                if frame is not None and frame.size > 0:
+                    # Convertir RGB vers BGR pour OpenCV
+                    frame_bgr = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
+                    
+                    # Écrire la frame
+                    self.video_writer.write(frame_bgr)
+                    self.frame_count += 1
                 
         except Exception as e:
-            if self.episode_step % 100 == 0:
+            if hasattr(self, 'episode_step') and self.episode_step % 100 == 0:
                 print(f"⚠️ Erreur capture frame: {e}")
     
     def render(self):
-        """Rendu de l'environnement"""
-        if self.render_mode == "human":
-            try:
-                # Créer un viewer si nécessaire
-                if not hasattr(self, 'viewer') or self.viewer is None:
-                    import mujoco.viewer
-                    self.viewer = mujoco.viewer.launch_passive(self.model, self.data)
-                
-                if hasattr(self, 'viewer') and self.viewer is not None:
-                    self.viewer.sync()
+        """Rendu de l'environnement avec gestion robuste des erreurs"""
+        try:
+            if self.render_mode == "human":
+                try:
+                    # Créer un viewer si nécessaire
+                    if not hasattr(self, 'viewer') or self.viewer is None:
+                        import mujoco.viewer
+                        self.viewer = mujoco.viewer.launch_passive(self.model, self.data)
                     
-            except Exception as e:
-                print(f"⚠️ Erreur rendu: {e}")
-                
-        elif self.render_mode == "rgb_array":
-            try:
-                # Configuration de la caméra
-                width, height = 640, 480
-                
-                if not hasattr(self, 'render_context'):
-                    self.render_context = mujoco.MjrContext(self.model, mujoco.mjtFontScale.mjFONTSCALE_150)
-                
-                scene = mujoco.MjvScene(self.model, maxgeom=10000)
-                camera = mujoco.MjvCamera()
-                
-                camera.type = mujoco.mjtCamera.mjCAMERA_FREE
-                camera.lookat = np.array([0.4, 0.0, 0.05])
-                camera.distance = 1.2
-                camera.azimuth = 45
-                camera.elevation = -25
-                
-                mujoco.mjv_updateScene(self.model, self.data, mujoco.MjvOption(), None, camera, mujoco.mjtCatBit.mjCAT_ALL, scene)
-                
-                viewport = mujoco.MjrRect(0, 0, width, height)
-                mujoco.mjr_render(viewport, scene, self.render_context)
-                
-                rgb_array = np.zeros((height, width, 3), dtype=np.uint8)
-                mujoco.mjr_readPixels(rgb_array, None, viewport, self.render_context)
-                
-                return np.flipud(rgb_array)
-                
-            except Exception as e:
-                print(f"⚠️ Erreur rendu rgb_array: {e}")
-                return np.zeros((480, 640, 3), dtype=np.uint8)
-        
-        return None
+                    if hasattr(self, 'viewer') and self.viewer is not None:
+                        self.viewer.sync()
+                        
+                except Exception as e:
+                    print(f"⚠️ Erreur rendu human: {e}")
+                    
+            elif self.render_mode == "rgb_array":
+                try:
+                    # Configuration de la caméra
+                    width, height = 640, 480
+                    
+                    # Créer un contexte de rendu si nécessaire
+                    if not hasattr(self, 'render_context'):
+                        self.render_context = mujoco.MjrContext(self.model, mujoco.mjtFontScale.mjFONTSCALE_150)
+                    
+                    # Configuration de la scène
+                    scene = mujoco.MjvScene(self.model, maxgeom=10000)
+                    camera = mujoco.MjvCamera()
+                    
+                    # Position optimale de la caméra pour voir le grasping
+                    camera.type = mujoco.mjtCamera.mjCAMERA_FREE
+                    camera.lookat = np.array([0.4, 0.0, 0.05])  # Regarder vers le cube
+                    camera.distance = 1.2
+                    camera.azimuth = 45
+                    camera.elevation = -25
+                    
+                    # Mettre à jour la scène
+                    mujoco.mjv_updateScene(self.model, self.data, mujoco.MjvOption(), None, camera, mujoco.mjtCatBit.mjCAT_ALL, scene)
+                    
+                    # Créer le viewport
+                    viewport = mujoco.MjrRect(0, 0, width, height)
+                    
+                    # Rendu de la scène
+                    mujoco.mjr_render(viewport, scene, self.render_context)
+                    
+                    # Lire les pixels
+                    rgb_array = np.zeros((height, width, 3), dtype=np.uint8)
+                    mujoco.mjr_readPixels(rgb_array, None, viewport, self.render_context)
+                    
+                    # Retourner l'image (flip vertical car OpenGL utilise origine en bas)
+                    return np.flipud(rgb_array)
+                    
+                except Exception as e:
+                    if hasattr(self, 'episode_step') and self.episode_step % 100 == 0:
+                        print(f"⚠️ Erreur rendu rgb_array: {e}")
+                    # Retourner une image noire en cas d'erreur
+                    return np.zeros((480, 640, 3), dtype=np.uint8)
+            
+            return None
+            
+        except Exception as e:
+            print(f"⚠️ Erreur générale rendu: {e}")
+            return np.zeros((480, 640, 3), dtype=np.uint8)
     
     def close(self):
         """Nettoie les ressources"""
