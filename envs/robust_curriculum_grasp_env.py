@@ -237,13 +237,9 @@ class RobustCurriculumGraspEnv(gym.Env):
         
         # Si aucun joint de doigt trouvé, utiliser des indices par défaut
         if not self.finger_joint_ids:
-            print("⚠️ Aucun joint de doigt trouvé, utilisation d'indices par défaut")
-            # Utiliser les derniers joints comme doigts
+            print("⚠️ Aucun joint de doigt trouvé, utilisation de tous les joints restants comme doigts")
             total_joints = self.model.njnt
-            if total_joints > 14:
-                self.finger_joint_ids = list(range(14, min(total_joints, 22)))
-            else:
-                self.finger_joint_ids = list(range(max(0, total_joints-8), total_joints))
+            self.finger_joint_ids = list(range(14, total_joints))
         
         # Identifier le cube
         self.cube_body_id = -1
@@ -368,43 +364,29 @@ class RobustCurriculumGraspEnv(gym.Env):
         return obs, info
 
     def step(self, action):
-        """Exécute une action"""
-        self.episode_step += 1
-        self.phase_timer += 1
-        
-        # Appliquer l'action avec scaling du curriculum
-        scaled_action = self._apply_curriculum_scaling(action)
-        self._apply_smooth_actions(scaled_action)
-        
-        # Simulation physique
-        mujoco.mj_step(self.model, self.data)
-        
-        # Vérifier la stabilité
-        self._check_stability()
-        
-        # Mettre à jour la phase
-        self._update_phase_curriculum()
-        
-        # Calculer la récompense
-        reward = self._calculate_curriculum_reward()
-        
-        # Vérifier la terminaison
-        terminated = self._check_termination()
-        truncated = self.episode_step >= self.curriculum_levels[self.current_level]['max_episode_steps']
-        
-        # Observation et info
-        obs = self._get_observation()
-        # --- Correction SB3 : forcer float32 et shape ---
-        obs = np.array(obs, dtype=np.float32).reshape(-1)
-        if obs.shape[0] != self.observation_space.shape[0]:
-            raise RuntimeError(f"Observation shape mismatch: got {obs.shape[0]}, expected {self.observation_space.shape[0]}")
-        info = self._get_info()
-        
-        # Capture vidéo
-        if self.video_capture:
-            self._capture_frame()
-        
-        return obs, reward, terminated, truncated, info
+        try:
+            self.episode_step += 1
+            self.phase_timer += 1
+            scaled_action = self._apply_curriculum_scaling(action)
+            self._apply_smooth_actions(scaled_action)
+            mujoco.mj_step(self.model, self.data)
+            self._check_stability()
+            self._update_phase_curriculum()
+            reward = self._calculate_curriculum_reward()
+            terminated = self._check_termination()
+            truncated = self.episode_step >= self.curriculum_levels[self.current_level]['max_episode_steps']
+            obs = self._get_observation()
+            obs = np.array(obs, dtype=np.float32).reshape(-1)
+            if obs.shape[0] != self.observation_space.shape[0]:
+                raise RuntimeError(f"Observation shape mismatch: got {obs.shape[0]}, expected {self.observation_space.shape[0]}")
+            info = self._get_info()
+            if self.video_capture:
+                self._capture_frame()
+            return obs, reward, terminated, truncated, info
+        except Exception as e:
+            print(f"🚨 Erreur critique Mujoco/physique : {e} - redémarrage automatique de l'épisode !")
+            obs, info = self.reset()
+            return obs, 0.0, True, True, info
 
     def _apply_curriculum_scaling(self, action):
         """Applique le scaling du curriculum à l'action"""
@@ -458,36 +440,49 @@ class RobustCurriculumGraspEnv(gym.Env):
                 print(f"⚠️ Erreur application actions: {e}")
 
     def _check_stability(self):
-        """Vérifie la stabilité du système"""
+        """Vérifie la stabilité du système et réduit automatiquement les vitesses excessives."""
         try:
-            # Vérifier les vitesses des joints
+            # Correction automatique NaN/Inf sur qpos, qvel, ctrl
+            for arr_name in ['qpos', 'qvel', 'ctrl']:
+                arr = getattr(self.data, arr_name, None)
+                if arr is not None and (np.any(np.isnan(arr)) or np.any(np.isinf(arr))):
+                    print(f"🚨 Correction automatique : {arr_name} contenait NaN/Inf, réinitialisation à zéro !")
+                    arr[...] = 0.0
+            # Vérifier les vitesses des joints bras et doigts
             max_velocity = 0.0
-            for joint_id in self.arm_joint_ids:
+            excessive_count = 0
+            for joint_id in self.arm_joint_ids + self.finger_joint_ids:
                 if joint_id < len(self.data.qvel):
                     velocity = abs(float(self.data.qvel[joint_id]))
                     max_velocity = max(max_velocity, velocity)
-            
-            # Si vitesse excessive, appliquer une réduction
-            if max_velocity > 10.0:
+                    if velocity > 20.0:
+                        excessive_count += 1
+            # Si vitesse critique, réduire toutes les vitesses
+            if max_velocity > 20.0:
+                print(f"🚨 Vitesse critique détectée ({max_velocity:.2f}) - réduction drastique appliquée à tous les joints !")
+                for i in range(len(self.data.qvel)):
+                    self.data.qvel[i] *= 0.1
+                self.stability_count = 0
+            # Si vitesse excessive, réduire bras et doigts séparément
+            elif max_velocity > 10.0:
                 print(f"⚠️ Vitesse excessive ({max_velocity:.2f}) - réduction appliquée")
-                # Réduire toutes les vitesses
                 for joint_id in self.arm_joint_ids:
                     if joint_id < len(self.data.qvel):
                         self.data.qvel[joint_id] *= 0.3
-            
-            # Vérifier les vitesses des doigts
-            finger_velocity = 0.0
-            for joint_id in self.finger_joint_ids:
-                if joint_id < len(self.data.qvel):
-                    velocity = abs(float(self.data.qvel[joint_id]))
-                    finger_velocity = max(finger_velocity, velocity)
-            
-            if finger_velocity > 5.0:
-                print(f"⚠️ Vitesse bras excessive ({finger_velocity:.2f}) - réduction appliquée")
                 for joint_id in self.finger_joint_ids:
                     if joint_id < len(self.data.qvel):
                         self.data.qvel[joint_id] *= 0.2
-                        
+                self.stability_count = 0
+            # Clipping strict sur toutes les vitesses
+            self.data.qvel = np.clip(self.data.qvel, -25.0, 25.0)
+            # Si la vitesse reste excessive trop longtemps, stopper l'épisode
+            if max_velocity > 10.0:
+                self.stability_count += 1
+                if self.stability_count > 20:
+                    print("🚨 Instabilité persistante : terminaison anticipée de l'épisode !")
+                    self.episode_step = self.curriculum_levels[self.current_level]['max_episode_steps']
+            else:
+                self.stability_count = 0
         except Exception as e:
             if self.episode_step % 100 == 0:
                 print(f"⚠️ Erreur vérification stabilité: {e}")
@@ -652,6 +647,10 @@ class RobustCurriculumGraspEnv(gym.Env):
             if np.any(np.isnan(obs_array)) or np.any(np.isinf(obs_array)):
                 print("⚠️ Observation contient NaN/Inf - remplacement par zéros")
                 obs_array = np.nan_to_num(obs_array, nan=0.0, posinf=0.0, neginf=0.0)
+            # Robustesse : clip valeurs aberrantes
+            if np.any(obs_array > 1e6) or np.any(obs_array < -1e6):
+                print("⚠️ Observation contient des valeurs aberrantes - clipping à [-1e6, 1e6]")
+                obs_array = np.clip(obs_array, -1e6, 1e6)
             
             return obs_array
             

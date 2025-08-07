@@ -218,8 +218,10 @@ class RobustCurriculumGraspingTrainer:
                                 viewer.sync()
                                 time.sleep(0.01)
                             except Exception as sync_error:
-                                if "mj_copyDataVisual" not in str(sync_error):
-                                    print(f"⚠️ Erreur sync viewer: {sync_error}")
+                                if "mj_copyDataVisual" in str(sync_error):
+                                    print("⚠️ Erreur viewer ignorée (mj_copyDataVisual)")
+                                    continue
+                                print(f"⚠️ Erreur sync viewer: {sync_error}")
                                 break
                 except Exception as e:
                     print(f"⚠️ Erreur viewer Mujoco: {e}")
@@ -304,10 +306,16 @@ class RobustCurriculumGraspingTrainer:
                                 action, _states = self.model.predict(obs, deterministic=False)
                             except Exception as e:
                                 print(f"❌ Erreur SB3 predict : {e}\nObservation type: {type(obs)}, shape: {getattr(obs, 'shape', None)}, dtype: {getattr(obs, 'dtype', None)}")
-                                raise
+                                print("🔁 Redémarrage de l'épisode après erreur critique de predict.")
+                                break  # relance l'épisode
                             
                             # Step dans l'environnement
-                            obs, reward, terminated, truncated, info = self.env.step(action)
+                            try:
+                                obs, reward, terminated, truncated, info = self.env.step(action)
+                            except Exception as e:
+                                print(f"❌ Erreur step env : {e}")
+                                print("🔁 Redémarrage de l'épisode après erreur critique de step.")
+                                break  # relance l'épisode
                             
                             episode_reward += reward
                             episode_length += 1
