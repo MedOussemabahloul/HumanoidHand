@@ -124,7 +124,5 @@
     <jointvel name="vel_right_thumb_joint_0" joint="right_thumb_joint_0" />
     <jointpos name="pos_right_thumb_joint_1" joint="right_thumb_joint_1" />
     <jointvel name="vel_right_thumb_joint_1" joint="right_thumb_joint_1" />
-    <framepos name="cube_pos" objtype="body" objname="cube" />
-    <framequat name="cube_quat" objtype="body" objname="cube" />
   </sensor>
 </mujoco>

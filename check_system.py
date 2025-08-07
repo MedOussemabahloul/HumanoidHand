@@ -207,7 +207,7 @@ def run_quick_test():
         # Lancer le test simplifié de l'environnement
         result = subprocess.run([
             sys.executable,
-            "test_simple_environment.py"
+            "test_quick_training.py"
         ], capture_output=True, text=True, timeout=60)
         
         if result.returncode == 0:

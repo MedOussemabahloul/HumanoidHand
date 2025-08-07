@@ -106,284 +106,232 @@ class RobustCurriculumGraspEnv(gym.Env):
                 'action_scale': 0.25
             },
             5: {
-                'name': 'MASTER_LEVEL',
-                'description': 'Grasping avec perturbations',
+                'name': 'MASTERY',
+                'description': 'Maîtrise complète',
                 'max_phases': 6,
                 'success_threshold': 80.0,
-                'episodes_required': 3,
-                'max_episode_steps': 500,
+                'episodes_required': 2,
+                'max_episode_steps': 600,
                 'cube_fixed': False,
                 'reward_multiplier': 2.5,
                 'max_velocity': 6.0,
-                'action_scale': 0.3,
-                'add_noise': True,
-                'cube_variations': True
+                'action_scale': 0.3
             }
         }
         
-        # État du curriculum
+        # Initialisation des variables
         self.current_level = 1
+        self.current_phase = 0
+        self.phase_timer = 0
+        self.episode_step = 0
+        self.stability_count = 0
+        self.successful_grasp = False
+        self.cube_lifted = False
         self.consecutive_successes = 0
         self.level_episodes = 0
         self.performance_history = []
         
-        # Configuration des phases
-        self.phase_durations = {
-            'STABILIZE': 50,
-            'APPROACH': 100,
-            'CONTACT': 80,
-            'GRASP': 120,
-            'LIFT': 100,
-            'HOLD': 150
-        }
-        
-        # État de l'environnement
-        self.episode_step = 0
-        self.current_phase = 0
-        self.phase_timer = 0
-        self.stability_count = 0
-        self.velocity_history = []
-        self.max_history = 100
-        self.successful_grasp = False
-        self.cube_lifted = False
-        
-        # Configuration vidéo
+        # Configuration de la vidéo
         self.video_writer = None
         self.video_path = None
         self.frame_count = 0
         
-        # Initialisation
+        # Initialisation du modèle et de la physique
         self._setup_model()
         self._identify_components()
         self._setup_spaces()
-        self._setup_video_capture()
+        
+        if self.video_capture:
+            self._setup_video_capture()
         
         print(f"🎯 RobustCurriculumGraspEnv initialisé - Niveau {self.current_level}")
         print(f"📁 Modèle: {self.model_path_str}")
         print(f"🎥 Capture vidéo: {self.video_capture}")
-    
+
     def _setup_model(self):
-        """Configuration du modèle avec physique ultra-stable"""
+        """Configure le modèle avec physique ultra-stable"""
         try:
-            # Changer vers le répertoire du modèle
-            original_cwd = os.getcwd()
-            model_dir = os.path.dirname(self.model_path_str)
-            os.chdir(model_dir)
+            # Charger le modèle
+            if not os.path.exists(self.model_path_str):
+                raise FileNotFoundError(f"Modèle non trouvé: {self.model_path_str}")
             
-            try:
-                # Lire le fichier XML original
-                with open(os.path.basename(self.model_path_str), 'r') as f:
-                    xml_content = f.read()
-                
-                # Appliquer corrections physiques ultra-stables
-                xml_content = self._apply_ultra_physics_fixes(xml_content)
-                
-                # Créer fichier temporaire
-                self.temp_model_path = os.path.join(model_dir, 'temp_robust_model.xml')
-                with open(self.temp_model_path, 'w') as f:
-                    f.write(xml_content)
-                
-                # Charger le modèle
-                self.model = mujoco.MjModel.from_xml_path('temp_robust_model.xml')
-                self.data = mujoco.MjData(self.model)
-                
-                print("✅ Modèle chargé avec physique ultra-stable")
-                print(f"  - DOFs: {self.model.nv}")
-                print(f"  - Actuateurs: {self.model.nu}")
-                print(f"  - Timestep: {self.model.opt.timestep}")
-                
-            finally:
-                os.chdir(original_cwd)
-                
+            # Lire le contenu XML
+            with open(self.model_path_str, 'r') as f:
+                xml_content = f.read()
+            
+            # Appliquer les corrections de physique
+            xml_content = self._apply_ultra_physics_fixes(xml_content)
+            
+            # Corriger les chemins relatifs pour les assets
+            xml_content = self._fix_asset_paths(xml_content)
+            
+            # Créer un fichier temporaire
+            with tempfile.NamedTemporaryFile(mode='w', suffix='.xml', delete=False) as f:
+                f.write(xml_content)
+                self.temp_model_path = f.name
+            
+            # Charger le modèle
+            self.model = mujoco.MjModel.from_xml_path(self.temp_model_path)
+            self.data = mujoco.MjData(self.model)
+            
+            # Configuration ultra-stable
+            self.model.opt.timestep = 0.0005  # Timestep très petit
+            self.model.opt.iterations = 50    # Plus d'itérations
+            self.model.opt.tolerance = 1e-8   # Tolérance très stricte
+            self.model.opt.solver = mujoco.mjtSolver.mjSOL_CG  # Solver CG plus stable
+            
+            print(f"✅ Modèle chargé avec physique ultra-stable - DOFs: {self.model.nv} - Actuateurs: {self.model.nu} - Timestep: {self.model.opt.timestep}")
+            
         except Exception as e:
-            if 'original_cwd' in locals():
-                os.chdir(original_cwd)
-            raise RuntimeError(f"Erreur lors du chargement du modèle: {e}")
-    
+            print(f"❌ Erreur lors du chargement du modèle: {e}")
+            raise
+
     def _apply_ultra_physics_fixes(self, xml_content: str) -> str:
-        """Applique des corrections physiques ultra-stables"""
+        """Applique des corrections de physique ultra-stables"""
+        # Réduire les frottements
+        xml_content = xml_content.replace('<friction>0.8</friction>', '<friction>0.3</friction>')
+        xml_content = xml_content.replace('<friction>0.6</friction>', '<friction>0.2</friction>')
         
-        # 1. Timestep ultra-petit pour stabilité maximale
+        # Augmenter le damping
+        xml_content = xml_content.replace('<damping>0.1</damping>', '<damping>0.5</damping>')
+        xml_content = xml_content.replace('<damping>0.05</damping>', '<damping>0.3</damping>')
+        
+        # Réduire les masses pour plus de stabilité
+        xml_content = xml_content.replace('<mass>1.0</mass>', '<mass>0.5</mass>')
+        xml_content = xml_content.replace('<mass>0.5</mass>', '<mass>0.3</mass>')
+        
+        return xml_content
+
+    def _fix_asset_paths(self, xml_content: str) -> str:
+        """Corrige les chemins relatifs des assets"""
+        # Remplacer les chemins relatifs par des chemins absolus
+        base_dir = "/workspace"
+        
+        # Remplacer les includes
         xml_content = xml_content.replace(
-            'timestep="0.002"',
-            'timestep="0.0005"'
+            'file="../assets/hands/g1_body.xml"',
+            f'file="{base_dir}/assets/hands/g1_body.xml"'
         )
-        
-        # 2. Augmenter les itérations pour convergence
         xml_content = xml_content.replace(
-            'iterations="200"',
-            'iterations="500"'
-        )
-        
-        # 3. Tolérance ultra-stricte
-        xml_content = xml_content.replace(
-            'tolerance="1e-8"',
-            'tolerance="1e-12"'
-        )
-        
-        # 4. Augmenter le damping des bras pour stabilité
-        arm_joints = [
-            'left_shoulder_pitch_joint', 'left_shoulder_roll_joint', 'left_shoulder_yaw_joint',
-            'left_elbow_joint', 'left_wrist_roll_joint', 'left_wrist_pitch_joint', 'left_wrist_yaw_joint',
-            'right_shoulder_pitch_joint', 'right_shoulder_roll_joint', 'right_shoulder_yaw_joint',
-            'right_elbow_joint', 'right_wrist_roll_joint', 'right_wrist_pitch_joint', 'right_wrist_yaw_joint'
-        ]
-        
-        for joint in arm_joints:
-            # Augmenter kv (damping) pour les bras
-            xml_content = xml_content.replace(
-                f'name="act_{joint}" joint="{joint}" gear="1" kp="100" kv="10"',
-                f'name="act_{joint}" joint="{joint}" gear="1" kp="120" kv="25"'
-            )
-        
-        # 5. Améliorer la friction
-        xml_content = xml_content.replace(
-            'friction="1.0 0.1 0.05"',
-            'friction="2.0 0.3 0.1"'
-        )
-        
-        xml_content = xml_content.replace(
-            'friction="1.5 0.2 0.1"',
-            'friction="2.5 0.4 0.2"'
+            'file="../assets/hands/g1_fingers.xml"',
+            f'file="{base_dir}/assets/hands/g1_fingers.xml"'
         )
         
         return xml_content
-    
+
     def _identify_components(self):
-        """Identifie les composants du modèle avec fallback robuste"""
-        try:
-            # Identifier les joints des bras
-            self.arm_joint_ids = []
-            arm_joint_names = [
-                'left_shoulder_pitch_joint', 'left_shoulder_roll_joint', 'left_shoulder_yaw_joint',
-                'left_elbow_joint', 'left_wrist_roll_joint', 'left_wrist_pitch_joint', 'left_wrist_yaw_joint',
-                'right_shoulder_pitch_joint', 'right_shoulder_roll_joint', 'right_shoulder_yaw_joint',
-                'right_elbow_joint', 'right_wrist_roll_joint', 'right_wrist_pitch_joint', 'right_wrist_yaw_joint'
-            ]
-            
-            for name in arm_joint_names:
-                joint_id = mujoco.mj_name2id(self.model, mujoco.mjtObj.mjOBJ_JOINT, name)
-                if joint_id >= 0:
-                    self.arm_joint_ids.append(joint_id)
-            
-            # Identifier le cube
-            self.cube_body_id = mujoco.mj_name2id(self.model, mujoco.mjtObj.mjOBJ_BODY, 'cube')
-            
-            # Identifier les doigts avec plusieurs noms possibles
-            self.finger_joint_ids = []
-            finger_joint_names_variants = [
-                # Variante 1: noms standards
-                ['left_index_joint', 'left_middle_joint', 'left_ring_joint', 'left_thumb_joint',
-                 'right_index_joint', 'right_middle_joint', 'right_ring_joint', 'right_thumb_joint'],
-                # Variante 2: noms alternatifs
-                ['left_index', 'left_middle', 'left_ring', 'left_thumb',
-                 'right_index', 'right_middle', 'right_ring', 'right_thumb'],
-                # Variante 3: noms avec suffixe
-                ['left_index_finger', 'left_middle_finger', 'left_ring_finger', 'left_thumb_finger',
-                 'right_index_finger', 'right_middle_finger', 'right_ring_finger', 'right_thumb_finger']
-            ]
-            
-            # Essayer toutes les variantes
-            for variant in finger_joint_names_variants:
-                for name in variant:
-                    joint_id = mujoco.mj_name2id(self.model, mujoco.mjtObj.mjOBJ_JOINT, name)
-                    if joint_id >= 0:
-                        self.finger_joint_ids.append(joint_id)
-                
-                if len(self.finger_joint_ids) > 0:
-                    break  # On a trouvé des joints, on arrête
-            
-            # Si aucun joint de doigt trouvé, utiliser des indices par défaut
-            if len(self.finger_joint_ids) == 0:
-                print("⚠️ Aucun joint de doigt trouvé, utilisation d'indices par défaut")
-                # Utiliser les joints disponibles après les bras
-                available_joints = list(range(len(self.arm_joint_ids), min(22, self.model.nv)))
-                self.finger_joint_ids = available_joints[:8]  # Prendre jusqu'à 8 joints
-            
-            print(f"✅ Composants identifiés:")
-            print(f"  - Joints bras: {len(self.arm_joint_ids)}")
-            print(f"  - Joints doigts: {len(self.finger_joint_ids)}")
-            print(f"  - Cube ID: {self.cube_body_id}")
-            
-        except Exception as e:
-            print(f"⚠️ Erreur lors de l'identification des composants: {e}")
-            # Valeurs par défaut robustes
-            self.arm_joint_ids = list(range(min(14, self.model.nv)))
-            remaining_joints = list(range(len(self.arm_joint_ids), min(22, self.model.nv)))
-            self.finger_joint_ids = remaining_joints
-            self.cube_body_id = -1
-    
+        """Identifie les composants du robot"""
+        # Identifier les joints des bras (premiers joints)
+        self.arm_joint_ids = list(range(min(14, self.model.njnt)))
+        
+        # Identifier les joints des doigts (recherche par nom)
+        self.finger_joint_ids = []
+        finger_names = ['finger', 'digit', 'phalange', 'joint']
+        
+        for i in range(self.model.njnt):
+            joint_name = mujoco.mj_id2name(self.model, mujoco.mjtObj.mjOBJ_JOINT, i)
+            if joint_name:
+                joint_name_lower = joint_name.lower()
+                if any(name in joint_name_lower for name in finger_names):
+                    self.finger_joint_ids.append(i)
+        
+        # Si aucun joint de doigt trouvé, utiliser des indices par défaut
+        if not self.finger_joint_ids:
+            print("⚠️ Aucun joint de doigt trouvé, utilisation d'indices par défaut")
+            # Utiliser les derniers joints comme doigts
+            total_joints = self.model.njnt
+            if total_joints > 14:
+                self.finger_joint_ids = list(range(14, min(total_joints, 22)))
+            else:
+                self.finger_joint_ids = list(range(max(0, total_joints-8), total_joints))
+        
+        # Identifier le cube
+        self.cube_body_id = -1
+        for i in range(self.model.nbody):
+            body_name = mujoco.mj_id2name(self.model, mujoco.mjtObj.mjOBJ_BODY, i)
+            if body_name and ('cube' in body_name.lower() or 'object' in body_name.lower()):
+                self.cube_body_id = i
+                break
+        
+        if self.cube_body_id == -1:
+            # Utiliser le dernier body comme cube
+            self.cube_body_id = self.model.nbody - 1
+        
+        print(f"✅ Composants identifiés:")
+        print(f"   - Joints bras: {len(self.arm_joint_ids)}")
+        print(f"   - Joints doigts: {len(self.finger_joint_ids)}")
+        print(f"   - Cube ID: {self.cube_body_id}")
+
     def _setup_spaces(self):
         """Configure les espaces d'observation et d'action"""
-        # Espace d'action: 22 dimensions (14 bras + 8 doigts)
-        self.action_space = spaces.Box(
-            low=-1.0, high=1.0, shape=(22,), dtype=np.float32
-        )
-        
-        # Espace d'observation: position, vitesse, cube, etc.
-        obs_dim = (
-            len(self.arm_joint_ids) * 2 +  # Position et vitesse des bras
-            len(self.finger_joint_ids) * 2 +  # Position et vitesse des doigts
-            3 +  # Position du cube
-            3 +  # Position de la main
-            6 +  # Vitesse du cube
-            1 +  # Phase actuelle
-            1 +  # Timer de phase
-            1   # Niveau de curriculum
-        )
+        # Espace d'observation: positions, vitesses, positions du cube et de la main
+        obs_dim = (len(self.arm_joint_ids) * 2 +  # positions et vitesses des bras
+                  len(self.finger_joint_ids) * 2 +  # positions et vitesses des doigts
+                  3 +  # position du cube
+                  3 +  # position de la main
+                  6 +  # vitesse du cube
+                  3)   # phase, timer, niveau
         
         self.observation_space = spaces.Box(
             low=-np.inf, high=np.inf, shape=(obs_dim,), dtype=np.float32
         )
-    
+        
+        # Espace d'action: contrôle des joints
+        action_dim = len(self.arm_joint_ids) + len(self.finger_joint_ids)
+        self.action_space = spaces.Box(
+            low=-1.0, high=1.0, shape=(action_dim,), dtype=np.float32
+        )
+
     def _setup_video_capture(self):
         """Configure la capture vidéo"""
-        if self.video_capture:
-            try:
-                # Créer le dossier vidéo
-                video_dir = "/workspace/results/videos"
-                os.makedirs(video_dir, exist_ok=True)
-                
-                # Nom du fichier vidéo
-                timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-                self.video_path = os.path.join(video_dir, f"grasp_training_{timestamp}.mp4")
-                
-                # Configuration du codec
-                fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-                self.video_writer = cv2.VideoWriter(
-                    self.video_path, fourcc, 30.0, (640, 480)
-                )
-                
-                print(f"🎥 Capture vidéo configurée: {self.video_path}")
-                
-            except Exception as e:
-                print(f"⚠️ Erreur configuration vidéo: {e}")
-                self.video_capture = False
-    
-    def update_curriculum_level(self, episode_reward: float, episode_success: bool):
-        """Met à jour le niveau de curriculum selon les performances"""
-        self.level_episodes += 1
-        self.performance_history.append(episode_reward)
+        if not self.video_capture:
+            return
         
-        level_config = self.curriculum_levels[self.current_level]
+        try:
+            # Créer le dossier vidéo
+            video_dir = "/workspace/results/videos"
+            os.makedirs(video_dir, exist_ok=True)
+            
+            # Nom du fichier vidéo
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            self.video_path = os.path.join(video_dir, f"grasp_training_{timestamp}.mp4")
+            
+            # Configuration du writer
+            fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+            self.video_writer = cv2.VideoWriter(self.video_path, fourcc, 30.0, (640, 480))
+            
+            if self.video_writer.isOpened():
+                print(f"🎥 Capture vidéo configurée: {self.video_path}")
+            else:
+                print("⚠️ Impossible d'ouvrir le writer vidéo")
+                self.video_writer = None
+                
+        except Exception as e:
+            print(f"⚠️ Erreur configuration vidéo: {e}")
+            self.video_writer = None
+
+    def update_curriculum_level(self, episode_reward: float, episode_success: bool):
+        """Met à jour le niveau de curriculum"""
+        self.performance_history.append(episode_reward)
+        self.level_episodes += 1
         
         # Vérifier si on peut passer au niveau suivant
-        if (episode_success and 
-            episode_reward >= level_config['success_threshold'] and
-            self.level_episodes >= level_config['episodes_required']):
-            
+        if episode_success:
             self.consecutive_successes += 1
-            
-            if self.consecutive_successes >= level_config['episodes_required']:
-                if self.current_level < len(self.curriculum_levels):
-                    self.current_level += 1
-                    self.consecutive_successes = 0
-                    self.level_episodes = 0
-                    print(f"🎉 Niveau {self.current_level-1} terminé! Passage au niveau {self.current_level}")
-                    print(f"📊 Niveau: {self.curriculum_levels[self.current_level]['name']}")
         else:
             self.consecutive_successes = 0
-    
+        
+        current_config = self.curriculum_levels[self.current_level]
+        
+        if (self.consecutive_successes >= current_config['episodes_required'] and 
+            episode_reward >= current_config['success_threshold'] and
+            self.current_level < len(self.curriculum_levels)):
+            
+            self.current_level += 1
+            self.consecutive_successes = 0
+            self.level_episodes = 0
+            print(f"🎓 Passage au niveau {self.current_level}: {self.curriculum_levels[self.current_level]['name']}")
+
     def reset(self, seed=None, options=None):
         """Reset de l'environnement"""
         super().reset(seed=seed)
@@ -391,340 +339,321 @@ class RobustCurriculumGraspEnv(gym.Env):
         # Reset des données mujoco
         mujoco.mj_resetData(self.model, self.data)
         
-        # Initialiser les contrôles à zéro
-        if hasattr(self.data, 'ctrl') and self.data.ctrl is not None:
-            self.data.ctrl[:] = 0.0
-        
-        # Reset des variables d'état
-        self.episode_step = 0
+        # Reset des variables
         self.current_phase = 0
         self.phase_timer = 0
+        self.episode_step = 0
         self.stability_count = 0
-        self.velocity_history = []
         self.successful_grasp = False
         self.cube_lifted = False
         
-        # Position initiale aléatoire du cube selon le niveau
-        level_config = self.curriculum_levels[self.current_level]
-        if level_config.get('cube_variations', False):
-            cube_pos = np.array([
-                np.random.uniform(0.3, 0.5),  # x
-                np.random.uniform(-0.1, 0.1),  # y
-                0.02  # z
-            ])
-            if self.cube_body_id >= 0 and self.cube_body_id < len(self.data.qpos):
-                # Calculer l'index correct pour la position du cube
-                cube_start_idx = self.cube_body_id * 7
-                if cube_start_idx + 3 <= len(self.data.qpos):
-                    self.data.qpos[cube_start_idx:cube_start_idx+3] = cube_pos
+        # Position initiale du cube
+        cube_pos = [0.4, 0.0, 0.02]
+        if self.cube_body_id >= 0 and self.cube_body_id < len(self.data.qpos):
+            cube_start_idx = self.cube_body_id * 7
+            if cube_start_idx + 3 <= len(self.data.qpos):
+                self.data.qpos[cube_start_idx:cube_start_idx+3] = cube_pos
         
-        # Reset de la capture vidéo
-        if self.video_capture and self.video_writer is not None:
-            self.frame_count = 0
+        # Reset des contrôles
+        if hasattr(self.data, 'ctrl') and self.data.ctrl is not None:
+            self.data.ctrl[:] = 0.0
         
-        # Obtenir l'observation initiale
-        observation = self._get_observation()
+        # Première observation
+        obs = self._get_observation()
         info = self._get_info()
         
-        return observation, info
-    
+        return obs, info
+
     def step(self, action):
-        """Exécute une action dans l'environnement"""
+        """Exécute une action"""
         self.episode_step += 1
         self.phase_timer += 1
         
-        # Limiter les actions
-        action = np.clip(action, -1.0, 1.0)
-        
-        # Appliquer scaling adaptatif selon le niveau
-        action = self._apply_curriculum_scaling(action)
-        
-        # Appliquer les actions avec contrôle de vitesse
-        self._apply_smooth_actions(action)
+        # Appliquer l'action avec scaling du curriculum
+        scaled_action = self._apply_curriculum_scaling(action)
+        self._apply_smooth_actions(scaled_action)
         
         # Simulation physique
         mujoco.mj_step(self.model, self.data)
         
-        # Vérifier et corriger les instabilités
+        # Vérifier la stabilité
         self._check_stability()
         
         # Mettre à jour la phase
         self._update_phase_curriculum()
         
-        # Calculer observation et récompense
-        observation = self._get_observation()
+        # Calculer la récompense
         reward = self._calculate_curriculum_reward()
+        
+        # Vérifier la terminaison
         terminated = self._check_termination()
         truncated = self.episode_step >= self.curriculum_levels[self.current_level]['max_episode_steps']
+        
+        # Observation et info
+        obs = self._get_observation()
         info = self._get_info()
         
         # Capture vidéo
-        if self.video_capture and self.video_writer is not None:
+        if self.video_capture:
             self._capture_frame()
         
-        return observation, reward, terminated, truncated, info
-    
+        return obs, reward, terminated, truncated, info
+
     def _apply_curriculum_scaling(self, action):
-        """Applique un scaling adaptatif selon le niveau de curriculum"""
-        level_config = self.curriculum_levels[self.current_level]
-        action_scale = level_config['action_scale']
+        """Applique le scaling du curriculum à l'action"""
+        current_config = self.curriculum_levels[self.current_level]
+        action_scale = current_config['action_scale']
         
-        # Scaling de base selon la phase
-        phase_name = self._get_phase_name()
-        if phase_name == 'STABILIZE':
-            base_scale = 0.05
-        elif phase_name == 'APPROACH':
-            base_scale = 0.15
-        elif phase_name == 'CONTACT':
-            base_scale = 0.08
-        elif phase_name == 'GRASP':
-            # Focus sur fermeture des doigts
-            arm_scale = 0.02
-            finger_scale = 0.3
-            scaled_action = action.copy()
-            scaled_action[:14] *= arm_scale
-            scaled_action[14:] *= finger_scale
-            return scaled_action
-        elif phase_name == 'LIFT':
-            base_scale = 0.12
-        else:  # HOLD
-            base_scale = 0.03
+        # Scaling adaptatif basé sur le niveau
+        scaled_action = action * action_scale
         
-        final_scale = base_scale * action_scale
+        # Limiter les actions extrêmes
+        scaled_action = np.clip(scaled_action, -1.0, 1.0)
         
-        # Ajouter du bruit pour niveau avancé
-        if level_config.get('add_noise', False):
-            noise = np.random.normal(0, 0.01, action.shape)
-            action = action + noise
-        
-        return action * final_scale
-    
+        return scaled_action
+
     def _apply_smooth_actions(self, action):
-        """Applique les actions avec contrôle de vitesse intelligent"""
-        level_config = self.curriculum_levels[self.current_level]
-        max_velocity = level_config['max_velocity']
-        
-        # Actions pour les bras (0-13)
-        arm_actions = action[:14]
-        # Actions pour les doigts (14-21)
-        finger_actions = action[14:22]
-        
-        # Appliquer aux bras avec limitation de vitesse
-        for i, joint_id in enumerate(self.arm_joint_ids):
-            if i < len(arm_actions) and i < len(self.data.ctrl):
-                current_pos = float(self.data.qpos[joint_id])
-                current_vel = float(self.data.qvel[joint_id])
-                
-                # Limiter la vitesse
-                if abs(current_vel) > max_velocity:
-                    # Réduire la vitesse
-                    self.data.qvel[joint_id] *= 0.5
-                
-                # Calculer la position cible avec scaling adaptatif
-                action_scale = 0.05 if self.current_level <= 2 else 0.1
-                target_pos = current_pos + float(arm_actions[i]) * action_scale
-                
-                # Limiter le changement de position
-                max_change = 0.02 if self.current_level <= 2 else 0.03
-                if abs(target_pos - current_pos) > max_change:
-                    target_pos = current_pos + np.sign(target_pos - current_pos) * max_change
-                
-                # Appliquer le contrôle
-                self.data.ctrl[i] = target_pos
-        
-        # Appliquer aux doigts
-        for i, joint_id in enumerate(self.finger_joint_ids):
-            if i < len(finger_actions) and (14 + i) < len(self.data.ctrl):
-                current_pos = float(self.data.qpos[joint_id])
-                target_pos = current_pos + float(finger_actions[i]) * 0.1  # Scaling plus petit
-                self.data.ctrl[14 + i] = target_pos
-    
-    def _check_stability(self):
-        """Vérifie et corrige les instabilités avec contrôle renforcé"""
-        # Vérifier les NaN/Inf
-        if np.any(np.isnan(self.data.qpos)) or np.any(np.isinf(self.data.qpos)):
-            print("⚠️ Instabilité détectée - récupération...")
-            mujoco.mj_resetData(self.model, self.data)
-            return
-        
-        # Vérifier les vitesses excessives avec contrôle renforcé
-        max_velocity = np.max(np.abs(self.data.qvel))
-        level_config = self.curriculum_levels[self.current_level]
-        
-        # Contrôle plus strict des vitesses
-        if max_velocity > level_config['max_velocity']:
-            # Réduire toutes les vitesses plus agressivement
-            self.data.qvel *= 0.3  # Réduction plus forte
-            if self.episode_step % 50 == 0:  # Afficher plus souvent
-                print(f"⚠️ Vitesse excessive ({max_velocity:.2f}) - réduction appliquée")
-        
-        # Contrôle spécifique des bras
-        arm_velocities = [abs(self.data.qvel[i]) for i in self.arm_joint_ids]
-        max_arm_velocity = max(arm_velocities) if arm_velocities else 0
-        
-        if max_arm_velocity > 5.0:  # Seuil plus strict pour les bras
-            # Réduire spécifiquement les vitesses des bras
-            for i in self.arm_joint_ids:
-                if abs(self.data.qvel[i]) > 5.0:
-                    self.data.qvel[i] *= 0.2  # Réduction très forte
-            if self.episode_step % 50 == 0:
-                print(f"⚠️ Vitesse bras excessive ({max_arm_velocity:.2f}) - réduction appliquée")
-        
-        mean_arm_velocity = np.mean(arm_velocities)
-        
-        self.velocity_history.append(mean_arm_velocity)
-        if len(self.velocity_history) > self.max_history:
-            self.velocity_history.pop(0)
-        
-        # Compter les steps stables
-        if mean_arm_velocity < 0.1:
-            self.stability_count += 1
-        else:
-            self.stability_count = 0
-    
-    def _update_phase_curriculum(self):
-        """Met à jour la phase selon la progression"""
-        level_config = self.curriculum_levels[self.current_level]
-        max_phases = level_config['max_phases']
-        
-        if self.current_phase >= max_phases:
-            return
-        
-        phase_name = self._get_phase_name()
-        should_advance = False
-        
-        if phase_name == 'STABILIZE':
-            stability_threshold = 15 if self.current_level <= 2 else 20
-            if self.stability_count > stability_threshold or self.phase_timer >= self.phase_durations['STABILIZE']:
-                should_advance = True
-                
-        elif phase_name == 'APPROACH':
-            cube_pos = self._get_cube_position()
-            hand_pos = self._get_hand_center()
-            distance = np.linalg.norm(cube_pos - hand_pos)
-            distance_threshold = 0.2 if self.current_level <= 2 else 0.15
-            if distance < distance_threshold or self.phase_timer >= self.phase_durations['APPROACH']:
-                should_advance = True
-                
-        elif phase_name == 'CONTACT':
-            if self._detect_finger_contact() or self.phase_timer >= self.phase_durations['CONTACT']:
-                should_advance = True
-                
-        elif phase_name == 'GRASP':
-            if self._check_grasp_stability() or self.phase_timer >= self.phase_durations['GRASP']:
-                should_advance = True
-                self.successful_grasp = True
-                
-        elif phase_name == 'LIFT':
-            if self._is_cube_lifted() or self.phase_timer >= self.phase_durations['LIFT']:
-                should_advance = True
-                self.cube_lifted = True
-        
-        if should_advance and self.current_phase < min(5, max_phases - 1):
-            self.current_phase += 1
-            self.phase_timer = 0
+        """Applique les actions avec lissage"""
+        try:
+            # Séparer les actions des bras et des doigts
+            arm_actions = action[:len(self.arm_joint_ids)]
+            finger_actions = action[len(self.arm_joint_ids):len(self.arm_joint_ids) + len(self.finger_joint_ids)]
+            
+            # Appliquer aux joints des bras
+            for i, joint_id in enumerate(self.arm_joint_ids):
+                if i < len(arm_actions) and i < len(self.data.ctrl):
+                    current_pos = float(self.data.qpos[joint_id])
+                    current_vel = float(self.data.qvel[joint_id])
+                    
+                    # Scaling adaptatif basé sur le niveau
+                    action_scale = 0.05 if self.current_level <= 2 else 0.1
+                    target_pos = current_pos + float(arm_actions[i]) * action_scale
+                    
+                    # Limiter le changement maximum
+                    max_change = 0.02 if self.current_level <= 2 else 0.03
+                    target_pos = np.clip(target_pos, current_pos - max_change, current_pos + max_change)
+                    
+                    # Appliquer avec contrôle de vitesse
+                    if abs(current_vel) > 5.0:  # Vitesse excessive
+                        target_pos = current_pos  # Ne pas bouger
+                    
+                    self.data.ctrl[i] = target_pos
+            
+            # Appliquer aux joints des doigts
+            for i, joint_id in enumerate(self.finger_joint_ids):
+                if i < len(finger_actions) and (14 + i) < len(self.data.ctrl):
+                    current_pos = float(self.data.qpos[joint_id])
+                    target_pos = current_pos + float(finger_actions[i]) * 0.1
+                    self.data.ctrl[14 + i] = target_pos
+                    
+        except Exception as e:
             if self.episode_step % 100 == 0:
-                print(f"📈 Transition vers phase: {self._get_phase_name()}")
-    
-    def _calculate_curriculum_reward(self):
-        """Calcule une récompense adaptée au niveau de curriculum"""
-        level_config = self.curriculum_levels[self.current_level]
-        reward_multiplier = level_config['reward_multiplier']
+                print(f"⚠️ Erreur application actions: {e}")
+
+    def _check_stability(self):
+        """Vérifie la stabilité du système"""
+        try:
+            # Vérifier les vitesses des joints
+            max_velocity = 0.0
+            for joint_id in self.arm_joint_ids:
+                if joint_id < len(self.data.qvel):
+                    velocity = abs(float(self.data.qvel[joint_id]))
+                    max_velocity = max(max_velocity, velocity)
+            
+            # Si vitesse excessive, appliquer une réduction
+            if max_velocity > 10.0:
+                print(f"⚠️ Vitesse excessive ({max_velocity:.2f}) - réduction appliquée")
+                # Réduire toutes les vitesses
+                for joint_id in self.arm_joint_ids:
+                    if joint_id < len(self.data.qvel):
+                        self.data.qvel[joint_id] *= 0.3
+            
+            # Vérifier les vitesses des doigts
+            finger_velocity = 0.0
+            for joint_id in self.finger_joint_ids:
+                if joint_id < len(self.data.qvel):
+                    velocity = abs(float(self.data.qvel[joint_id]))
+                    finger_velocity = max(finger_velocity, velocity)
+            
+            if finger_velocity > 5.0:
+                print(f"⚠️ Vitesse bras excessive ({finger_velocity:.2f}) - réduction appliquée")
+                for joint_id in self.finger_joint_ids:
+                    if joint_id < len(self.data.qvel):
+                        self.data.qvel[joint_id] *= 0.2
+                        
+        except Exception as e:
+            if self.episode_step % 100 == 0:
+                print(f"⚠️ Erreur vérification stabilité: {e}")
+
+    def _update_phase_curriculum(self):
+        """Met à jour la phase du curriculum"""
+        current_config = self.curriculum_levels[self.current_level]
+        max_phases = current_config['max_phases']
         
-        reward = 0.0
-        phase_name = self._get_phase_name()
-        
-        # Récompense de base
-        reward += 0.2
-        
-        # Bonus pour vitesses faibles
-        arm_velocities = [abs(self.data.qvel[i]) for i in self.arm_joint_ids]
-        avg_velocity = np.mean(arm_velocities)
-        
-        if avg_velocity < 1.0:
-            reward += 1.0
-        elif avg_velocity < 5.0:
-            reward += 0.5
-        elif avg_velocity > 20.0:
-            reward -= 2.0
-        
-        # Bonus selon la phase
-        if phase_name == 'STABILIZE' and self.stability_count > 10:
-            reward += 2.0
-        
-        elif phase_name == 'APPROACH':
+        # Transition de phase basée sur le temps et les performances
+        if self.phase_timer > 50 and self.current_phase < max_phases - 1:
+            # Vérifier si on peut passer à la phase suivante
             cube_pos = self._get_cube_position()
             hand_pos = self._get_hand_center()
+            
             distance = np.linalg.norm(cube_pos - hand_pos)
-            if distance < 0.1:
-                reward += 5.0
-            elif distance < 0.2:
-                reward += 2.0
+            
+            if distance < 0.1 and self.current_phase == 0:  # APPROACH
+                self.current_phase = 1
+                self.phase_timer = 0
+            elif distance < 0.05 and self.current_phase == 1:  # CONTACT
+                self.current_phase = 2
+                self.phase_timer = 0
+            elif self._detect_finger_contact() and self.current_phase == 2:  # GRASP
+                self.current_phase = 3
+                self.phase_timer = 0
+            elif self._is_cube_lifted() and self.current_phase == 3:  # LIFT
+                self.current_phase = 4
+                self.phase_timer = 0
+            elif self._check_grasp_stability() and self.current_phase == 4:  # HOLD
+                self.current_phase = 5
+                self.phase_timer = 0
+
+    def _calculate_curriculum_reward(self):
+        """Calcule la récompense adaptative"""
+        reward = 0.0
         
-        elif phase_name == 'CONTACT' and self._detect_finger_contact():
-            reward += 10.0
-        
-        elif phase_name == 'GRASP' and self._check_grasp_stability():
-            reward += 15.0
-        
-        elif phase_name == 'LIFT' and self._is_cube_lifted():
-            reward += 20.0
-        
-        elif phase_name == 'HOLD' and self._check_grasp_stability():
-            reward += 5.0
-        
-        # Multiplicateur de niveau
-        reward *= reward_multiplier
+        try:
+            # Récompense de base pour la stabilité
+            if self.stability_count > 10:
+                reward += 1.0
+            
+            # Récompense basée sur la phase
+            if self.current_phase == 0:  # STABILIZE
+                # Récompense pour la stabilité des bras
+                arm_velocities = [abs(float(self.data.qvel[i])) for i in self.arm_joint_ids if i < len(self.data.qvel)]
+                if arm_velocities:
+                    avg_velocity = np.mean(arm_velocities)
+                    if avg_velocity < 0.5:
+                        reward += 2.0
+                    elif avg_velocity < 1.0:
+                        reward += 1.0
+            
+            elif self.current_phase == 1:  # APPROACH
+                # Récompense pour s'approcher du cube
+                cube_pos = self._get_cube_position()
+                hand_pos = self._get_hand_center()
+                distance = np.linalg.norm(cube_pos - hand_pos)
+                
+                if distance < 0.2:
+                    reward += 3.0
+                elif distance < 0.3:
+                    reward += 1.5
+                elif distance < 0.5:
+                    reward += 0.5
+            
+            elif self.current_phase == 2:  # CONTACT
+                # Récompense pour toucher le cube
+                if self._detect_finger_contact():
+                    reward += 5.0
+            
+            elif self.current_phase == 3:  # GRASP
+                # Récompense pour saisir le cube
+                if self._check_grasp_stability():
+                    reward += 8.0
+            
+            elif self.current_phase == 4:  # LIFT
+                # Récompense pour soulever le cube
+                if self._is_cube_lifted():
+                    reward += 10.0
+            
+            elif self.current_phase == 5:  # HOLD
+                # Récompense pour maintenir le cube
+                if self._check_grasp_stability() and self._is_cube_lifted():
+                    reward += 15.0
+            
+            # Pénalité pour les vitesses excessives
+            max_velocity = 0.0
+            for joint_id in self.arm_joint_ids:
+                if joint_id < len(self.data.qvel):
+                    velocity = abs(float(self.data.qvel[joint_id]))
+                    max_velocity = max(max_velocity, velocity)
+            
+            if max_velocity > 5.0:
+                reward -= 2.0
+            
+            # Multiplicateur du curriculum
+            current_config = self.curriculum_levels[self.current_level]
+            reward *= current_config['reward_multiplier']
+            
+        except Exception as e:
+            if self.episode_step % 100 == 0:
+                print(f"⚠️ Erreur calcul récompense: {e}")
+            reward = 0.0
         
         return reward
-    
+
     def _get_observation(self):
         """Retourne l'observation actuelle avec types de données cohérents"""
         obs = []
         
-        # Position et vitesse des bras
-        for joint_id in self.arm_joint_ids:
-            obs.append(float(self.data.qpos[joint_id]))
-            obs.append(float(self.data.qvel[joint_id]))
-        
-        # Position et vitesse des doigts
-        for joint_id in self.finger_joint_ids:
-            obs.append(float(self.data.qpos[joint_id]))
-            obs.append(float(self.data.qvel[joint_id]))
-        
-        # Position du cube
-        cube_pos = self._get_cube_position()
-        obs.extend([float(x) for x in cube_pos])
-        
-        # Position de la main
-        hand_pos = self._get_hand_center()
-        obs.extend([float(x) for x in hand_pos])
-        
-        # Vitesse du cube
-        if self.cube_body_id >= 0 and self.cube_body_id < len(self.data.cvel):
-            cube_vel = self.data.cvel[self.cube_body_id]
-            obs.extend([float(cube_vel[0]), float(cube_vel[1]), float(cube_vel[2]), 
-                       float(cube_vel[3]), float(cube_vel[4]), float(cube_vel[5])])
-        else:
-            obs.extend([0.0] * 6)
-        
-        # Phase et timer
-        obs.append(float(self.current_phase))
-        obs.append(float(self.phase_timer))
-        
-        # Niveau de curriculum
-        obs.append(float(self.current_level))
-        
-        # Convertir en array numpy avec type float32
-        obs_array = np.array(obs, dtype=np.float32)
-        
-        # Vérifier qu'il n'y a pas de NaN ou Inf
-        if np.any(np.isnan(obs_array)) or np.any(np.isinf(obs_array)):
-            print("⚠️ Observation contient NaN/Inf - remplacement par zéros")
-            obs_array = np.nan_to_num(obs_array, nan=0.0, posinf=0.0, neginf=0.0)
-        
-        return obs_array
-    
+        try:
+            # Position et vitesse des bras
+            for joint_id in self.arm_joint_ids:
+                if joint_id < len(self.data.qpos):
+                    obs.append(float(self.data.qpos[joint_id]))
+                else:
+                    obs.append(0.0)
+                if joint_id < len(self.data.qvel):
+                    obs.append(float(self.data.qvel[joint_id]))
+                else:
+                    obs.append(0.0)
+            
+            # Position et vitesse des doigts
+            for joint_id in self.finger_joint_ids:
+                if joint_id < len(self.data.qpos):
+                    obs.append(float(self.data.qpos[joint_id]))
+                else:
+                    obs.append(0.0)
+                if joint_id < len(self.data.qvel):
+                    obs.append(float(self.data.qvel[joint_id]))
+                else:
+                    obs.append(0.0)
+            
+            # Position du cube
+            cube_pos = self._get_cube_position()
+            obs.extend([float(x) for x in cube_pos])
+            
+            # Position de la main
+            hand_pos = self._get_hand_center()
+            obs.extend([float(x) for x in hand_pos])
+            
+            # Vitesse du cube
+            if self.cube_body_id >= 0 and self.cube_body_id < len(self.data.cvel):
+                cube_vel = self.data.cvel[self.cube_body_id]
+                obs.extend([float(cube_vel[0]), float(cube_vel[1]), float(cube_vel[2]), 
+                           float(cube_vel[3]), float(cube_vel[4]), float(cube_vel[5])])
+            else:
+                obs.extend([0.0] * 6)
+            
+            # Phase et timer
+            obs.append(float(self.current_phase))
+            obs.append(float(self.phase_timer))
+            
+            # Niveau de curriculum
+            obs.append(float(self.current_level))
+            
+            # Convertir en array numpy avec type float32
+            obs_array = np.array(obs, dtype=np.float32)
+            
+            # Vérifier qu'il n'y a pas de NaN ou Inf
+            if np.any(np.isnan(obs_array)) or np.any(np.isinf(obs_array)):
+                print("⚠️ Observation contient NaN/Inf - remplacement par zéros")
+                obs_array = np.nan_to_num(obs_array, nan=0.0, posinf=0.0, neginf=0.0)
+            
+            return obs_array
+            
+        except Exception as e:
+            print(f"⚠️ Erreur observation: {e}")
+            # Retourner une observation par défaut
+            obs_dim = self.observation_space.shape[0]
+            return np.zeros(obs_dim, dtype=np.float32)
+
     def _get_info(self):
         """Retourne les informations de l'environnement"""
         return {
@@ -734,9 +663,9 @@ class RobustCurriculumGraspEnv(gym.Env):
             'stability_count': self.stability_count,
             'successful_grasp': self.successful_grasp,
             'cube_lifted': self.cube_lifted,
-            'avg_velocity': np.mean([abs(self.data.qvel[i]) for i in self.arm_joint_ids])
+            'avg_velocity': np.mean([abs(self.data.qvel[i]) for i in self.arm_joint_ids if i < len(self.data.qvel)])
         }
-    
+
     def _check_termination(self):
         """Vérifie si l'épisode doit se terminer"""
         # Terminer si cube soulevé et tenu stable
@@ -748,75 +677,95 @@ class RobustCurriculumGraspEnv(gym.Env):
             return True
         
         return False
-    
+
     def _get_phase_name(self):
         """Retourne le nom de la phase actuelle"""
         phases = ['STABILIZE', 'APPROACH', 'CONTACT', 'GRASP', 'LIFT', 'HOLD']
         return phases[min(self.current_phase, len(phases) - 1)]
-    
+
     def _get_cube_position(self):
         """Retourne la position du cube"""
-        if self.cube_body_id >= 0 and self.cube_body_id < len(self.data.xpos):
-            pos = self.data.xpos[self.cube_body_id]
-            return np.array([float(pos[0]), float(pos[1]), float(pos[2])], dtype=np.float32)
+        try:
+            if self.cube_body_id >= 0 and self.cube_body_id < len(self.data.xpos):
+                pos = self.data.xpos[self.cube_body_id]
+                return np.array([float(pos[0]), float(pos[1]), float(pos[2])], dtype=np.float32)
+        except Exception as e:
+            if self.episode_step % 100 == 0:
+                print(f"⚠️ Erreur position cube: {e}")
         return np.array([0.4, 0.0, 0.02], dtype=np.float32)
-    
+
     def _get_hand_center(self):
         """Retourne la position centrale de la main"""
-        # Calculer la position moyenne des doigts
-        finger_positions = []
-        for joint_id in self.finger_joint_ids:
-            if joint_id < len(self.data.xpos):
-                pos = self.data.xpos[joint_id]
-                finger_positions.append([float(pos[0]), float(pos[1]), float(pos[2])])
-        
-        if finger_positions:
-            mean_pos = np.mean(finger_positions, axis=0)
-            return np.array([float(mean_pos[0]), float(mean_pos[1]), float(mean_pos[2])], dtype=np.float32)
+        try:
+            # Calculer la position moyenne des doigts
+            finger_positions = []
+            for joint_id in self.finger_joint_ids:
+                if joint_id < len(self.data.xpos):
+                    pos = self.data.xpos[joint_id]
+                    finger_positions.append([float(pos[0]), float(pos[1]), float(pos[2])])
+            
+            if finger_positions:
+                mean_pos = np.mean(finger_positions, axis=0)
+                return np.array([float(mean_pos[0]), float(mean_pos[1]), float(mean_pos[2])], dtype=np.float32)
+        except Exception as e:
+            if self.episode_step % 100 == 0:
+                print(f"⚠️ Erreur position main: {e}")
         return np.array([0.0, 0.0, 0.0], dtype=np.float32)
-    
+
     def _detect_finger_contact(self):
         """Détecte le contact avec les doigts"""
-        if self.cube_body_id < 0:
+        try:
+            if self.cube_body_id < 0:
+                return False
+            
+            # Vérifier les contacts
+            for i in range(self.data.ncon):
+                contact = self.data.contact[i]
+                if (contact.geom1 == self.cube_body_id or contact.geom2 == self.cube_body_id):
+                    return True
+            
             return False
-        
-        cube_pos = self._get_cube_position()
-        finger_contacts = 0
-        
-        for joint_id in self.finger_joint_ids:
-            if joint_id < len(self.data.xpos):
-                finger_pos = self.data.xpos[joint_id]
-                distance = np.linalg.norm(cube_pos - finger_pos)
-                if distance < 0.05:  # 5cm
-                    finger_contacts += 1
-        
-        return finger_contacts >= 2
-    
+        except Exception as e:
+            if self.episode_step % 100 == 0:
+                print(f"⚠️ Erreur détection contact: {e}")
+            return False
+
     def _check_grasp_stability(self):
-        """Vérifie la stabilité de la prise"""
-        if not self._detect_finger_contact():
+        """Vérifie la stabilité de la saisie"""
+        try:
+            if not self._detect_finger_contact():
+                return False
+            
+            # Vérifier si le cube est maintenu fermement
+            cube_pos = self._get_cube_position()
+            hand_pos = self._get_hand_center()
+            distance = np.linalg.norm(cube_pos - hand_pos)
+            
+            return distance < 0.1
+        except Exception as e:
+            if self.episode_step % 100 == 0:
+                print(f"⚠️ Erreur stabilité saisie: {e}")
             return False
-        
-        if self.cube_body_id >= 0:
-            cube_vel = self.data.cvel[self.cube_body_id]
-            return np.linalg.norm(cube_vel) < 0.1
-        
-        return False
-    
+
     def _is_cube_lifted(self):
         """Vérifie si le cube est soulevé"""
-        cube_pos = self._get_cube_position()
-        return cube_pos[2] > 0.08
-    
-    def _capture_frame(self):
-        """Capture une frame pour la vidéo avec gestion robuste des erreurs"""
         try:
-            if self.video_writer is not None:
-                # Utiliser la fonction render pour capturer la frame
+            cube_pos = self._get_cube_position()
+            return cube_pos[2] > 0.05  # Plus de 5cm au-dessus de la table
+        except Exception as e:
+            if self.episode_step % 100 == 0:
+                print(f"⚠️ Erreur vérification soulevé: {e}")
+            return False
+
+    def _capture_frame(self):
+        """Capture une frame pour la vidéo"""
+        try:
+            if self.video_writer is not None and self.video_writer.isOpened():
+                # Rendu de la frame
                 frame = self.render()
                 
                 if frame is not None and frame.size > 0:
-                    # Convertir RGB vers BGR pour OpenCV
+                    # Convertir BGR pour OpenCV
                     frame_bgr = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
                     
                     # Écrire la frame
@@ -826,7 +775,7 @@ class RobustCurriculumGraspEnv(gym.Env):
         except Exception as e:
             if hasattr(self, 'episode_step') and self.episode_step % 100 == 0:
                 print(f"⚠️ Erreur capture frame: {e}")
-    
+
     def render(self):
         """Rendu de l'environnement avec gestion robuste des erreurs"""
         try:
@@ -890,7 +839,7 @@ class RobustCurriculumGraspEnv(gym.Env):
         except Exception as e:
             print(f"⚠️ Erreur générale rendu: {e}")
             return np.zeros((480, 640, 3), dtype=np.uint8)
-    
+
     def close(self):
         """Nettoie les ressources"""
         # Fermer la vidéo
@@ -904,7 +853,7 @@ class RobustCurriculumGraspEnv(gym.Env):
                 os.unlink(self.temp_model_path)
             except:
                 pass
-    
+
     def get_curriculum_info(self):
         """Retourne les informations détaillées sur le curriculum"""
         return {
