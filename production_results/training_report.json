@@ -1,0 +1,13 @@
+{
+  "timestamp": "2025-08-07T08:56:40.691755",
+  "training_time_minutes": 1.8093174894650776,
+  "total_timesteps": 10000,
+  "total_episodes": 19,
+  "best_reward": 6232.770079,
+  "files": {
+    "best_model": "/workspace/production_results/models/best_model.zip",
+    "final_model": "/workspace/production_results/models/final_model.zip",
+    "videos": "/workspace/production_results/videos",
+    "logs": "/workspace/production_results/logs"
+  }
+}

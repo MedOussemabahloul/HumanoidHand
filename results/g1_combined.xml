@@ -23,8 +23,8 @@
       <geom name="table_leg3" type="box" size="0.02 0.02 0.2" material="table_mat" friction="2.0 0.3 0.1" pos="0.35 -0.25 -0.2" contype="1" conaffinity="1" />
       <geom name="table_leg4" type="box" size="0.02 0.02 0.2" material="table_mat" friction="2.0 0.3 0.1" pos="-0.35 -0.25 -0.2" contype="1" conaffinity="1" />
     </body>
-    <body name="cube" pos="0.3 0 0.05">
-      <freejoint name="cube_free" />
+    <body name="cube" pos="0.3 0 0.055">
+      <!-- Cube fixe sur la table pour le grasping -->
       <geom name="cube_geom" type="box" size="0.025 0.025 0.025" material="cube_mat" friction="2.5 0.4 0.2" contype="2" conaffinity="2" />
       <inertial pos="0 0 0" mass="0.05" diaginertia="0.001 0.001 0.001" />
     </body>
