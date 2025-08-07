@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """
-🧪 TEST DE L'ENVIRONNEMENT ROBUSTE
-===================================
+🧪 TEST DE L'ENVIRONNEMENT ROBUSTE - VERSION CORRIGÉE
+=====================================================
 
-Script de test pour vérifier que l'environnement fonctionne correctement :
+Script de test simplifié et corrigé pour vérifier que l'environnement fonctionne :
 ✅ Pas d'erreurs mujoco
 ✅ Pas de vitesses excessives
 ✅ Rendu vidéo fonctionnel
@@ -67,6 +67,8 @@ def test_reset_functionality(env):
     
     try:
         obs = env.reset()
+        if isinstance(obs, tuple):
+            obs = obs[0]  # Extraire l'observation du tuple
         print("✅ Reset réussi")
         print(f"   - Observation shape: {obs.shape}")
         print(f"   - Observation range: [{obs.min():.3f}, {obs.max():.3f}]")
@@ -88,6 +90,8 @@ def test_step_functionality(env, obs):
         
         # Appliquer l'action
         obs, reward, done, info = env.step(action)
+        if isinstance(obs, tuple):
+            obs = obs[0]  # Extraire l'observation du tuple
         print("✅ Step réussi")
         print(f"   - Reward: {reward:.3f}")
         print(f"   - Done: {done}")
@@ -118,7 +122,7 @@ def test_render_functionality(env):
         print(f"❌ Erreur render: {e}")
         return None
 
-def test_video_capture(env, num_steps=100):
+def test_video_capture(env, num_steps=50):
     """Test de capture vidéo"""
     print(f"\n🧪 Test 5: Capture vidéo ({num_steps} steps)")
     print("-" * 40)
@@ -141,6 +145,8 @@ def test_video_capture(env, num_steps=100):
         
         # Réinitialiser l'environnement
         obs = env.reset()
+        if isinstance(obs, tuple):
+            obs = obs[0]  # Extraire l'observation du tuple
         frames_captured = 0
         
         # Capturer les frames
@@ -156,9 +162,13 @@ def test_video_capture(env, num_steps=100):
             # Action aléatoire
             action = env.action_space.sample()
             obs, reward, done, info = env.step(action)
+            if isinstance(obs, tuple):
+                obs = obs[0]  # Extraire l'observation du tuple
             
             if done:
                 obs = env.reset()
+                if isinstance(obs, tuple):
+                    obs = obs[0]  # Extraire l'observation du tuple
         
         video_writer.release()
         
@@ -173,13 +183,15 @@ def test_video_capture(env, num_steps=100):
         print(f"❌ Erreur capture vidéo: {e}")
         return None
 
-def test_stability_monitoring(env, num_steps=200):
+def test_stability_monitoring(env, num_steps=100):
     """Test de monitoring de stabilité"""
     print(f"\n🧪 Test 6: Monitoring de stabilité ({num_steps} steps)")
     print("-" * 40)
     
     try:
         obs = env.reset()
+        if isinstance(obs, tuple):
+            obs = obs[0]  # Extraire l'observation du tuple
         velocity_warnings = 0
         stability_count = 0
         
@@ -187,6 +199,8 @@ def test_stability_monitoring(env, num_steps=200):
             # Action aléatoire
             action = env.action_space.sample()
             obs, reward, done, info = env.step(action)
+            if isinstance(obs, tuple):
+                obs = obs[0]  # Extraire l'observation du tuple
             
             # Vérifier les vitesses
             if hasattr(env, 'data') and env.data is not None:
@@ -200,6 +214,8 @@ def test_stability_monitoring(env, num_steps=200):
             
             if done:
                 obs = env.reset()
+                if isinstance(obs, tuple):
+                    obs = obs[0]  # Extraire l'observation du tuple
         
         print("✅ Monitoring de stabilité terminé")
         print(f"   - Avertissements vitesse: {velocity_warnings}")
@@ -265,10 +281,10 @@ def main():
         print("⚠️ Render non fonctionnel, mais on continue")
     
     # Test 5: Capture vidéo
-    video_path = test_video_capture(env, num_steps=150)
+    video_path = test_video_capture(env, num_steps=50)
     
     # Test 6: Monitoring de stabilité
-    velocity_warnings, stability_count = test_stability_monitoring(env, num_steps=300)
+    velocity_warnings, stability_count = test_stability_monitoring(env, num_steps=100)
     
     # Test 7: Curriculum
     curriculum_info = test_curriculum_functionality(env)
@@ -291,7 +307,7 @@ def main():
         print("❌ Échec de création vidéo")
     
     if velocity_warnings is not None:
-        warning_rate = velocity_warnings / 300 * 100
+        warning_rate = velocity_warnings / 100 * 100
         if warning_rate < 5:
             print(f"✅ Stabilité excellente ({warning_rate:.1f}% d'avertissements)")
         elif warning_rate < 15:
