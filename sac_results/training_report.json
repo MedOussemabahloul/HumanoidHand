@@ -1,0 +1,19 @@
+{
+  "timestamp": "2025-08-07T09:08:53.008501",
+  "training_time_minutes": 0.9064576148986816,
+  "total_timesteps": 5000,
+  "total_episodes": 9,
+  "best_reward": 186.827356,
+  "mean_reward": 179.7233178888889,
+  "video_rewards": [
+    178.94135534904026,
+    171.0769307185105,
+    182.85956666401765
+  ],
+  "files": {
+    "best_model": "/workspace/sac_results/models/best_model.zip",
+    "final_model": "/workspace/sac_results/models/final_model.zip",
+    "videos_dir": "/workspace/sac_results/videos",
+    "logs_dir": "/workspace/sac_results/logs"
+  }
+}
