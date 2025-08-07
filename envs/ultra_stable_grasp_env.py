@@ -473,6 +473,12 @@ class UltraStableGraspEnv(gym.Env):
             height, width = self.video_frames[0].shape[:2]
             fourcc = cv2.VideoWriter_fourcc(*'mp4v')
             out = cv2.VideoWriter(filename, fourcc, fps, (width, height))
+            if not out.isOpened():
+                print("⚠️ OpenCV mp4v non disponible, tentative avec 'avc1'")
+                fourcc2 = cv2.VideoWriter_fourcc(*'avc1')
+                out = cv2.VideoWriter(filename, fourcc2, fps, (width, height))
+            if not out.isOpened():
+                raise RuntimeError(f"Impossible d'ouvrir l'écrivain vidéo: {filename}")
             
             for frame in self.video_frames:
                 # Convertir RGB en BGR pour OpenCV

@@ -486,8 +486,8 @@ class StableGraspEnv(gym.Env):
             
             if mode == "human":
                 if self.viewer is None:
-                    import mujoco.viewer
-                    self.viewer = mujoco.viewer.launch_passive(self.model, self.data)
+                    from mujoco import viewer as mj_viewer
+                    self.viewer = mj_viewer.launch_passive(self.model, self.data)
                 self.viewer.sync()
                 
             elif mode == "rgb_array":

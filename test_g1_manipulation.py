@@ -8,7 +8,7 @@ Projet: G1 Fingers Manipulation
 """
 
 import mujoco
-import mujoco.viewer
+from mujoco import viewer as mj_viewer
 import numpy as np
 import time
 import sys
@@ -200,7 +200,7 @@ class G1ManipulationTester:
         print("👋 Phase: Approche du cube")
         
         # Lancer le viewer interactif
-        with mujoco.viewer.launch_passive(self.model, self.data) as viewer:
+        with mj_viewer.launch_passive(self.model, self.data) as viewer:
             start_time = time.time()
             
             while viewer.is_running() and (time.time() - start_time) < duration:

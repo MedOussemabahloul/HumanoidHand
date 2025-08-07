@@ -66,7 +66,7 @@ import torch.multiprocessing as mp
 
 # MuJoCo et simulation
 import mujoco
-import mujoco.viewer
+from mujoco import viewer as mj_viewer
 
 # Imports locaux avec validation
 try:

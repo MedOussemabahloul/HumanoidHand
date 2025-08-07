@@ -18,7 +18,7 @@ import cv2
 warnings.filterwarnings("ignore")
 
 # Ajouter le chemin des environnements
-sys.path.append('/workspace/home/oussema/Documents/project/envs')
+sys.path.append('/home/oussema/Documents/project/envs')
 
 try:
   from envs.curriculum_grasp_env import CurriculumGraspEnv
@@ -210,6 +210,12 @@ class RobustCurriculumTrainer:
           print(f"📹 Enregistrement: {video_path}")
           
           video_writer = cv2.VideoWriter(video_path, fourcc, fps, frame_size)
+          if not video_writer.isOpened():
+              print("⚠️ OpenCV mp4v non disponible, tentative avec 'avc1'")
+              fallback_fourcc = cv2.VideoWriter_fourcc(*'avc1')
+              video_writer = cv2.VideoWriter(video_path, fallback_fourcc, fps, frame_size)
+          if not video_writer.isOpened():
+              raise RuntimeError(f"Impossible d'ouvrir l'écrivain vidéo: {video_path}")
           total_frames = 0
           successful_episodes = 0
           
@@ -279,6 +285,8 @@ class RobustCurriculumTrainer:
           gif_path = video_path.replace('.mp4', '.gif')
           
           cap = cv2.VideoCapture(video_path)
+          if not cap.isOpened():
+              raise RuntimeError(f"Impossible d'ouvrir la vidéo pour lecture: {video_path}")
           frames = []
           frame_count = 0
           

@@ -32,7 +32,7 @@ from torch.utils.tensorboard import SummaryWriter
 import xml.etree.ElementTree as ET
 from copy import deepcopy
 import copy
-import mujoco.viewer
+from mujoco import viewer as mj_viewer
 from tasks.grasp.grasp_lift_task import GraspLiftTask
 import torch.nn.functional as F
 

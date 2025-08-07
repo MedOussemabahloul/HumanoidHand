@@ -614,6 +614,12 @@ class ProfessionalGraspEnv(gym.Env):
             height, width = self.video_frames[0].shape[:2]
             fourcc = cv2.VideoWriter_fourcc(*'mp4v')
             out = cv2.VideoWriter(filepath, fourcc, 30.0, (width, height))
+            if not out.isOpened():
+                print("⚠️ OpenCV mp4v non disponible, tentative avec 'avc1'")
+                fourcc2 = cv2.VideoWriter_fourcc(*'avc1')
+                out = cv2.VideoWriter(filepath, fourcc2, 30.0, (width, height))
+            if not out.isOpened():
+                raise RuntimeError(f"Impossible d'ouvrir l'écrivain vidéo: {filepath}")
             
             for frame in self.video_frames:
                 frame_bgr = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)

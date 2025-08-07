@@ -385,9 +385,10 @@ class ImprovedProfessionalGraspEnv(gym.Env):
      # Vérifier les vitesses excessives
      max_velocity = np.max(np.abs(self.data.qvel))
      if max_velocity > 10.0:
-         # Réduire toutes les vitesses
-         self.data.qvel *= 0.5
-         print(f"⚠️ Vitesse excessive ({max_velocity:.2f}) - réduction appliquée")
+          # Réduire toutes les vitesses
+          self.data.qvel *= 0.5
+          if getattr(self, 'episode_step', 0) % 200 == 0:
+              print(f"⚠️ Vitesse excessive ({max_velocity:.2f}) - réduction appliquée")
      
      # Historique pour détection de stabilité
      arm_velocities = [self.data.qvel[i] for i in self.arm_joint_ids]

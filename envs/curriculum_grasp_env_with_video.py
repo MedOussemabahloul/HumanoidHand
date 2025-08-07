@@ -29,7 +29,7 @@ warnings.filterwarnings("ignore")
 
 # Import de l'environnement curriculum de base
 import sys
-sys.path.append('/workspace/envs')
+sys.path.append('/home/oussema/Documents/project/envs')
 from curriculum_grasp_env import CurriculumGraspEnv
 
 class CurriculumGraspEnvWithVideo(CurriculumGraspEnv):
@@ -48,7 +48,7 @@ class CurriculumGraspEnvWithVideo(CurriculumGraspEnv):
      
      # Configuration vidéo
      self.record_video = record_video
-     self.video_folder = video_folder or "/workspace/curriculum_sac_results/videos"
+     self.video_folder = video_folder or "/home/oussema/Documents/project/curriculum_sac_results/videos"
      self.render_mode = render_mode if record_video else None
      
      # Initialiser l'environnement parent
