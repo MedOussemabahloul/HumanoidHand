@@ -14,6 +14,7 @@ import os
 import sys
 import json
 import time
+import argparse
 from datetime import datetime
 from typing import Optional
 
@@ -48,6 +49,17 @@ except Exception as e:
     print(f"❌ Erreur Stable-Baselines3: {e}")
     print("💡 pip install stable-baselines3 torch gymnasium")
     sys.exit(1)
+
+
+def set_seeds(seed: int):
+    try:
+        import torch
+        torch.manual_seed(seed)
+        if torch.cuda.is_available():
+            torch.cuda.manual_seed_all(seed)
+    except Exception:
+        pass
+    np.random.seed(seed)
 
 
 class ProgressGuardCallback(BaseCallback):
@@ -100,7 +112,9 @@ class ProgressGuardCallback(BaseCallback):
         return True
 
 
-def main(total_timesteps: int = 150_000, live_view: bool = True, record_video: bool = True) -> Optional[str]:
+def run_training(total_timesteps: int, live_view: bool, record_video: bool, seed: int) -> Optional[str]:
+    set_seeds(seed)
+
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     base_dir = f"/home/oussema/Documents/project/master_results_{timestamp}"
     models_dir = os.path.join(base_dir, "models")
@@ -140,6 +154,7 @@ def main(total_timesteps: int = 150_000, live_view: bool = True, record_video: b
         verbose=1,
         tensorboard_log=logs_dir,
         device="auto",
+        seed=seed,
     )
     model.set_logger(configure(logs_dir, ["stdout", "csv", "tensorboard"]))
 
@@ -156,6 +171,7 @@ def main(total_timesteps: int = 150_000, live_view: bool = True, record_video: b
     print(f"💾 Modèle sauvegardé: {model_path}")
 
     # Simple deterministic demo run to confirm video writing
+    last_video_path: Optional[str] = None
     try:
         obs, info = env_wrapped.reset()
         ep_reward = 0.0
@@ -166,6 +182,7 @@ def main(total_timesteps: int = 150_000, live_view: bool = True, record_video: b
             if terminated or truncated:
                 break
         print(f"🎬 Démo terminée, reward={ep_reward:.2f}")
+        last_video_path = env_wrapped.current_video_path
     except Exception as e:
         print(f"⚠️  Démo non exécutée: {e}")
 
@@ -177,9 +194,22 @@ def main(total_timesteps: int = 150_000, live_view: bool = True, record_video: b
                 "train_time_sec": float(t_elapsed),
                 "model_path": model_path,
                 "videos_dir": videos_dir,
+                "last_video": last_video_path,
+                "seed": seed,
             }, f, indent=2)
     except Exception:
         pass
+
+    # Copy last video to a convenient demo path
+    if last_video_path and os.path.exists(last_video_path):
+        try:
+            demo_path = os.path.join(base_dir, "demo_last_episode.mp4")
+            if os.path.abspath(last_video_path) != os.path.abspath(demo_path):
+                import shutil
+                shutil.copy2(last_video_path, demo_path)
+                print(f"📹 Copie démo: {demo_path}")
+        except Exception:
+            pass
 
     # Clean close
     try:
@@ -188,6 +218,26 @@ def main(total_timesteps: int = 150_000, live_view: bool = True, record_video: b
         pass
 
     return base_dir
+
+
+def parse_args() -> argparse.Namespace:
+    p = argparse.ArgumentParser(description="Master Grasp Training (SAC)")
+    p.add_argument("--timesteps", type=int, default=150000, help="Total timesteps")
+    p.add_argument("--seed", type=int, default=42, help="Random seed")
+    p.add_argument("--no-view", action="store_true", help="Disable live MuJoCo viewer")
+    p.add_argument("--no-video", action="store_true", help="Disable episode video recording")
+    return p.parse_args()
+
+
+def main():
+    args = parse_args()
+    base_dir = run_training(
+        total_timesteps=args.timesteps,
+        live_view=not args.no_view,
+        record_video=not args.no_video,
+        seed=args.seed,
+    )
+    print(f"🏁 Terminé. Résultats: {base_dir}")
 
 
 if __name__ == "__main__":
