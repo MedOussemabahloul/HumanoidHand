@@ -582,10 +582,10 @@ class CurriculumGraspEnv(gym.Env):
      
      # Vérifier les vitesses excessives
      max_velocity = np.max(np.abs(self.data.qvel))
-     if max_velocity > 10.0:
+     if max_velocity > 5.0:
          # Réduire toutes les vitesses
-         self.data.qvel *= 0.5
-         if self.episode_step % 50 == 0:  # Afficher moins souvent
+         self.data.qvel *= 0.3
+         if self.episode_step % 100 == 0:  # Afficher moins souvent
              print(f"⚠️ Vitesse excessive ({max_velocity:.2f}) - réduction appliquée")
      
      # Historique pour détection de stabilité
@@ -931,20 +931,32 @@ class CurriculumGraspEnv(gym.Env):
  
  def render(self):
      """Rendu de l'environnement pour visualisation et capture vidéo"""
+     global mujoco
+    
+     if not hasattr(self, '_mujoco_imported'):
+         try:
+             import mujoco
+             self._mujoco_imported = True
+         except ImportError:
+             print("⚠️ MuJoCo non disponible pour le rendu")
+             return np.zeros((480, 640, 3), dtype=np.uint8)
      if self.render_mode == "human":
          # Affichage pour visualisation humaine
          if not hasattr(self, 'viewer') or self.viewer is None:
              try:
                  import mujoco.viewer
                  self.viewer = mujoco.viewer.launch_passive(self.model, self.data)
-             except:
+             except Exception as e:
+                 print(f"⚠️ Erreur sync: {e}")
                  pass
+                 
          
          if hasattr(self, 'viewer') and self.viewer is not None:
              try:
                  self.viewer.sync()
-             except:
-                 pass
+             except Exception as e:
+                 print(f"⚠️ Erreur sync: {e}")
+                 pass                 
                  
      elif self.render_mode == "rgb_array":
          # Rendu pour capture vidéo
@@ -1011,4 +1023,3 @@ class CurriculumGraspEnv(gym.Env):
          'max_phases': self.curriculum_levels[self.current_level]['max_phases'],
          'performance_history': self.performance_history[-10:]  # 10 dernières performances
      }
-

@@ -2338,3 +2338,27 @@ WARNING: Nan, Inf or huge value in QVEL at DOF 19. The simulation is unstable. T
 Wed Aug  6 13:37:27 2025
 WARNING: Nan, Inf or huge value in QVEL at DOF 19. The simulation is unstable. Time = 0.0050.
 
+Thu Aug  7 21:30:25 2025
+ERROR: gladLoadGL error
+
+Thu Aug  7 21:32:09 2025
+ERROR: gladLoadGL error
+
+Thu Aug  7 21:33:13 2025
+ERROR: gladLoadGL error
+
+Thu Aug  7 21:33:28 2025
+ERROR: mj_copyDataVisual: attempting to copy mjData while stack is in use
+
+Thu Aug  7 21:34:34 2025
+ERROR: gladLoadGL error
+
+Thu Aug  7 23:04:14 2025
+ERROR: mj_copyDataVisual: attempting to copy mjData while stack is in use
+
+Thu Aug  7 23:05:21 2025
+ERROR: mj_copyDataVisual: attempting to copy mjData while stack is in use
+
+Fri Aug  8 09:27:58 2025
+ERROR: mj_copyDataVisual: attempting to copy mjData while stack is in use
+
