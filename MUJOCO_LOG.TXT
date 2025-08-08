@@ -2362,3 +2362,12 @@ ERROR: mj_copyDataVisual: attempting to copy mjData while stack is in use
 Fri Aug  8 09:27:58 2025
 ERROR: mj_copyDataVisual: attempting to copy mjData while stack is in use
 
+Fri Aug  8 11:44:57 2025
+ERROR: mj_copyDataVisual: attempting to copy mjData while stack is in use
+
+Fri Aug  8 11:47:23 2025
+ERROR: mj_copyDataVisual: attempting to copy mjData while stack is in use
+
+Fri Aug  8 11:49:40 2025
+ERROR: mj_copyDataVisual: attempting to copy mjData while stack is in use
+

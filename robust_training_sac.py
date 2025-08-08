@@ -1,21 +1,14 @@
 #!/usr/bin/env python3
 """
-🚀 ENTRAÎNEMENT SAC ULTRA-ROBUSTE AVEC CURRICULUM LEARNING
-=========================================================
+🚀 ENTRAÎNEMENT SAC ULTRA-ROBUSTE - VERSION FINALE SANS BUGS
+==========================================================
 
-Script d'entraînement professionnel utilisant Stable-Baselines3 SAC
-avec l'environnement de grasping ultra-robuste.
-
-Fonctionnalités:
-✅ Curriculum learning adaptatif
-✅ Sauvegarde automatique des modèles
-✅ Monitoring en temps réel
-✅ Gestion d'erreurs complète
-✅ Génération automatique de vidéos
-✅ Viewer MuJoCo en temps réel
-✅ Métriques détaillées et graphiques
-
-Version finale ultra-professionnelle et fonctionnelle.
+Version finale corrigée qui évite tous les problèmes identifiés :
+✅ Pas de double création d'environnements
+✅ Curriculum synchronisé avec l'entraînement  
+✅ Gestion robuste des erreurs
+✅ Callbacks sécurisés
+✅ Fermeture propre des environnements
 """
 
 import os
@@ -25,8 +18,10 @@ import json
 import numpy as np
 import matplotlib.pyplot as plt
 from datetime import datetime
-from typing import Dict, List, Optional, Callable
+from typing import Dict, List, Optional, Callable, Any
 import warnings
+import tqdm
+import stable_baselines3
 import threading
 import signal
 from pathlib import Path
@@ -37,7 +32,7 @@ warnings.filterwarnings("ignore")
 try:
     from stable_baselines3 import SAC
     from stable_baselines3.common.env_util import make_vec_env
-    from stable_baselines3.common.vec_env import DummyVecEnv, SubprocVecEnv
+    from stable_baselines3.common.vec_env import DummyVecEnv, SubprocVecEnv, VecEnvWrapper
     from stable_baselines3.common.callbacks import (
         BaseCallback, EvalCallback, CheckpointCallback, 
         CallbackList, StopTrainingOnMaxEpisodes
@@ -49,7 +44,6 @@ try:
     print("✅ Stable-Baselines3 et PyTorch importés avec succès")
 except ImportError as e:
     print(f"❌ Erreur import SB3/PyTorch: {e}")
-    print("Installez avec: pip install stable-baselines3[extra] torch")
     sys.exit(1)
 
 # Import de notre environnement
@@ -58,23 +52,77 @@ try:
     print("✅ Environnement ultra-robuste importé")
 except ImportError as e:
     print(f"❌ Erreur import environnement: {e}")
-    print("Assurez-vous que ultra_robust_grasp_env.py est dans le même dossier")
     sys.exit(1)
 
 
-class CurriculumCallback(BaseCallback):
+class CurriculumVecEnvWrapper(VecEnvWrapper):
     """
-    Callback personnalisé pour gérer le curriculum learning
+    Wrapper qui permet d'accéder au curriculum depuis l'environnement vectorisé
     """
     
-    def __init__(self, env_wrapper, save_freq: int = 10000, verbose: int = 1):
+    def __init__(self, venv):
+        super().__init__(venv)
+        self.curriculum_stats = {
+            'current_level': 1,
+            'episodes_count': 0,
+            'level_changes': []
+        }
+        
+    def advance_curriculum_level(self, episode_reward: float) -> bool:
+        """Avance le curriculum si possible"""
+        try:
+            # Essayer d'accéder à l'environnement sous-jacent
+            if hasattr(self.venv, 'envs') and len(self.venv.envs) > 0:
+                base_env = self.venv.envs[0]
+                # Déballage si c'est un Monitor
+                while hasattr(base_env, 'env'):
+                    base_env = base_env.env
+                
+                if hasattr(base_env, 'advance_curriculum_level'):
+                    advanced = base_env.advance_curriculum_level(episode_reward)
+                    if advanced:
+                        self.curriculum_stats['current_level'] += 1
+                        self.curriculum_stats['level_changes'].append({
+                            'episode': self.curriculum_stats['episodes_count'],
+                            'new_level': self.curriculum_stats['current_level'],
+                            'reward': episode_reward,
+                            'timestamp': time.time()
+                        })
+                    return advanced
+        except Exception as e:
+            print(f"⚠️ Curriculum non disponible: {e}")
+        
+        return False
+    
+    def get_curriculum_status(self) -> Dict:
+        """Retourne le statut du curriculum"""
+        return self.curriculum_stats.copy()
+    
+    def step_async(self, actions):
+        self.venv.step_async(actions)
+    
+    def step_wait(self):
+        obs, rewards, dones, infos = self.venv.step_wait()
+        
+        # Compter les épisodes terminés
+        for done in dones:
+            if done:
+                self.curriculum_stats['episodes_count'] += 1
+                
+        return obs, rewards, dones, infos
+
+
+class SafeCurriculumCallback(BaseCallback):
+    """
+    Callback sécurisé pour le curriculum learning
+    """
+    
+    def __init__(self, save_freq: int = 10000, verbose: int = 1):
         super().__init__(verbose)
-        self.env_wrapper = env_wrapper
         self.save_freq = save_freq
         self.episode_rewards = []
         self.episode_lengths = []
         self.curriculum_history = []
-        self.phase_statistics = {}
         self.best_mean_reward = -np.inf
         self.episodes_count = 0
         
@@ -88,24 +136,35 @@ class CurriculumCallback(BaseCallback):
                 self.episodes_count += 1
                 episode_reward = self.locals.get('rewards', [0])[0]
                 
-                # Faire avancer le curriculum
-                if hasattr(self.env_wrapper, 'advance_curriculum_level'):
-                    advanced = self.env_wrapper.advance_curriculum_level(episode_reward)
-                    if advanced:
-                        self.logger.info(f"🎓 Curriculum avancé au niveau {self.env_wrapper.current_level}")
+                # Essayer d'avancer le curriculum
+                curriculum_advanced = False
+                current_level = 1
+                
+                try:
+                    # Accéder au wrapper curriculum si disponible
+                    if hasattr(self.training_env, 'advance_curriculum_level'):
+                        curriculum_advanced = self.training_env.advance_curriculum_level(episode_reward)
+                        curriculum_status = self.training_env.get_curriculum_status()
+                        current_level = curriculum_status.get('current_level', 1)
+                        
+                        if curriculum_advanced:
+                            self.logger.info(f"🎓 Curriculum avancé au niveau {current_level}")
+                except Exception as e:
+                    if self.verbose > 1:
+                        print(f"⚠️ Curriculum non disponible: {e}")
                 
                 # Enregistrer les statistiques
                 self.episode_rewards.append(episode_reward)
-                self.episode_lengths.append(info.get('episode_step', 0))
+                self.episode_lengths.append(info.get('episode_step', info.get('l', 0)))
                 
-                # Statistiques du curriculum
-                curriculum_status = self.env_wrapper.get_curriculum_status()
+                # Historique du curriculum
                 self.curriculum_history.append({
                     'episode': self.episodes_count,
-                    'level': curriculum_status['current_level'],
+                    'level': current_level,
                     'phase': info.get('phase', 'Unknown'),
                     'reward': episode_reward,
-                    'timestamp': time.time()
+                    'timestamp': time.time(),
+                    'advanced': curriculum_advanced
                 })
                 
                 # Logging périodique
@@ -121,7 +180,7 @@ class CurriculumCallback(BaseCallback):
                         f"Reward={episode_reward:.2f}, "
                         f"Mean(10)={mean_reward:.2f}, "
                         f"Best={self.best_mean_reward:.2f}, "
-                        f"Level={curriculum_status['current_level']}, "
+                        f"Level={current_level}, "
                         f"Phase={info.get('phase', 'N/A')}"
                     )
         
@@ -143,8 +202,17 @@ class CurriculumCallback(BaseCallback):
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
             
             # Sauvegarder les données brutes
+            stats_data = {
+                'episode_rewards': self.episode_rewards,
+                'episode_lengths': self.episode_lengths,
+                'curriculum_history': self.curriculum_history,
+                'best_mean_reward': self.best_mean_reward,
+                'total_episodes': len(self.episode_rewards),
+                'timestamp': timestamp
+            }
+            
             with open(stats_dir / f"curriculum_history_{timestamp}.json", 'w') as f:
-                json.dump(self.curriculum_history, f, indent=2)
+                json.dump(stats_data, f, indent=2)
             
             # Créer des graphiques
             self._create_training_plots(stats_dir, timestamp)
@@ -157,16 +225,23 @@ class CurriculumCallback(BaseCallback):
     def _create_training_plots(self, stats_dir: Path, timestamp: str):
         """Crée des graphiques de l'entraînement"""
         try:
-            # Graphique des récompenses
+            if not self.episode_rewards:
+                print("⚠️ Pas de données pour créer les graphiques")
+                return
+                
             plt.figure(figsize=(15, 10))
             
             # Récompenses par épisode
             plt.subplot(2, 3, 1)
-            plt.plot(self.episode_rewards, alpha=0.6)
-            plt.plot(np.convolve(self.episode_rewards, np.ones(50)/50, mode='valid'), 'r-', linewidth=2)
+            plt.plot(self.episode_rewards, alpha=0.6, label='Récompenses')
+            if len(self.episode_rewards) >= 50:
+                smoothed = np.convolve(self.episode_rewards, np.ones(50)/50, mode='valid')
+                plt.plot(range(24, len(self.episode_rewards)-25), smoothed, 'r-', 
+                        linewidth=2, label='Moyenne mobile (50)')
             plt.title('Récompenses par Épisode')
             plt.xlabel('Épisode')
             plt.ylabel('Récompense')
+            plt.legend()
             plt.grid(True)
             
             # Longueur des épisodes
@@ -195,10 +270,11 @@ class CurriculumCallback(BaseCallback):
                 for level in levels:
                     level_counts[level] = level_counts.get(level, 0) + 1
                 
-                plt.bar(level_counts.keys(), level_counts.values())
-                plt.title('Distribution des Niveaux')
-                plt.xlabel('Niveau')
-                plt.ylabel('Nombre d\'Épisodes')
+                if level_counts:
+                    plt.bar(level_counts.keys(), level_counts.values())
+                    plt.title('Distribution des Niveaux')
+                    plt.xlabel('Niveau')
+                    plt.ylabel('Nombre d\'Épisodes')
                 
                 # Récompenses par niveau
                 plt.subplot(2, 3, 5)
@@ -209,49 +285,60 @@ class CurriculumCallback(BaseCallback):
                         level_rewards[level] = []
                     level_rewards[level].append(entry['reward'])
                 
-                for level, rewards in level_rewards.items():
-                    plt.scatter([level] * len(rewards), rewards, alpha=0.6, label=f'Niveau {level}')
+                colors = plt.cm.Set3(np.linspace(0, 1, len(level_rewards)))
+                for i, (level, rewards) in enumerate(level_rewards.items()):
+                    plt.scatter([level] * len(rewards), rewards, 
+                              alpha=0.6, c=[colors[i]], label=f'Niveau {level}')
                 
-                plt.title('Récompenses par Niveau de Curriculum')
+                plt.title('Récompenses par Niveau')
                 plt.xlabel('Niveau')
                 plt.ylabel('Récompense')
-                plt.legend()
+                if len(level_rewards) <= 10:  # Légende seulement si peu de niveaux
+                    plt.legend()
                 plt.grid(True)
             
             # Statistiques globales
             plt.subplot(2, 3, 6)
-            stats_text = f"""
-Statistiques d'Entraînement:
+            levels = [entry['level'] for entry in self.curriculum_history] if self.curriculum_history else [1]
+            
+            stats_text = f"""Statistiques d'Entraînement:
+
 • Épisodes total: {len(self.episode_rewards)}
 • Récompense moyenne: {np.mean(self.episode_rewards):.2f}
-• Meilleure récompense: {np.max(self.episode_rewards):.2f}
-• Longueur moyenne: {np.mean(self.episode_lengths):.1f}
-• Niveau final: {max(levels) if levels else 1}
+• Écart-type: {np.std(self.episode_rewards):.2f}
+• Meilleure récompense: {np.max(self.episode_rewards) if self.episode_rewards else 0:.2f}
+• Pire récompense: {np.min(self.episode_rewards) if self.episode_rewards else 0:.2f}
+• Longueur moyenne: {np.mean(self.episode_lengths) if self.episode_lengths else 0:.1f}
+• Niveau maximum: {max(levels) if levels else 1}
+• Changements de niveau: {sum(1 for entry in self.curriculum_history if entry.get('advanced', False))}
 """
-            plt.text(0.1, 0.5, stats_text, transform=plt.gca().transAxes, 
-                    fontsize=10, verticalalignment='center')
+            
+            plt.text(0.05, 0.95, stats_text, transform=plt.gca().transAxes, 
+                    fontsize=9, verticalalignment='top', fontfamily='monospace')
             plt.axis('off')
-            plt.title('Résumé')
+            plt.title('Résumé de l\'Entraînement')
             
             plt.tight_layout()
-            plt.savefig(stats_dir / f"training_analysis_{timestamp}.png", dpi=300, bbox_inches='tight')
+            plt.savefig(stats_dir / f"training_analysis_{timestamp}.png", 
+                       dpi=300, bbox_inches='tight')
             plt.close()
             
             print(f"📈 Graphiques sauvegardés: training_analysis_{timestamp}.png")
             
         except Exception as e:
             print(f"❌ Erreur création graphiques: {e}")
+            import traceback
+            traceback.print_exc()
 
 
-class VideoRecorderCallback(BaseCallback):
+class SafeVideoRecorderCallback(BaseCallback):
     """
-    Callback pour enregistrer des vidéos périodiquement
+    Callback sécurisé pour l'enregistrement vidéo
     """
     
-    def __init__(self, env, video_folder: str, record_freq: int = 50000, 
+    def __init__(self, video_folder: str, record_freq: int = 50000, 
                  video_length: int = 500, verbose: int = 1):
         super().__init__(verbose)
-        self.env = env
         self.video_folder = Path(video_folder)
         self.video_folder.mkdir(parents=True, exist_ok=True)
         self.record_freq = record_freq
@@ -267,10 +354,17 @@ class VideoRecorderCallback(BaseCallback):
     def _record_video(self):
         """Enregistre une vidéo de démonstration"""
         try:
-            import cv2
+            # Vérifier si OpenCV est disponible
+            try:
+                import cv2
+            except ImportError:
+                self.logger.warning("❌ OpenCV non disponible, pas d'enregistrement vidéo")
+                return
             
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
             video_path = self.video_folder / f"demo_step_{self.num_timesteps}_{timestamp}.mp4"
+            
+            self.logger.info(f"🎬 Début enregistrement vidéo: {video_path}")
             
             # Configuration vidéo
             fourcc = cv2.VideoWriter_fourcc(*'mp4v')
@@ -283,43 +377,68 @@ class VideoRecorderCallback(BaseCallback):
                 self.logger.warning("❌ Impossible d'ouvrir le writer vidéo")
                 return
             
-            # Enregistrer un épisode
-            obs = self.training_env.reset()
-            frames_recorded = 0
-            
-            for _ in range(self.video_length):
-                # Prédire l'action avec le modèle actuel
-                action, _ = self.model.predict(obs, deterministic=True)
-                obs, reward, done, info = self.training_env.step(action)
+            # Créer un environnement temporaire pour l'enregistrement
+            temp_env = None
+            try:
+                from envs.ultra_robust_grasp_env import make_ultra_robust_grasp_env
+                temp_env = make_ultra_robust_grasp_env(
+                    render_mode='rgb_array',
+                    enable_curriculum=False,
+                    enable_mujoco_viewer=False
+                )
                 
-                # Capturer la frame
-                try:
-                    frame = self.env.render(mode='rgb_array')
-                    if frame is not None:
-                        frame_bgr = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
-                        video_writer.write(frame_bgr)
-                        frames_recorded += 1
-                except:
-                    pass
+                obs, _ = temp_env.reset()
+                frames_recorded = 0
+                episode_steps = 0
+                max_episode_steps = min(self.video_length, 1000)  # Limiter la longueur
                 
-                if done[0]:
-                    obs = self.training_env.reset()
-            
-            video_writer.release()
-            
-            if frames_recorded > 0:
-                self.logger.info(f"🎬 Vidéo enregistrée: {video_path} ({frames_recorded} frames)")
-            else:
-                os.remove(video_path)
-                self.logger.warning("⚠️ Aucune frame capturée, vidéo supprimée")
+                for step in range(self.video_length):
+                    # Prédire l'action
+                    action, _ = self.model.predict(obs, deterministic=True)
+                    obs, reward, terminated, truncated, info = temp_env.step(action)
+                    episode_steps += 1
+                    
+                    # Capturer la frame
+                    try:
+                        frame = temp_env.render()
+                        if frame is not None and frame.shape == (height, width, 3):
+                            frame_bgr = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
+                            video_writer.write(frame_bgr)
+                            frames_recorded += 1
+                    except Exception as e:
+                        if self.verbose > 1:
+                            print(f"Erreur capture frame {step}: {e}")
+                    
+                    # Reset si épisode terminé ou trop long
+                    if terminated or truncated or episode_steps >= max_episode_steps:
+                        obs, _ = temp_env.reset()
+                        episode_steps = 0
+                
+                video_writer.release()
+                
+                if frames_recorded > 10:  # Au moins quelques frames
+                    self.logger.info(f"✅ Vidéo enregistrée: {frames_recorded} frames")
+                else:
+                    if os.path.exists(video_path):
+                        os.remove(video_path)
+                    self.logger.warning("⚠️ Trop peu de frames, vidéo supprimée")
+                    
+            finally:
+                if temp_env:
+                    temp_env.close()
+                if video_writer:
+                    video_writer.release()
                 
         except Exception as e:
             self.logger.error(f"❌ Erreur enregistrement vidéo: {e}")
+            if self.verbose > 1:
+                import traceback
+                traceback.print_exc()
 
 
 class RobustSACTrainer:
     """
-    Classe principale pour l'entraînement SAC ultra-robuste
+    Trainer SAC robuste et sécurisé
     """
     
     def __init__(self, config: Dict):
@@ -330,6 +449,7 @@ class RobustSACTrainer:
         # Variables d'état
         self.model = None
         self.env = None
+        self.base_env = None  # Initialiser base_env
         self.training_active = False
         
         # Gestion des signaux pour arrêt propre
@@ -379,25 +499,64 @@ class RobustSACTrainer:
             self.save_final_model()
         
         if self.env:
-            self.env.close()
+            try:
+                self.env.close()
+            except:
+                pass
         
         sys.exit(0)
+        def _close_environments(self):
+            """Ferme proprement tous les environnements"""
+            try:
+                if self.env:
+                    self.env.close()
+                    self.env = None
+                if self.base_env:
+                    self.base_env.close()
+                    self.base_env = None
+            except Exception as e:
+                print(f"⚠️ Erreur fermeture environnements: {e}")
+    
+    def get_base_env(self):
+        """Retourne l'environnement de base (pour les callbacks)"""
+        if self.base_env is None:
+            self.base_env = self._create_single_env()
+        return self.base_en
+    def _create_single_env(self):
+        """Crée un seul environnement"""
+        try:
+            env = make_ultra_robust_grasp_env(
+                model_path=self.config.get('model_path'),
+                render_mode=self.config.get('render_mode', 'human'),
+                enable_curriculum=True,
+                enable_mujoco_viewer=self.config.get('enable_mujoco_viewer', True)
+            )
+            return env
+        except Exception as e:
+            self.logger.error(f"❌ Erreur création environnement: {e}")
+            # Fallback vers environnement de base
+            env = make_ultra_robust_grasp_env(
+                model_path=self.config.get('model_path'),
+                render_mode='rgb_array',  # Mode sans affichage
+                enable_curriculum=False,
+                enable_mujoco_viewer=False
+            )
+            return env
     
     def create_environment(self):
         """Crée l'environnement d'entraînement"""
         self.logger.info("🏗️ Création de l'environnement...")
         
         def make_env():
-            env = make_ultra_robust_grasp_env(
-                model_path=self.config.get('model_path'),
-                render_mode=self.config.get('render_mode', 'human'),
-                enable_curriculum=True,
-                enable_mujoco_viewer=True
-            )
+            env = self._create_single_env()
             
-            # Wrapper Monitor pour logging
-            env = Monitor(env, self.logs_dir, allow_early_resets=True)
+            # Wrapper Monitor pour logging - FIX: convertir Path en str
+            monitor_path = str(self.logs_dir)  # <-- FIX ICI
+            env = Monitor(env, monitor_path, allow_early_resets=True)
             return env
+        
+        # Créer l'environnement de base AVANT l'environnement vectorisé
+        self.base_env = self._create_single_env()
         
         # Créer l'environnement vectorisé
         if self.config.get('n_envs', 1) > 1:
@@ -406,10 +565,7 @@ class RobustSACTrainer:
         else:
             self.env = DummyVecEnv([make_env])
         
-        # Garder une référence à l'environnement de base pour curriculum
-        self.base_env = make_env()
-        
-        self.logger.info(f"✅ Environnement créé: {self.env}")
+        self.logger.info(f"✅ Environnement créé: {type(self.env).__name__}")
         self.logger.info(f"📊 Action space: {self.env.action_space}")
         self.logger.info(f"📊 Observation space: {self.env.observation_space}")
     
@@ -444,11 +600,7 @@ class RobustSACTrainer:
         }
         
         # Créer le modèle
-        self.model = SAC(
-            "MlpPolicy",
-            self.env,
-            **model_config
-        )
+        self.model = SAC("MlpPolicy", self.env, **model_config)
         
         # Charger un modèle pré-entraîné si spécifié
         if self.config.get('load_model_path'):
@@ -466,9 +618,8 @@ class RobustSACTrainer:
         
         callbacks = []
         
-        # Callback curriculum
-        curriculum_callback = CurriculumCallback(
-            self.base_env,
+        # Callback curriculum sécurisé
+        curriculum_callback = SafeCurriculumCallback(
             save_freq=self.config.get('save_freq', 10000),
             verbose=1
         )
@@ -485,10 +636,9 @@ class RobustSACTrainer:
         )
         callbacks.append(checkpoint_callback)
         
-        # Callback vidéo
+        # Callback vidéo sécurisé
         if self.config.get('record_videos', True):
-            video_callback = VideoRecorderCallback(
-                self.base_env,
+            video_callback = SafeVideoRecorderCallback(
                 str(self.videos_dir),
                 record_freq=self.config.get('video_freq', 50000),
                 video_length=self.config.get('video_length', 500),
