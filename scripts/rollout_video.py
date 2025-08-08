@@ -6,69 +6,91 @@ from pathlib import Path
 import numpy as np
 import imageio
 import imageio_ffmpeg
-import mujoco
-from mujoco import mj_step, Renderer
-from mujoco.viewer import launch_passive
-from envs.humanoid_manip_env import HumanoidManipEnv
+
+from stable_baselines3 import SAC
+from stable_baselines3.common.vec_env import DummyVecEnv, VecNormalize
+
+from envs.ultra_robust_grasp_env import make_ultra_robust_grasp_env
 
 os.environ["IMAGEIO_FFMPEG_EXE"] = imageio_ffmpeg.get_ffmpeg_exe()
 
+
 def parse_args():
-    p = argparse.ArgumentParser(description="Rollout MuJoCo + vidéo")
-    p.add_argument("--steps", type=int, default=200)
+    p = argparse.ArgumentParser(description="Générer une vidéo d'un policy entraîné (SB3)")
+    p.add_argument("--model", type=Path, required=True, help="Chemin vers le modèle .zip SB3")
+    p.add_argument("--vecnorm", type=Path, default=None, help="Chemin vecnormalize.pkl si existant")
+    p.add_argument("--steps", type=int, default=1000)
     p.add_argument("--fps", type=int, default=30)
     p.add_argument("--seed", type=int, default=0)
-    p.add_argument("--out", type=Path, default=Path(__file__).parent.parent / "videos" / "rollout.mp4")
+    p.add_argument("--out", type=Path, default=Path("videos/rollout.mp4"))
     return p.parse_args()
+
+
+def build_eval_env(vecnorm_path: Path | None):
+    # Base env (non viewer, curriculum off pour stabilité)
+    base_fn = lambda: make_ultra_robust_grasp_env(
+        render_mode="rgb_array", enable_curriculum=False, enable_mujoco_viewer=False
+    )
+    venv = DummyVecEnv([base_fn])
+    if vecnorm_path and vecnorm_path.exists():
+        venv = VecNormalize.load(str(vecnorm_path), venv)
+        venv.training = False
+    return venv
+
 
 def main():
     args = parse_args()
-    out_path = args.out
-    out_path.parent.mkdir(parents=True, exist_ok=True)
-    print(f"▶ Rollout MuJoCo : steps={args.steps}, fps={args.fps}, seed={args.seed}")
-    print(f"  Vidéo de sortie : {out_path}\n")
+    args.out.parent.mkdir(parents=True, exist_ok=True)
 
-    # Charge l'env main réaliste
-    env = HumanoidManipEnv(render_mode=None, width=640, height=480)
-    obs, _ = env.reset(seed=args.seed)
-    viewer = launch_passive(env.model, env.data)
-    renderer = Renderer(env.model, width=env.width, height=env.height)
+    print(f"▶ Génération vidéo : steps={args.steps}, fps={args.fps}")
+    print(f"  Modèle : {args.model}")
+    if args.vecnorm and args.vecnorm.exists():
+        print(f"  VecNormalize: {args.vecnorm}")
+    print(f"  Vidéo sortie : {args.out}\n")
 
-    # Utilise la caméra main_cam
-    cam_id = mujoco.mj_name2id(env.model, mujoco.mjtObj.mjOBJ_CAMERA, "main_cam")
-    if cam_id < 0:
-        raise RuntimeError('Camera "main_cam" not found in the model!')
+    # Charger env + modèle
+    env = build_eval_env(args.vecnorm)
+    model = SAC.load(str(args.model))
 
+    # Préparer writer
     writer = imageio.get_writer(
-        str(out_path),
-        fps=args.fps,
-        codec="libx264",
-        quality=8
+        str(args.out), fps=args.fps, codec="libx264", quality=8
     )
 
-    renderer.update_scene(env.data, camera=cam_id)
-    frame = renderer.render()
-    writer.append_data(frame)
+    # Reset
+    obs = env.reset()
+    if isinstance(obs, tuple):
+        obs = obs[0]
 
+    # Rollout
     for step in range(1, args.steps + 1):
-        # Action sinusoïdale, chaque doigt avec un déphasage unique
-        phase = np.linspace(0, np.pi, env.action_space.shape[0])
-        action = np.sin(2 * np.pi * step / 40.0 + phase)
-        env.data.ctrl[:] = action
-        mj_step(env.model, env.data)
-        viewer.sync()
-        renderer.update_scene(env.data, camera=cam_id)
-        frame = renderer.render()
-        writer.append_data(frame)
-        print(f"\rStep {step}/{args.steps}", end="", flush=True)
-        if not viewer.is_running():
-            print("\n⚠ Fenêtre fermée manuellement, arrêt de la simulation.")
-            break
+        action, _ = model.predict(obs, deterministic=True)
+        obs, reward, dones, infos = env.step(action)
+
+        # Render depuis l'env interne
+        try:
+            # Extraire env interne Gym pour appeler render(mode='rgb_array')
+            inner = env.venv.envs[0]
+            while hasattr(inner, 'env'):
+                inner = inner.env
+            frame = inner.render(mode='rgb_array')
+        except Exception:
+            frame = None
+        if frame is not None:
+            writer.append_data(frame)
+
+        if bool(np.any(dones)):
+            obs = env.reset()
+            if isinstance(obs, tuple):
+                obs = obs[0]
+
+        if step % 50 == 0:
+            print(f"\rStep {step}/{args.steps}", end="", flush=True)
 
     writer.close()
-    viewer.close()
     env.close()
-    print(f"\n✅ Vidéo générée avec succès : {out_path.resolve()}")
+    print(f"\n✅ Vidéo générée avec succès : {args.out.resolve()}")
+
 
 if __name__ == "__main__":
     main()
