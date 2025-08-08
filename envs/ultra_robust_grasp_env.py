@@ -1187,7 +1187,7 @@ class UltraRobustGraspEnv(gym.Env):
     def _calculate_phase_rewards(self, level_config) -> float:
         """Calcule les récompenses spécifiques à chaque phase"""
         reward = 0.0
-        multiplier = level_config.reward_multiplier
+        multiplier = level_config.get('reward_multiplier', 1.0)
         
         if self.current_phase == GraspPhase.STABILIZE:
             # Récompenser la stabilité des bras
@@ -1319,18 +1319,18 @@ class UltraRobustGraspEnv(gym.Env):
         # Bonus d'efficacité temporelle
         if self.current_phase.value > 0:
             phase_efficiency = max(0, 1.0 - self.phase_timer / 300.0)
-            bonus += phase_efficiency * 5.0 * level_config.reward_multiplier
+            bonus += phase_efficiency * 5.0 * level_config.get('reward_multiplier', 1.0)
         
         # Bonus de progression fluide
         if self.current_phase.value >= 2:
             smoothness_bonus = min(self.current_phase.value * 2.0, 10.0)
-            bonus += smoothness_bonus * level_config.reward_multiplier
+            bonus += smoothness_bonus * level_config.get('reward_multiplier', 1.0)
         
         # Bonus de maîtrise complète (toutes les phases réussies)
         if (self.current_phase == GraspPhase.HOLD and 
             self.successful_grasp and 
             self.cube_lifted):
-            bonus += 50.0 * level_config.reward_multiplier
+            bonus += 50.0 * level_config.get('reward_multiplier', 1.0)
         
         return bonus
     
