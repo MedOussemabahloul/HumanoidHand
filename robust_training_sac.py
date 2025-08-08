@@ -125,29 +125,30 @@ class SafeCurriculumCallback(BaseCallback):
         self.curriculum_history = []
         self.best_mean_reward = -np.inf
         self.episodes_count = 0
-        
+    
     def _on_step(self) -> bool:
-        # Récupérer les infos de l'environnement
-        if len(self.locals.get('infos', [])) > 0:
-            info = self.locals['infos'][0]
-            
-            # Si l'épisode est terminé
-            if self.locals.get('dones', [False])[0]:
+        # Récupérer les infos de l'environnement (support multi-envs)
+        infos = self.locals.get('infos', [])
+        if not infos:
+            return True
+        
+        for info in infos:
+            # Monitor ajoute info['episode'] au dernier step d'un épisode
+            ep_info = info.get('episode') or info.get('terminal_observation') and {}
+            if isinstance(ep_info, dict) and 'r' in ep_info and 'l' in ep_info:
+                episode_reward = float(ep_info['r'])
+                episode_length = int(ep_info['l'])
                 self.episodes_count += 1
-                episode_reward = self.locals.get('rewards', [0])[0]
                 
                 # Essayer d'avancer le curriculum
                 curriculum_advanced = False
                 current_level = 1
-                
                 try:
-                    # Accéder au wrapper curriculum si disponible
                     if hasattr(self.training_env, 'advance_curriculum_level'):
                         curriculum_advanced = self.training_env.advance_curriculum_level(episode_reward)
                         curriculum_status = self.training_env.get_curriculum_status()
                         current_level = curriculum_status.get('current_level', 1)
-                        
-                        if curriculum_advanced:
+                        if curriculum_advanced and self.logger is not None:
                             self.logger.info(f"🎓 Curriculum avancé au niveau {current_level}")
                 except Exception as e:
                     if self.verbose > 1:
@@ -155,33 +156,30 @@ class SafeCurriculumCallback(BaseCallback):
                 
                 # Enregistrer les statistiques
                 self.episode_rewards.append(episode_reward)
-                self.episode_lengths.append(info.get('episode_step', info.get('l', 0)))
+                self.episode_lengths.append(episode_length)
                 
-                # Historique du curriculum
                 self.curriculum_history.append({
                     'episode': self.episodes_count,
                     'level': current_level,
-                    'phase': info.get('phase', 'Unknown'),
+                    'phase': info.get('current_phase', info.get('phase', 'Unknown')),
                     'reward': episode_reward,
                     'timestamp': time.time(),
                     'advanced': curriculum_advanced
                 })
                 
                 # Logging périodique
-                if self.episodes_count % 10 == 0:
+                if self.episodes_count % 10 == 0 and self.logger is not None:
                     recent_rewards = self.episode_rewards[-10:]
-                    mean_reward = np.mean(recent_rewards)
-                    
+                    mean_reward = float(np.mean(recent_rewards)) if recent_rewards else episode_reward
                     if mean_reward > self.best_mean_reward:
                         self.best_mean_reward = mean_reward
-                    
                     self.logger.info(
                         f"📊 Épisode {self.episodes_count}: "
                         f"Reward={episode_reward:.2f}, "
                         f"Mean(10)={mean_reward:.2f}, "
                         f"Best={self.best_mean_reward:.2f}, "
                         f"Level={current_level}, "
-                        f"Phase={info.get('phase', 'N/A')}"
+                        f"Phase={info.get('current_phase', info.get('phase', 'N/A'))}"
                     )
         
         return True
@@ -521,7 +519,7 @@ class RobustSACTrainer:
         """Retourne l'environnement de base (pour les callbacks)"""
         if self.base_env is None:
             self.base_env = self._create_single_env()
-        return self.base_en
+        return self.base_env
     def _create_single_env(self):
         """Crée un seul environnement"""
         try:
@@ -564,6 +562,19 @@ class RobustSACTrainer:
                                   vec_env_cls=SubprocVecEnv)
         else:
             self.env = DummyVecEnv([make_env])
+        
+        # Activer curriculum wrapper + normalisation
+        try:
+            self.env = CurriculumVecEnvWrapper(self.env)
+        except Exception as e:
+            self.logger.warning(f"⚠️ Impossible d'activer CurriculumVecEnvWrapper: {e}")
+        
+        try:
+            from stable_baselines3.common.vec_env import VecNormalize
+            self.env = VecNormalize(self.env, norm_obs=True, norm_reward=True, clip_obs=10.0, clip_reward=10.0)
+            self.logger.info("✅ VecNormalize activé (obs et rewards)")
+        except Exception as e:
+            self.logger.warning(f"⚠️ VecNormalize indisponible: {e}")
         
         self.logger.info(f"✅ Environnement créé: {type(self.env).__name__}")
         self.logger.info(f"📊 Action space: {self.env.action_space}")
@@ -752,6 +763,16 @@ class RobustSACTrainer:
             final_model_path = self.models_dir / f"sac_grasp_final_{timestamp}.zip"
             self.model.save(final_model_path)
             
+            # Sauvegarder les stats VecNormalize si actives
+            try:
+                from stable_baselines3.common.vec_env import VecNormalize
+                if isinstance(self.env, VecNormalize) or hasattr(self.env, 'normalize_observation'):
+                    vecnorm_path = self.models_dir / "vecnormalize.pkl"
+                    self.env.save(str(vecnorm_path))
+                    self.logger.info(f"💾 VecNormalize sauvegardé: {vecnorm_path}")
+            except Exception as e:
+                self.logger.warning(f"⚠️ Impossible de sauvegarder VecNormalize: {e}")
+            
             # Meilleur modèle (lien symbolique)
             best_model_path = self.models_dir / "sac_grasp_best.zip"
             if best_model_path.exists():
@@ -777,10 +798,19 @@ class RobustSACTrainer:
         
         try:
             # Créer un environnement d'évaluation
-            eval_env = make_ultra_robust_grasp_env(
-                enable_curriculum=False,  # Pas de curriculum pour l'évaluation
-                enable_mujoco_viewer=False
-            )
+            eval_env_raw = DummyVecEnv([lambda: self._create_single_env()])
+            eval_env = CurriculumVecEnvWrapper(eval_env_raw)
+            
+            # Recharger les stats de normalisation si présentes
+            try:
+                from stable_baselines3.common.vec_env import VecNormalize
+                vecnorm_path = self.models_dir / "vecnormalize.pkl"
+                if vecnorm_path.exists():
+                    eval_env = VecNormalize.load(str(vecnorm_path), eval_env)
+                    eval_env.training = False
+                    self.logger.info(f"✅ VecNormalize restauré pour l'évaluation")
+            except Exception as e:
+                self.logger.warning(f"⚠️ VecNormalize non utilisé pour l'évaluation: {e}")
             
             n_eval_episodes = 10
             episode_rewards = []
@@ -788,30 +818,37 @@ class RobustSACTrainer:
             success_count = 0
             
             for episode in range(n_eval_episodes):
-                obs, _ = eval_env.reset()
-                episode_reward = 0
+                obs = eval_env.reset()
+                if isinstance(obs, tuple):
+                    obs = obs[0]
+                episode_reward = 0.0
                 episode_length = 0
+                done = False
                 
-                while True:
+                while not done:
                     action, _ = self.model.predict(obs, deterministic=True)
-                    obs, reward, terminated, truncated, info = eval_env.step(action)
-                    
-                    episode_reward += reward
+                    obs, reward, dones, infos = eval_env.step(action)
+                    episode_reward += float(reward)
                     episode_length += 1
-                    
-                    if terminated or truncated:
-                        break
+                    done = bool(np.any(dones))
+                
+                # Extraire le dernier info disponible
+                last_info = None
+                if isinstance(infos, (list, tuple)) and len(infos) > 0:
+                    last_info = infos[0]
+                elif isinstance(infos, dict):
+                    last_info = infos
+                last_info = last_info or {}
                 
                 episode_rewards.append(episode_reward)
                 episode_lengths.append(episode_length)
                 
-                # Compter les succès
-                if info.get('cube_lifted', False) and info.get('successful_grasp', False):
+                if last_info.get('cube_lifted', False) and last_info.get('successful_grasp', False):
                     success_count += 1
                 
                 self.logger.info(
                     f"  Épisode {episode+1}: Reward={episode_reward:.2f}, "
-                    f"Length={episode_length}, Phase={info.get('phase', 'N/A')}"
+                    f"Length={episode_length}, Phase={last_info.get('current_phase', last_info.get('phase', 'N/A'))}"
                 )
             
             # Statistiques finales
@@ -869,7 +906,7 @@ def main():
         'net_arch': [512, 512, 256],  # Architecture plus large
         
         # Environnement
-        'model_path': "/home/oussema/Documents/project/results/g1_combined.xml",
+        'model_path': str(Path('results') / 'g1_combined.xml'),
         'render_mode': 'rgb_array',
         'n_envs': 1,  # Un seul environnement pour voir la simulation
         'enable_mujoco_viewer': False,
@@ -923,7 +960,7 @@ def test_environment_safety():
     try:
         # Test avec les paramètres sécurisés
         env = make_ultra_robust_grasp_env(
-            model_path="/home/oussema/Documents/project/results/g1_combined.xml",
+            model_path=str(Path('results') / 'g1_combined.xml'),
             render_mode='rgb_array',  # Mode sûr
             enable_curriculum=False,  # Désactiver pour le test
             enable_mujoco_viewer=False  # Pas de viewer

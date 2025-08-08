@@ -77,7 +77,7 @@ class UltraRobustGraspEnv(gym.Env):
         
         # Configuration principale
         self.render_mode = render_mode
-        self.model_path_str = model_path or "/home/oussema/Documents/project/results/g1_combined.xml"
+        self.model_path_str = model_path or str(os.path.abspath(os.path.join(os.getcwd(), "results", "g1_combined.xml")))
         self.enable_curriculum = enable_curriculum
         self.enable_mujoco_viewer = enable_mujoco_viewer
         
@@ -267,8 +267,9 @@ class UltraRobustGraspEnv(gym.Env):
                 xml_content = self._apply_ultra_robust_physics(xml_content)
                 
                 # Créer fichier temporaire optimisé
+                # Écrire le modèle optimisé dans le répertoire courant après chdir
                 self.temp_model_path = os.path.join(
-                    model_dir if model_dir else ".", 
+                    ".", 
                     f'ultra_robust_model_{int(time.time())}.xml'
                 )
                 
