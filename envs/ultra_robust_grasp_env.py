@@ -109,6 +109,12 @@ class UltraRobustGraspEnv(gym.Env):
         self.logger.info("🎯 UltraRobustGraspEnv initialisé avec succès!")
         self.logger.info(f"📚 Curriculum activé: {self.enable_curriculum}")
         self.logger.info(f"🖥️ Viewer MuJoCo: {self.enable_mujoco_viewer}")
+        # ✅ AJOUT CRITIQUE
+        self.initialize_stability_system()  # Nouvelle fonction
+        
+        # ✅ Réduire la fréquence des logs d'instabilité
+        if hasattr(self.logger, 'setLevel'):
+            self.logger.setLevel(logging.WARNING)  # Moins verbeux
     
     def _setup_logging(self):
         """Configuration du système de logging professionnel"""
@@ -696,126 +702,136 @@ class UltraRobustGraspEnv(gym.Env):
                    True, 
                    {'error': str(e)})
     
-    def _validate_and_limit_actions(self, action) -> np.ndarray:
-        """Valide et limite les actions pour éviter les problèmes"""
-        # Convertir en numpy array
-        action = np.asarray(action, dtype=np.float32)
+    def _validate_and_limit_actions(self, action):
+        """Validation et limitation plus intelligente des actions"""
+        # Conversion en array numpy si nécessaire
+        if not isinstance(action, np.ndarray):
+            action = np.array(action)
         
-        # Vérifier la taille
-        if len(action) != self.model.nu:
-            self.logger.warning(f"⚠️ Taille action incorrecte: {len(action)} vs {self.model.nu}")
-            # Ajuster la taille
-            if len(action) < self.model.nu:
-                action = np.pad(action, (0, self.model.nu - len(action)))
-            else:
-                action = action[:self.model.nu]
-        
-        # Limiter les valeurs
-        action = np.clip(action, -1.0, 1.0)
-        
-        # Vérifier les NaN/Inf
+        # Vérification NaN/Inf dans les actions
         if np.any(np.isnan(action)) or np.any(np.isinf(action)):
-            self.logger.warning("⚠️ Actions NaN/Inf détectées, reset à zéro")
-            action = np.zeros(self.model.nu, dtype=np.float32)
+            self.logger.warning("⚠️ Action NaN/Inf détectée, remplacement par zéros")
+            action = np.zeros_like(action)
         
-        return action
-    
-    def _apply_controlled_actions(self, action):
-        """Applique les actions avec contrôle de vitesse avancé"""
+        # Limitation adaptative selon le curriculum
         level_config = self.curriculum_levels[self.current_level]
         
-        # Scaling adaptatif selon la phase et le niveau
-        phase_scalings = {
-            GraspPhase.STABILIZE: 0.02,
-            GraspPhase.APPROACH: 0.08,
-            GraspPhase.CONTACT: 0.05,
-            GraspPhase.GRASP: 0.03,
-            GraspPhase.LIFT: 0.06,
-            GraspPhase.HOLD: 0.01
-        }
+        # Limites plus strictes pour les premiers niveaux
+        if self.current_level <= 2:
+            action_limit = 0.2  # Très conservateur
+        elif self.current_level <= 5:
+            action_limit = 0.4  # Modéré
+        else:
+            action_limit = 0.6  # Plus libre
         
-        base_scaling = phase_scalings.get(self.current_phase, 0.05)
+        # Limitation avec préservation de la direction
+        action_magnitude = np.linalg.norm(action)
+        if action_magnitude > action_limit:
+            action = action * (action_limit / action_magnitude)
         
-        # Ajustement selon le niveau de curriculum
-        level_multipliers = {1: 0.3, 2: 0.5, 3: 0.7, 4: 0.85, 5: 1.0, 6: 1.2}
-        curriculum_multiplier = level_multipliers.get(self.current_level, 1.0)
-        
-        final_scaling = base_scaling * curriculum_multiplier
-        
-        # Ajouter du bruit pour niveaux avancés
-        if level_config.add_noise:
-            noise = np.random.normal(0, 0.005, action.shape)
-            action = action + noise
-        
-        # Scaling différencié bras/doigts
-        num_arm_joints = len(self.arm_joint_ids)
-        num_finger_joints = len(self.finger_joint_ids)
-        
-        # Actions pour les bras
-        if num_arm_joints > 0:
-            arm_actions = action[:num_arm_joints] * final_scaling
+        # ✅ NOUVEAU: Filtrage temporel pour éviter les changements brusques
+        if hasattr(self, '_last_action'):
+            max_change = 0.1 if self.current_level <= 3 else 0.2
+            action_change = action - self._last_action
+            change_magnitude = np.linalg.norm(action_change)
             
-            # Application avec contrôle de vitesse
-            for i, joint_id in enumerate(self.arm_joint_ids):
-                if i < len(arm_actions):
-                    current_pos = self.data.qpos[joint_id]
-                    target_pos = current_pos + arm_actions[i]
-                    
-                    # Limiter le changement maximal
-                    max_change = 0.02 if self.current_level <= 2 else 0.04
-                    if abs(target_pos - current_pos) > max_change:
-                        target_pos = current_pos + np.sign(target_pos - current_pos) * max_change
-                    
-                    # Appliquer les limites du joint
-                    joint_range = self.model.jnt_range[joint_id]
-                    if joint_range[0] < joint_range[1]:  # Range valide
-                        target_pos = np.clip(target_pos, joint_range[0], joint_range[1])
-                    
-                    self.data.ctrl[i] = target_pos
+            if change_magnitude > max_change:
+                # Limiter le changement
+                allowed_change = action_change * (max_change / change_magnitude)
+                action = self._last_action + allowed_change
         
-        # Actions pour les doigts
-        if num_finger_joints > 0:
-            finger_start_idx = num_arm_joints
-            finger_actions = action[finger_start_idx:finger_start_idx + num_finger_joints]
-            
-            # Scaling spécial pour les doigts selon la phase
-            finger_scaling = final_scaling * 2.0
-            if self.current_phase == GraspPhase.GRASP:
-                finger_scaling *= 3.0  # Plus réactif en phase de grasp
-            
-            finger_actions = finger_actions * finger_scaling
-            
-            for i, joint_id in enumerate(self.finger_joint_ids):
-                if i < len(finger_actions):
-                    current_pos = self.data.qpos[joint_id]
-                    target_pos = current_pos + finger_actions[i]
-                    
-                    # Limites réalistes pour les doigts
-                    target_pos = np.clip(target_pos, 0.0, 1.4)
-                    
-                    ctrl_idx = num_arm_joints + i
-                    if ctrl_idx < self.model.nu:
-                        self.data.ctrl[ctrl_idx] = target_pos
-    
-    def _safe_physics_step(self):
-        """Simulation physique avec vérifications de sécurité"""
+        self._last_action = action.copy()
+        
+        return action    
+    def _apply_controlled_actions(self, action):
+        """Application d'actions avec contrôle de stabilité amélioré"""
         try:
-            # Sauvegarder l'état avant simulation
+            # Sauvegarde état actuel
             qpos_backup = self.data.qpos.copy()
             qvel_backup = self.data.qvel.copy()
             
-            # Simulation
-            mujoco.mj_step(self.model, self.data)
+            # ✅ NOUVEAU: Limitation plus douce des actions
+            max_action = 0.3 if self.current_level <= 3 else 0.5
+            action = np.clip(action, -max_action, max_action)
             
-            # Vérifications post-simulation
-            self._check_and_correct_physics_violations(qpos_backup, qvel_backup)
+            # Application graduelle pour les premiers niveaux
+            if self.current_level <= 2:
+                # Réduction progressive pour stabilité
+                action_scale = min(1.0, self.episode_step / 50.0)  # Montée progressive
+                action *= action_scale
+            
+            # Application avec interpolation
+            current_ctrl = self.data.ctrl.copy()
+            target_ctrl = action
+            
+            # Interpolation douce (évite les changements brusques)
+            alpha = 0.7 if self.current_level <= 3 else 0.9
+            new_ctrl = alpha * target_ctrl + (1 - alpha) * current_ctrl
+            
+            self.data.ctrl[:len(new_ctrl)] = new_ctrl
+            
+            # ✅ NOUVEAU: Vérification AVANT le step physique
+            # Prédire l'état suivant sans l'appliquer
+            temp_data = mujoco.MjData(self.model)
+            temp_data.qpos[:] = self.data.qpos[:]
+            temp_data.qvel[:] = self.data.qvel[:]
+            temp_data.ctrl[:] = self.data.ctrl[:]
+            
+            # Test simulation sur données temporaires
+            mujoco.mj_step(self.model, temp_data)
+            
+            # Vérifier si le test produit des valeurs dangereuses
+            max_test_vel = np.max(np.abs(temp_data.qvel))
+            if max_test_vel > 15.0:  # Limite de test
+                # Réduire l'action si trop dangereuse
+                self.data.ctrl *= 0.5
+                self.logger.debug(f"🛡️ Action réduite pour stabilité: {max_test_vel:.2f}")
             
         except Exception as e:
-            self.logger.error(f"❌ Erreur simulation physique: {e}")
-            # Restaurer état précédent
-            self.data.qpos[:] = qpos_backup
-            self.data.qvel[:] = qvel_backup
+            self.logger.error(f"❌ Erreur application actions: {e}")
+            # Actions d'urgence nulles
+            self.data.ctrl.fill(0.0)    
+def _safe_physics_step(self):
+    """Step physique ultra-sécurisé"""
+    max_attempts = 3
     
+    for attempt in range(max_attempts):
+        try:
+            # Sauvegarde avant step
+            qpos_backup = self.data.qpos.copy()
+            qvel_backup = self.data.qvel.copy()
+            
+            # Step physique
+            mujoco.mj_step(self.model, self.data)
+            
+            # Vérification post-step
+            if (np.any(np.isnan(self.data.qpos)) or np.any(np.isinf(self.data.qpos)) or
+                np.any(np.isnan(self.data.qvel)) or np.any(np.isinf(self.data.qvel))):
+                
+                self.logger.warning(f"⚠️ NaN détecté après step, tentative {attempt + 1}")
+                
+                # Restaurer état précédent
+                self.data.qpos[:] = qpos_backup
+                self.data.qvel[:] = qvel_backup
+                
+                # Réduire les actions pour stabilité
+                self.data.ctrl *= 0.5
+                
+                if attempt == max_attempts - 1:
+                    # Dernier recours: reset complet
+                    mujoco.mj_resetData(self.model, self.data)
+                    self.logger.error("🆘 Reset d'urgence effectué")
+                    break
+                
+                continue
+            else:
+                # Step réussi
+                break
+                
+        except Exception as e:
+            self.logger.error(f"❌ Erreur step physique: {e}")
+            if attempt == max_attempts - 1:
+                mujoco.mj_resetData(self.model, self.data)    
     def _check_and_correct_physics_violations(self, qpos_backup, qvel_backup):
         """Vérifie et corrige les violations physiques"""
         level_config = self.curriculum_levels[self.current_level]
@@ -1423,70 +1439,125 @@ class UltraRobustGraspEnv(gym.Env):
             self.logger.error(f"❌ Erreur calcul score performance: {e}")
             return 0.0
     
-    def _check_termination(self) -> bool:
-        """Conditions de terminaison de l'épisode"""
-        try:
-            level_config = self.curriculum_levels[self.current_level]
+    def _check_termination(self):
+        """Version corrigée - plus tolérante aux instabilités"""
+        level_config = self.curriculum_levels[self.current_level]
+        
+        # 1. ❌ ANCIEN: Trop strict sur les vitesses
+        # max_velocity = np.max(np.abs(self.data.qvel))
+        # if max_velocity > level_config.velocity_limit:
+        #     return True
+        
+        # ✅ NOUVEAU: Plus tolérant avec moyennage temporel
+        if len(self.velocity_history) >= 5:  # Au moins 5 mesures
+            recent_velocities = self.velocity_history[-5:]  # 5 dernières mesures
+            avg_velocity = np.mean(recent_velocities)
+            max_recent_velocity = np.max(recent_velocities)
             
-            # Succès complet: cube soulevé et maintenu
-            if (self.cube_lifted and 
-                self.successful_grasp and 
-                self.current_phase == GraspPhase.HOLD and
-                self.hold_duration >= 30):
-                
-                self.logger.info("🎉 Succès complet: cube soulevé et maintenu!")
+            # Terminer seulement si instabilité PERSISTANTE
+            velocity_limit = level_config.velocity_limit * 1.5  # 50% plus tolérant
+            
+            if avg_velocity > velocity_limit and max_recent_velocity > velocity_limit * 2:
+                self.logger.warning(f"⚠️ Instabilité persistante détectée - avg: {avg_velocity:.2f}, max: {max_recent_velocity:.2f}")
+                self.monitoring['instability_terminations'] += 1
                 return True
-            
-            # Échec critique: cube tombé loin
-            cube_pos = self._get_cube_position()
-            if (cube_pos[2] < -0.05 or  # Tombé sous la table
-                abs(cube_pos[0]) > 2.0 or  # Trop loin en X
-                abs(cube_pos[1]) > 2.0):   # Trop loin en Y
-                
-                self.logger.warning("⚠️ Cube perdu - terminaison")
-                return True
-            
-            # Échec d'instabilité persistante
-            if self.monitoring['max_velocity_violations'] > 50:
-                self.logger.warning("⚠️ Instabilité excessive - terminaison")
-                return True
-            
-            return False
-            
-        except Exception as e:
-            self.logger.error(f"❌ Erreur vérification terminaison: {e}")
+        
+        # 2. Vérification NaN/Inf (critique)
+        if (np.any(np.isnan(self.data.qpos)) or np.any(np.isinf(self.data.qpos)) or
+            np.any(np.isnan(self.data.qvel)) or np.any(np.isinf(self.data.qvel))):
+            self.logger.error("❌ NaN/Inf détecté - terminaison critique")
             return True
-    
+        
+        # 3. Vérification positions extrêmes (avec plus de marge)
+        for joint_id in self.arm_joint_ids:
+            if joint_id < len(self.data.qpos):
+                joint_pos = self.data.qpos[joint_id]
+                joint_limit = self.model.jnt_range[joint_id]
+                
+                # Marge de sécurité augmentée
+                margin = 0.2  # 20% de marge au lieu de 5%
+                lower_safe = joint_limit[0] + (joint_limit[1] - joint_limit[0]) * margin
+                upper_safe = joint_limit[1] - (joint_limit[1] - joint_limit[0]) * margin
+                
+                if joint_pos < lower_safe or joint_pos > upper_safe:
+                    self.logger.warning(f"⚠️ Joint {joint_id} proche des limites: {joint_pos:.3f}")
+                    # Ne pas terminer immédiatement, juste corriger
+                    self.data.qpos[joint_id] = np.clip(joint_pos, lower_safe, upper_safe)
+                    self.data.qvel[joint_id] *= 0.5  # Réduire la vitesse
+        
+        # 4. Vérification cube tombé (si applicable)
+        cube_pos = self._get_cube_position()
+        if cube_pos[2] < -0.1:  # Cube tombé sous le sol
+            self.logger.debug("📦 Cube tombé - episode terminé")
+            return True
+        
+        # 5. Success conditions (si atteintes)
+        if self.cube_lifted and self.hold_duration > 30:  # Succès maintenu
+            self.logger.info("🎉 Succès maintenu - episode terminé")
+            return True
+        
+        return False
+
     def _update_monitoring(self, action, reward, observation):
-        """Met à jour le système de monitoring"""
-        try:
-            # Enregistrer les métriques
-            max_velocity = np.max(np.abs(self.data.qvel))
-            self.monitoring['velocities'].append(float(max_velocity))
-            self.monitoring['rewards'].append(float(reward))
-            self.monitoring['phases'].append(self.current_phase.value)
-            self.monitoring['contacts'].append(int(self._detect_robust_contact()))
+        """Monitoring avec statistiques de stabilité"""
+        # Statistiques de vitesse
+        current_max_vel = np.max(np.abs(self.data.qvel))
+        self.monitoring['current_max_velocity'] = current_max_vel
+        
+        if not hasattr(self.monitoring, 'velocity_stats'):
+            self.monitoring['velocity_stats'] = []
+        
+        self.monitoring['velocity_stats'].append(current_max_vel)
+        
+        # Garder seulement les 100 dernières mesures
+        if len(self.monitoring['velocity_stats']) > 100:
+            self.monitoring['velocity_stats'].pop(0)
+        
+        # Statistiques d'actions
+        action_magnitude = np.linalg.norm(action)
+        self.monitoring['last_action_magnitude'] = action_magnitude
+        
+        # Log périodique moins verbeux
+        if self.episode_step % 200 == 0:  # Plus espacé
+            avg_vel = np.mean(self.monitoring['velocity_stats'][-20:]) if len(self.monitoring['velocity_stats']) >= 20 else current_max_vel
+            self.logger.debug(
+                f"📊 Step {self.episode_step}: "
+                f"MaxVel={current_max_vel:.2f}, "
+                f"AvgVel(20)={avg_vel:.2f}, "
+                f"Action={action_magnitude:.3f}, "
+                f"Reward={reward:.2f}, "
+                f"Phase={self.current_phase.name}"
+            )
+    #def _update_monitoring(self, action, reward, observation):
+     #   """Met à jour le système de monitoring"""
+      #  try:
+       #     # Enregistrer les métriques
+        #    max_velocity = np.max(np.abs(self.data.qvel))
+         #   self.monitoring['velocities'].append(float(max_velocity))
+          #  self.monitoring['rewards'].append(float(reward))
+           # self.monitoring['phases'].append(self.current_phase.value)
+            #self.monitoring['contacts'].append(int(self._detect_robust_contact()))
             
-            cube_pos = self._get_cube_position()
-            self.monitoring['cube_positions'].append(cube_pos.tolist())
+            #cube_pos = self._get_cube_position()
+            #self.monitoring['cube_positions'].append(cube_pos.tolist())
             
             # Limiter la taille des historiques
-            max_history = 1000
-            for key in ['velocities', 'rewards', 'phases', 'contacts', 'cube_positions']:
-                if len(self.monitoring[key]) > max_history:
-                    self.monitoring[key] = self.monitoring[key][-max_history:]
+            #max_history = 1000
+            #for key in ['velocities', 'rewards', 'phases', 'contacts', 'cube_positions']:
+              #  if len(self.monitoring[key]) > max_history:
+               #     self.monitoring[key] = self.monitoring[key][-max_history:]
             
             # Logging périodique
-            if self.episode_step % 100 == 0:
-                avg_reward = np.mean(self.monitoring['rewards'][-50:]) if self.monitoring['rewards'] else 0
-                self.logger.info(
-                    f"Step {self.episode_step}: Phase={self.current_phase.name}, "
-                    f"Level={self.current_level}, AvgReward={avg_reward:.2f}, "
-                    f"MaxVel={max_velocity:.2f}, Contacts={sum(self.monitoring['contacts'][-10:])}"
-                )
+            #if self.episode_step % 100 == 0:
+               # avg_reward = np.mean(self.monitoring['rewards'][-50:]) if self.monitoring['rewards'] else 0
+               # self.logger.info(
+                  #  f"Step {self.episode_step}: Phase={self.current_phase.name}, "
+                   # f"Level={self.current_level}, AvgReward={avg_reward:.2f}, "
+                   # f"MaxVel={max_velocity:.2f}, Contacts={sum(self.monitoring['contacts'][-10:])}"
+              #  )
                 
-        except Exception as e:
-            self.logger.error(f"❌ Erreur monitoring: {e}")
+       # except Exception as e:
+        #    self.logger.error(f"❌ Erreur monitoring: {e}")
     
     def render(self, mode='human'):
         """Rendu de l'environnement"""
@@ -1699,8 +1770,67 @@ def make_ultra_robust_grasp_env(**kwargs):
     except Exception as e:
         print(f"❌ Erreur création environnement: {e}")
         raise
-
-
+def get_relaxed_curriculum_levels():
+    """Configuration curriculum avec limites plus tolérantes"""
+    return {
+        1: {
+            'name': 'Stabilization',
+            'description': 'Apprendre à stabiliser le système',
+            'velocity_limit': 8.0,  # ✅ Augmenté de 5.0 à 8.0
+            'success_threshold': 0.3,
+            'timeout': 1000,  # ✅ Plus de temps
+            'cube_distance': 0.15,
+            'rewards': {'stability': 2.0, 'movement': 0.1}
+        },
+        2: {
+            'name': 'Basic Movement',
+            'description': 'Mouvements de base vers le cube',
+            'velocity_limit': 10.0,  # ✅ Augmenté de 6.0 à 10.0
+            'success_threshold': 0.4,
+            'timeout': 1200,
+            'cube_distance': 0.12,
+            'rewards': {'approach': 3.0, 'stability': 1.5}
+        },
+        3: {
+            'name': 'Approach Cube',
+            'description': 'Approche contrôlée du cube',
+            'velocity_limit': 12.0,  # ✅ Augmenté de 8.0 à 12.0
+            'success_threshold': 0.5,
+            'timeout': 1500,
+            'cube_distance': 0.10,
+            'rewards': {'contact': 5.0, 'precision': 2.0}
+        },
+        # ... autres niveaux avec limites plus tolérantes
+    }
+def initialize_stability_system(self):
+    """Initialise le système de stabilité amélioré"""
+    # Historiques plus courts pour réactivité
+    self.max_history_length = 20  # Réduit de 50 à 20
+    
+    # Seuils de stabilité adaptatifs
+    self.stability_thresholds = {
+        1: 0.5,   # Très tolérant pour niveau 1
+        2: 0.4,   # Tolérant pour niveau 2
+        3: 0.3,   # Modéré pour niveau 3
+        4: 0.25,  # Standard pour niveau 4+
+    }
+    
+    # Compteurs de monitoring
+    if not hasattr(self, 'monitoring'):
+        self.monitoring = {}
+    
+    self.monitoring.update({
+        'instability_terminations': 0,
+        'velocity_corrections': 0,
+        'nan_detections': 0,
+        'successful_recoveries': 0,
+    })
+    
+    # Action précédente pour filtrage temporel
+    self._last_action = np.zeros(self.model.nu)
+    
+    # Curriculum plus tolérant
+    self.curriculum_levels = get_relaxed_curriculum_levels()
 # Test rapide de l'environnement
 if __name__ == "__main__":
     import sys

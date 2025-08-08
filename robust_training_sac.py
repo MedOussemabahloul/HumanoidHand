@@ -529,7 +529,7 @@ class RobustSACTrainer:
                 model_path=self.config.get('model_path'),
                 render_mode=self.config.get('render_mode', 'human'),
                 enable_curriculum=True,
-                enable_mujoco_viewer=self.config.get('enable_mujoco_viewer', True)
+                enable_mujoco_viewer=self.config.get('enable_mujoco_viewer', False)
             )
             return env
         except Exception as e:
@@ -870,8 +870,9 @@ def main():
         
         # Environnement
         'model_path': "/home/oussema/Documents/project/results/g1_combined.xml",
-        'render_mode': 'human',
+        'render_mode': 'rgb_array',
         'n_envs': 1,  # Un seul environnement pour voir la simulation
+        'enable_mujoco_viewer': False,
         
         # Sauvegarde et monitoring
         'results_dir': 'robust_sac_results',
@@ -915,6 +916,53 @@ def main():
         traceback.print_exc()
         sys.exit(1)
 
-
+def test_environment_safety():
+    """Test rapide de l'environnement avant l'entraînement"""
+    print("🧪 Test de sécurité de l'environnement...")
+    
+    try:
+        # Test avec les paramètres sécurisés
+        env = make_ultra_robust_grasp_env(
+            model_path="/home/oussema/Documents/project/results/g1_combined.xml",
+            render_mode='rgb_array',  # Mode sûr
+            enable_curriculum=False,  # Désactiver pour le test
+            enable_mujoco_viewer=False  # Pas de viewer
+        )
+        
+        print("✅ Environnement créé sans erreur")
+        
+        # Test de reset
+        obs, info = env.reset()
+        print(f"✅ Reset réussi - Obs shape: {obs.shape}")
+        
+        # Test de quelques steps
+        for i in range(10):
+            action = env.action_space.sample()
+            obs, reward, terminated, truncated, info = env.step(action)
+            if terminated or truncated:
+                obs, info = env.reset()
+        
+        print("✅ Steps de test réussis")
+        
+        # Test de render
+        frame = env.render()
+        if frame is not None:
+            print(f"✅ Render réussi - Frame shape: {frame.shape}")
+        
+        env.close()
+        print("✅ Fermeture propre")
+        print("🎉 Test de sécurité RÉUSSI - L'entraînement devrait fonctionner")
+        
+        return True
+        
+    except Exception as e:
+        print(f"❌ ERREUR pendant le test: {e}")
+        import traceback
+        traceback.print_exc()
+        return False
 if __name__ == "__main__":
+    if not test_environment_safety():
+        print("❌ Le test de sécurité a échoué. Arrêt.")
+        sys.exit(1)
+
     main()
