@@ -564,7 +564,8 @@ class RobustSACTrainer:
         finally:
             if self.env:
                 self.env.close()
-
+            if self.base_env:
+                self.base_env.close()
     
     def _log_training_config(self):
         """Log la configuration d'entraînement"""
