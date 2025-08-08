@@ -111,6 +111,8 @@ class UltraRobustGraspEnv(gym.Env):
         self.logger.info(f"🖥️ Viewer MuJoCo: {self.enable_mujoco_viewer}")
         # ✅ AJOUT CRITIQUE
         self.initialize_stability_system()  # Nouvelle fonction
+        self.curriculum_levels = self.get_relaxed_curriculum_levels()
+
         
         # ✅ Réduire la fréquence des logs d'instabilité
         if hasattr(self.logger, 'setLevel'):
@@ -582,27 +584,46 @@ class UltraRobustGraspEnv(gym.Env):
             return self._get_observation(), self._get_info()
     
     def _configure_cube_position(self):
-        """Configure la position du cube selon le curriculum"""
-        level_config = self.curriculum_levels[self.current_level]
-        
-        if level_config.cube_variations:
-            # Position variable pour niveaux avancés
-            offset = np.random.uniform(-0.08, 0.08, 3)
-            offset[2] = abs(offset[2]) * 0.5  # Garder Z positif et petit
-        else:
-            # Position fixe ou légèrement variable
-            offset = np.random.uniform(-0.02, 0.02, 3)
-            offset[2] = abs(offset[2]) * 0.3
-        
-        self.cube_initial_pos = np.array([0.3, 0.0, 0.05]) + offset
-        
-        if self.cube_body_id >= 0:
-            # Définir position et orientation du cube
-            cube_qpos_start = self.model.nq - 7  # Les 7 derniers qpos pour le cube (pos + quat)
-            self.data.qpos[cube_qpos_start:cube_qpos_start + 3] = self.cube_initial_pos
-            # Orientation identité (pas de rotation)
-            self.data.qpos[cube_qpos_start + 3:cube_qpos_start + 7] = [1, 0, 0, 0]
-    
+        """Configure la position du cube selon le curriculum avec accès sécurisé"""
+        try:
+            level_config = self.curriculum_levels.get(self.current_level, {})
+            
+            cube_variations = level_config.get('cube_variations', [])  # ✅ .get() au lieu de .cube_variations
+            
+            if cube_variations:
+                # Position variable pour niveaux avancés
+                offset = np.random.uniform(-0.08, 0.08, 3)
+                offset[2] = abs(offset[2]) * 0.5  # Garder Z positif et petit
+            else:
+                # Position fixe ou légèrement variable
+                offset = np.random.uniform(-0.02, 0.02, 3)
+                offset[2] = abs(offset[2]) * 0.3
+            
+            self.cube_initial_pos = np.array([0.3, 0.0, 0.05]) + offset
+            
+            if hasattr(self, 'cube_body_id') and self.cube_body_id >= 0:
+                # Définir position et orientation du cube
+                cube_qpos_start = self.model.nq - 7  # Les 7 derniers qpos pour le cube (pos + quat)
+                self.data.qpos[cube_qpos_start:cube_qpos_start + 3] = self.cube_initial_pos
+                # Orientation identité (pas de rotation)
+                self.data.qpos[cube_qpos_start + 3:cube_qpos_start + 7] = [1, 0, 0, 0]
+            
+            # Fallback avec cube_qpos_ids si disponible
+            elif hasattr(self, 'cube_qpos_ids') and len(self.cube_qpos_ids) >= 7:
+                self.data.qpos[self.cube_qpos_ids[0:3]] = self.cube_initial_pos
+                self.data.qpos[self.cube_qpos_ids[3:7]] = [1, 0, 0, 0]
+                
+        except Exception as e:
+            self.logger.error(f"❌ Erreur config cube: {e}")
+            # Position par défaut en cas d'erreur
+            try:
+                self.cube_initial_pos = np.array([0.3, 0.0, 0.05])
+                if hasattr(self, 'cube_body_id') and self.cube_body_id >= 0:
+                    cube_qpos_start = self.model.nq - 7
+                    self.data.qpos[cube_qpos_start:cube_qpos_start + 3] = self.cube_initial_pos
+                    self.data.qpos[cube_qpos_start + 3:cube_qpos_start + 7] = [1, 0, 0, 0]
+            except Exception as fallback_error:
+                self.logger.error(f"❌ Erreur fallback cube: {fallback_error}")   
     def _configure_initial_arm_positions(self):
         """Configure les positions initiales des bras"""
         level_config = self.curriculum_levels[self.current_level]
@@ -791,47 +812,47 @@ class UltraRobustGraspEnv(gym.Env):
             self.logger.error(f"❌ Erreur application actions: {e}")
             # Actions d'urgence nulles
             self.data.ctrl.fill(0.0)    
-def _safe_physics_step(self):
-    """Step physique ultra-sécurisé"""
-    max_attempts = 3
-    
-    for attempt in range(max_attempts):
-        try:
-            # Sauvegarde avant step
-            qpos_backup = self.data.qpos.copy()
-            qvel_backup = self.data.qvel.copy()
-            
-            # Step physique
-            mujoco.mj_step(self.model, self.data)
-            
-            # Vérification post-step
-            if (np.any(np.isnan(self.data.qpos)) or np.any(np.isinf(self.data.qpos)) or
-                np.any(np.isnan(self.data.qvel)) or np.any(np.isinf(self.data.qvel))):
+    def _safe_physics_step(self):
+        """Step physique ultra-sécurisé"""
+        max_attempts = 3
+        
+        for attempt in range(max_attempts):
+            try:
+                # Sauvegarde avant step
+                qpos_backup = self.data.qpos.copy()
+                qvel_backup = self.data.qvel.copy()
                 
-                self.logger.warning(f"⚠️ NaN détecté après step, tentative {attempt + 1}")
+                # Step physique
+                mujoco.mj_step(self.model, self.data)
                 
-                # Restaurer état précédent
-                self.data.qpos[:] = qpos_backup
-                self.data.qvel[:] = qvel_backup
-                
-                # Réduire les actions pour stabilité
-                self.data.ctrl *= 0.5
-                
-                if attempt == max_attempts - 1:
-                    # Dernier recours: reset complet
-                    mujoco.mj_resetData(self.model, self.data)
-                    self.logger.error("🆘 Reset d'urgence effectué")
+                # Vérification post-step
+                if (np.any(np.isnan(self.data.qpos)) or np.any(np.isinf(self.data.qpos)) or
+                    np.any(np.isnan(self.data.qvel)) or np.any(np.isinf(self.data.qvel))):
+                    
+                    self.logger.warning(f"⚠️ NaN détecté après step, tentative {attempt + 1}")
+                    
+                    # Restaurer état précédent
+                    self.data.qpos[:] = qpos_backup
+                    self.data.qvel[:] = qvel_backup
+                    
+                    # Réduire les actions pour stabilité
+                    self.data.ctrl *= 0.5
+                    
+                    if attempt == max_attempts - 1:
+                        # Dernier recours: reset complet
+                        mujoco.mj_resetData(self.model, self.data)
+                        self.logger.error("🆘 Reset d'urgence effectué")
+                        break
+                    
+                    continue
+                else:
+                    # Step réussi
                     break
-                
-                continue
-            else:
-                # Step réussi
-                break
-                
-        except Exception as e:
-            self.logger.error(f"❌ Erreur step physique: {e}")
-            if attempt == max_attempts - 1:
-                mujoco.mj_resetData(self.model, self.data)    
+                    
+            except Exception as e:
+                self.logger.error(f"❌ Erreur step physique: {e}")
+                if attempt == max_attempts - 1:
+                    mujoco.mj_resetData(self.model, self.data)    
     def _check_and_correct_physics_violations(self, qpos_backup, qvel_backup):
         """Vérifie et corrige les violations physiques"""
         level_config = self.curriculum_levels[self.current_level]
@@ -881,65 +902,76 @@ def _safe_physics_step(self):
                 self.stability_count = max(0, self.stability_count - 2)
     
     def _update_grasping_phase(self):
-        """Gestion intelligente des phases de grasping"""
-        level_config = self.curriculum_levels[self.current_level]
-        max_phases = level_config.max_phases
-        
-        # Ne pas dépasser le niveau autorisé
-        if self.current_phase.value >= max_phases:
-            return
-        
-        should_advance = self._check_phase_advancement()
-        
-        if should_advance and self.current_phase.value < min(5, max_phases - 1):
-            self.current_phase = GraspPhase(self.current_phase.value + 1)
-            self.phase_timer = 0
+        """Gestion intelligente des phases de grasping avec accès sécurisé"""
+        try:
+            level_config = self.curriculum_levels.get(self.current_level, {})
+            max_phases = level_config.get('max_phases', 6)  # ✅ .get() au lieu de .max_phases
             
-            self.phase_success_count[self.current_phase] += 1
+            # Ne pas dépasser le niveau autorisé
+            if self.current_phase.value >= max_phases:
+                return
             
-            if self.episode_step % 50 == 0:
-                self.logger.debug(f"📈 Transition vers: {self.current_phase.name}")
+            should_advance = self._check_phase_advancement()
+            
+            if should_advance and self.current_phase.value < min(5, max_phases - 1):
+                self.current_phase = GraspPhase(self.current_phase.value + 1)
+                self.phase_timer = 0
+                
+                # Vérification sécurisée de phase_success_count
+                if hasattr(self, 'phase_success_count'):
+                    self.phase_success_count[self.current_phase] += 1
+                
+                if self.episode_step % 50 == 0:
+                    self.logger.debug(f"📈 Transition vers: {self.current_phase.name}")
+                    
+        except Exception as e:
+            self.logger.error(f"❌ Erreur phase update: {e}")
     
     def _check_phase_advancement(self) -> bool:
         """Vérifie si on peut avancer à la phase suivante"""
-        phase_duration = self.phase_durations.get(self.current_phase.name, 100)
-        
-        if self.current_phase == GraspPhase.STABILIZE:
-            # Critères de stabilité adaptatifs
-            stability_threshold = 20 if self.current_level <= 2 else 30
-            return (self.stability_count > stability_threshold or 
-                   self.phase_timer >= phase_duration)
-        
-        elif self.current_phase == GraspPhase.APPROACH:
-            # Critères d'approche
-            cube_pos = self._get_cube_position()
-            hand_center = self._get_hand_center()
-            distance = np.linalg.norm(cube_pos - hand_center)
+        try:
+            phase_duration = self.phase_durations.get(self.current_phase.name, 100) if hasattr(self, 'phase_durations') else 100
             
-            distance_threshold = 0.25 if self.current_level <= 2 else 0.15
-            return (distance < distance_threshold or 
-                   self.phase_timer >= phase_duration)
-        
-        elif self.current_phase == GraspPhase.CONTACT:
-            # Critères de contact
-            contact_detected = self._detect_robust_contact()
-            return (contact_detected or self.phase_timer >= phase_duration)
-        
-        elif self.current_phase == GraspPhase.GRASP:
-            # Critères de préhension
-            grasp_stable = self._check_grasp_stability()
-            return (grasp_stable or self.phase_timer >= phase_duration)
-        
-        elif self.current_phase == GraspPhase.LIFT:
-            # Critères de soulèvement
-            cube_lifted = self._is_cube_lifted()
-            return (cube_lifted or self.phase_timer >= phase_duration)
-        
-        elif self.current_phase == GraspPhase.HOLD:
-            # Phase de maintien
-            return self.phase_timer >= phase_duration
-        
-        return False
+            if self.current_phase == GraspPhase.STABILIZE:
+                # Critères de stabilité adaptatifs
+                stability_threshold = 20 if self.current_level <= 2 else 30
+                return (self.stability_count > stability_threshold or 
+                    self.phase_timer >= phase_duration)
+            
+            elif self.current_phase == GraspPhase.APPROACH:
+                # Critères d'approche
+                cube_pos = self._get_cube_position()
+                hand_center = self._get_hand_center()
+                distance = np.linalg.norm(cube_pos - hand_center)
+                
+                distance_threshold = 0.25 if self.current_level <= 2 else 0.15
+                return (distance < distance_threshold or 
+                    self.phase_timer >= phase_duration)
+            
+            elif self.current_phase == GraspPhase.CONTACT:
+                # Critères de contact
+                contact_detected = self._detect_robust_contact()
+                return (contact_detected or self.phase_timer >= phase_duration)
+            
+            elif self.current_phase == GraspPhase.GRASP:
+                # Critères de préhension
+                grasp_stable = self._check_grasp_stability()
+                return (grasp_stable or self.phase_timer >= phase_duration)
+            
+            elif self.current_phase == GraspPhase.LIFT:
+                # Critères de soulèvement
+                cube_lifted = self._is_cube_lifted()
+                return (cube_lifted or self.phase_timer >= phase_duration)
+            
+            elif self.current_phase == GraspPhase.HOLD:
+                # Phase de maintien
+                return self.phase_timer >= phase_duration
+            
+            return False
+            
+        except Exception as e:
+            self.logger.error(f"❌ Erreur check advancement: {e}")
+            return False
     
     def _get_cube_position(self) -> np.ndarray:
         """Obtient la position du cube de manière robuste"""
@@ -1369,16 +1401,17 @@ def _safe_physics_step(self):
             return np.zeros(self.observation_space.shape[0], dtype=np.float32)
     
     def _get_info(self) -> Dict:
-        """Informations détaillées de l'environnement"""
+        """Informations détaillées de l'environnement avec accès sécurisé au curriculum"""
         try:
+            level_config = self.curriculum_levels.get(self.current_level, {})
             cube_pos = self._get_cube_position()
             hand_center = self._get_hand_center()
             
             return {
                 'episode_step': self.episode_step,
-                'current_phase': self.current_phase.name,
+                'current_phase': self.current_phase.name if hasattr(self.current_phase, 'name') else str(self.current_phase),
                 'curriculum_level': self.current_level,
-                'curriculum_name': self.curriculum_levels[self.current_level].name,
+                'curriculum_name': level_config.get('name', 'Unknown'),  # ✅ .get() au lieu de .name
                 'phase_timer': self.phase_timer,
                 'stability_count': self.stability_count,
                 'successful_grasp': self.successful_grasp,
@@ -1391,15 +1424,23 @@ def _safe_physics_step(self):
                 'contact_count': self.contact_count,
                 'hold_duration': self.hold_duration,
                 'best_lift_height': float(self.best_lift_height),
-                'consecutive_successes': self.consecutive_successes,
+                'consecutive_successes': getattr(self, 'consecutive_successes', 0),
                 'max_velocity': float(np.max(np.abs(self.data.qvel))),
                 'avg_arm_velocity': float(np.mean([abs(self.data.qvel[i]) for i in self.arm_joint_ids 
-                                                 if i < len(self.data.qvel)])) if self.arm_joint_ids else 0.0,
-                'performance_score': float(self._calculate_performance_score())
+                                                if i < len(self.data.qvel)])) if self.arm_joint_ids else 0.0,
+                'performance_score': float(self._calculate_performance_score()),
+                'total_contact_time': getattr(self, 'total_contact_time', 0),
+                'monitoring': self.monitoring.copy() if hasattr(self, 'monitoring') else {}
             }
         except Exception as e:
             self.logger.error(f"❌ Erreur dans _get_info: {e}")
-            return {'error': str(e)}
+            return {
+                'episode_step': getattr(self, 'episode_step', 0),
+                'current_phase': 'ERROR',
+                'curriculum_level': getattr(self, 'current_level', 1),
+                'curriculum_name': 'Error',
+                'error': str(e)
+            }
     
     def _calculate_performance_score(self) -> float:
         """Calcule un score de performance global"""
@@ -1753,14 +1794,151 @@ def _safe_physics_step(self):
             return False
 
 
-# Fonction utilitaire pour créer l'environnement
+    def get_relaxed_curriculum_levels(self):
+        """Configuration curriculum avec limites plus tolérantes"""
+        return {
+            1: {
+                'name': 'Stabilization',
+                'description': 'Apprendre à stabiliser le système',
+                'velocity_limit': 8.0,  # ✅ Augmenté de 5.0 à 8.0
+                'success_threshold': 0.3,
+                'timeout': 1000,  # ✅ Plus de temps
+                'cube_distance': 0.15,
+                'rewards': {'stability': 2.0, 'movement': 0.1},
+                'max_phases': 6,
+                'cube_variations': ['standard'],
+                'cube_x': 0.0,
+                'cube_y': 0.0,
+                'x_range': [-0.05, 0.05],
+                'y_range': [-0.05, 0.05]
+            },
+            2: {
+                'name': 'Basic Movement',
+                'description': 'Mouvements de base vers le cube',
+                'velocity_limit': 10.0,  # ✅ Augmenté de 6.0 à 10.0
+                'success_threshold': 0.4,
+                'timeout': 1200,
+                'cube_distance': 0.12,
+                'rewards': {'approach': 3.0, 'stability': 1.5},
+                'max_phases': 6,
+                'cube_variations': ['standard'],
+                'cube_x': 0.0,
+                'cube_y': 0.0,
+                'x_range': [-0.08, 0.08],
+                'y_range': [-0.08, 0.08]
+            },
+            3: {
+                'name': 'Approach Cube',
+                'description': 'Approche contrôlée du cube',
+                'velocity_limit': 12.0,  # ✅ Augmenté de 8.0 à 12.0
+                'success_threshold': 0.5,
+                'timeout': 1500,
+                'cube_distance': 0.10,
+                'rewards': {'contact': 5.0, 'precision': 2.0}
+            },
+            4: {
+                'name': 'Initial Contact',
+                'description': 'Premier contact avec le cube',
+                'velocity_limit': 15.0,  # ✅ Augmenté de 10.0 à 15.0
+                'success_threshold': 0.6,
+                'timeout': 1800,
+                'cube_distance': 0.08,
+                'rewards': {'contact': 8.0, 'gentle_touch': 3.0}
+            },
+            5: {
+                'name': 'Secure Grip',
+                'description': 'Prise sécurisée du cube',
+                'velocity_limit': 18.0,  # ✅ Augmenté de 12.0 à 18.0
+                'success_threshold': 0.7,
+                'timeout': 2000,
+                'cube_distance': 0.06,
+                'rewards': {'grip_strength': 10.0, 'stability': 4.0}
+            },
+            6: {
+                'name': 'Lift Object',
+                'description': 'Soulever le cube',
+                'velocity_limit': 20.0,  # ✅ Augmenté de 15.0 à 20.0
+                'success_threshold': 0.8,
+                'timeout': 2500,
+                'cube_distance': 0.05,
+                'rewards': {'lift_height': 15.0, 'control': 5.0}
+            },
+            7: {
+                'name': 'Stable Hold',
+                'description': 'Maintenir le cube en l\'air',
+                'velocity_limit': 25.0,  # ✅ Augmenté de 18.0 à 25.0
+                'success_threshold': 0.85,
+                'timeout': 3000,
+                'cube_distance': 0.04,
+                'rewards': {'hold_duration': 20.0, 'stability': 8.0}
+            },
+            8: {
+                'name': 'Controlled Movement',
+                'description': 'Déplacer le cube avec contrôle',
+                'velocity_limit': 30.0,  # ✅ Augmenté de 20.0 à 30.0
+                'success_threshold': 0.9,
+                'timeout': 3500,
+                'cube_distance': 0.03,
+                'rewards': {'precision_movement': 25.0, 'smoothness': 10.0}
+            },
+            9: {
+                'name': 'Advanced Manipulation',
+                'description': 'Manipulation avancée du cube',
+                'velocity_limit': 35.0,  # ✅ Augmenté de 25.0 à 35.0
+                'success_threshold': 0.95,
+                'timeout': 4000,
+                'cube_distance': 0.02,
+                'rewards': {'complex_manipulation': 30.0, 'efficiency': 12.0}
+            },
+            10: {
+                'name': 'Master Grasping',
+                'description': 'Maîtrise complète du grasping',
+                'velocity_limit': 40.0,  # ✅ Augmenté de 30.0 à 40.0
+                'success_threshold': 0.98,
+                'timeout': 5000,
+                'cube_distance': 0.01,
+                'rewards': {'mastery': 50.0, 'perfection': 20.0}
+            }
+        }
+
+    def initialize_stability_system(self):
+        """Initialise le système de stabilité avec paramètres tolérants"""
+        # ✅ Historique de stabilité plus long
+        self.stability_history = []
+        self.max_stability_history = 10  # Au lieu de 5
+        
+        # ✅ Seuils d'instabilité plus permissifs
+        self.instability_thresholds = {
+            'velocity': 50.0,      # ✅ Augmenté de 30.0
+            'acceleration': 100.0, # ✅ Augmenté de 60.0
+            'jerk': 200.0,        # ✅ Augmenté de 120.0
+            'consecutive_violations': 8  # ✅ Augmenté de 5
+        }
+        
+        # ✅ Compteurs de violations
+        self.violation_counters = {
+            'velocity': 0,
+            'acceleration': 0,
+            'jerk': 0,
+            'consecutive': 0
+        }
+        
+        # ✅ Actions d'urgence plus douces
+        self.emergency_actions = {
+            'velocity_reduction': 0.8,    # ✅ 80% au lieu de 50%
+            'damping_factor': 0.9,        # ✅ 90% au lieu de 70%
+            'recovery_steps': 5           # ✅ Plus de temps pour récupérer
+        }
+        
+        # ✅ Logging moins agressif
+        self.log_frequency = 50  # Log tous les 50 steps au lieu de chaque step# Fonction utilitaire pour créer l'environnement
 def make_ultra_robust_grasp_env(**kwargs):
     """
     Factory function pour créer l'environnement de grasping ultra-robuste
-    
+        
     Args:
         **kwargs: Arguments à passer au constructeur de l'environnement
-    
+        
     Returns:
         UltraRobustGraspEnv: Instance de l'environnement configuré
     """
@@ -1770,68 +1948,7 @@ def make_ultra_robust_grasp_env(**kwargs):
     except Exception as e:
         print(f"❌ Erreur création environnement: {e}")
         raise
-def get_relaxed_curriculum_levels():
-    """Configuration curriculum avec limites plus tolérantes"""
-    return {
-        1: {
-            'name': 'Stabilization',
-            'description': 'Apprendre à stabiliser le système',
-            'velocity_limit': 8.0,  # ✅ Augmenté de 5.0 à 8.0
-            'success_threshold': 0.3,
-            'timeout': 1000,  # ✅ Plus de temps
-            'cube_distance': 0.15,
-            'rewards': {'stability': 2.0, 'movement': 0.1}
-        },
-        2: {
-            'name': 'Basic Movement',
-            'description': 'Mouvements de base vers le cube',
-            'velocity_limit': 10.0,  # ✅ Augmenté de 6.0 à 10.0
-            'success_threshold': 0.4,
-            'timeout': 1200,
-            'cube_distance': 0.12,
-            'rewards': {'approach': 3.0, 'stability': 1.5}
-        },
-        3: {
-            'name': 'Approach Cube',
-            'description': 'Approche contrôlée du cube',
-            'velocity_limit': 12.0,  # ✅ Augmenté de 8.0 à 12.0
-            'success_threshold': 0.5,
-            'timeout': 1500,
-            'cube_distance': 0.10,
-            'rewards': {'contact': 5.0, 'precision': 2.0}
-        },
-        # ... autres niveaux avec limites plus tolérantes
-    }
-def initialize_stability_system(self):
-    """Initialise le système de stabilité amélioré"""
-    # Historiques plus courts pour réactivité
-    self.max_history_length = 20  # Réduit de 50 à 20
-    
-    # Seuils de stabilité adaptatifs
-    self.stability_thresholds = {
-        1: 0.5,   # Très tolérant pour niveau 1
-        2: 0.4,   # Tolérant pour niveau 2
-        3: 0.3,   # Modéré pour niveau 3
-        4: 0.25,  # Standard pour niveau 4+
-    }
-    
-    # Compteurs de monitoring
-    if not hasattr(self, 'monitoring'):
-        self.monitoring = {}
-    
-    self.monitoring.update({
-        'instability_terminations': 0,
-        'velocity_corrections': 0,
-        'nan_detections': 0,
-        'successful_recoveries': 0,
-    })
-    
-    # Action précédente pour filtrage temporel
-    self._last_action = np.zeros(self.model.nu)
-    
-    # Curriculum plus tolérant
-    self.curriculum_levels = get_relaxed_curriculum_levels()
-# Test rapide de l'environnement
+
 if __name__ == "__main__":
     import sys
     
@@ -1841,9 +1958,9 @@ if __name__ == "__main__":
     try:
         # Créer l'environnement
         env = make_ultra_robust_grasp_env(
-            render_mode="human",
+            render_mode="rgb_array",
             enable_curriculum=True,
-            enable_mujoco_viewer=True
+            enable_mujoco_viewer=False
         )
         
         print(f"✅ Environnement créé")
