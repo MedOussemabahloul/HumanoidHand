@@ -517,7 +517,9 @@ class UltraRobustGraspEnv(gym.Env):
             'curriculum_transitions': [],
             'max_velocity_violations': 0,
             'stability_violations': 0,
-            'contact_failures': 0
+            'contact_failures': 0,
+            'instability_terminations': 0  # ✅ AJOUT
+
         }
     
     def _start_mujoco_viewer_thread(self):
@@ -588,9 +590,11 @@ class UltraRobustGraspEnv(gym.Env):
         try:
             level_config = self.curriculum_levels.get(self.current_level, {})
             
-            cube_variations = level_config.get('cube_variations', [])  # ✅ .get() au lieu de .cube_variations
+            # ✅ CORRECTION: Utiliser .get() pour tous les attributs
+            cube_variations = level_config.get('cube_variations', False)
+            add_noise = level_config.get('add_noise', False)
             
-            if cube_variations:
+            if cube_variations or add_noise:
                 # Position variable pour niveaux avancés
                 offset = np.random.uniform(-0.08, 0.08, 3)
                 offset[2] = abs(offset[2]) * 0.5  # Garder Z positif et petit
@@ -623,10 +627,12 @@ class UltraRobustGraspEnv(gym.Env):
                     self.data.qpos[cube_qpos_start:cube_qpos_start + 3] = self.cube_initial_pos
                     self.data.qpos[cube_qpos_start + 3:cube_qpos_start + 7] = [1, 0, 0, 0]
             except Exception as fallback_error:
-                self.logger.error(f"❌ Erreur fallback cube: {fallback_error}")   
+                self.logger.error(f"❌ Erreur fallback cube: {fallback_error}")
+
+    # CORRECTION 2: Dans _configure_initial_arm_positions()
     def _configure_initial_arm_positions(self):
         """Configure les positions initiales des bras"""
-        level_config = self.curriculum_levels[self.current_level]
+        level_config = self.curriculum_levels.get(self.current_level, {})
         
         # Position de départ optimisée pour le grasping
         if len(self.arm_joint_ids) >= 14:  # 2 bras × 7 joints
@@ -636,8 +642,9 @@ class UltraRobustGraspEnv(gym.Env):
             
             arm_positions = left_arm_pos + right_arm_pos
             
-            # Ajouter du bruit pour niveaux avancés
-            if level_config.add_noise:
+            # ✅ CORRECTION: Utiliser .get() pour add_noise
+            add_noise = level_config.get('add_noise', False)
+            if add_noise:
                 noise = np.random.uniform(-0.1, 0.1, len(arm_positions))
                 arm_positions = [pos + n for pos, n in zip(arm_positions, noise)]
             
@@ -645,11 +652,10 @@ class UltraRobustGraspEnv(gym.Env):
             for i, joint_id in enumerate(self.arm_joint_ids):
                 if i < len(arm_positions):
                     self.data.qpos[joint_id] = arm_positions[i]
-        
+    
         # Configuration des doigts (ouverts au début)
         for joint_id in self.finger_joint_ids:
-            self.data.qpos[joint_id] = 0.1  # Légèrement ouverts
-    
+            self.data.qpos[joint_id] = 0.1  # Légèrement ouverts    
     def _reset_grasping_state(self):
         """Reset des variables d'état du grasping"""
         self.current_phase = GraspPhase.STABILIZE
@@ -1133,35 +1139,40 @@ class UltraRobustGraspEnv(gym.Env):
     
     def _calculate_advanced_reward(self) -> float:
         """Système de récompenses avancé et adaptatif"""
-        level_config = self.curriculum_levels[self.current_level]
+        level_config = self.curriculum_levels.get(self.current_level, {})
         reward = 0.0
         
+        # ✅ CORRECTION: Utiliser .get() avec valeurs par défaut
+        reward_multiplier = level_config.get('reward_multiplier', 1.0)
+        velocity_limit = level_config.get('velocity_limit', 5.0)
+        precision_required = level_config.get('precision_required', False)
+        
         # Récompense de survie (encourage à continuer)
-        reward += 0.5 * level_config.reward_multiplier
+        reward += 0.5 * reward_multiplier
         
         # Pénalités pour vitesses excessives
         max_velocity = np.max(np.abs(self.data.qvel))
-        if max_velocity > level_config.velocity_limit:
-            reward -= (max_velocity - level_config.velocity_limit) * 2.0
+        if max_velocity > velocity_limit:
+            reward -= (max_velocity - velocity_limit) * 2.0
         
         # Bonus de stabilité progressif
         if len(self.velocity_history) > 0:
             recent_stability = np.mean(self.velocity_history[-5:])
             if recent_stability < 0.1:
-                reward += 2.0 * level_config.reward_multiplier
+                reward += 2.0 * reward_multiplier
             elif recent_stability < 0.2:
-                reward += 1.0 * level_config.reward_multiplier
+                reward += 1.0 * reward_multiplier
         
         # Récompenses spécifiques selon la phase
         reward += self._calculate_phase_rewards(level_config)
         
         # Récompenses de progression de phase
-        reward += self.current_phase.value * 3.0 * level_config.reward_multiplier
+        reward += self.current_phase.value * 3.0 * reward_multiplier
         
         # Bonus de curriculum avancé
-        if level_config.precision_required:
+        if precision_required:
             precision_bonus = self._calculate_precision_bonus()
-            reward += precision_bonus * level_config.reward_multiplier
+            reward += precision_bonus * reward_multiplier
         
         # Pénalités pour échecs critiques
         reward += self._calculate_failure_penalties()
@@ -1172,8 +1183,7 @@ class UltraRobustGraspEnv(gym.Env):
         # Limiter la récompense dans un range raisonnable
         reward = np.clip(reward, -50.0, 200.0)
         
-        return float(reward)
-    
+        return float(reward)    
     def _calculate_phase_rewards(self, level_config) -> float:
         """Calcule les récompenses spécifiques à chaque phase"""
         reward = 0.0
@@ -1482,63 +1492,48 @@ class UltraRobustGraspEnv(gym.Env):
     
     def _check_termination(self):
         """Version corrigée - plus tolérante aux instabilités"""
-        level_config = self.curriculum_levels[self.current_level]
+        level_config = self.curriculum_levels.get(self.current_level, {})
         
-        # 1. ❌ ANCIEN: Trop strict sur les vitesses
-        # max_velocity = np.max(np.abs(self.data.qvel))
-        # if max_velocity > level_config.velocity_limit:
-        #     return True
+        # ✅ CORRECTION: Utiliser .get() pour velocity_limit
+        velocity_limit = level_config.get('velocity_limit', 10.0)
         
-        # ✅ NOUVEAU: Plus tolérant avec moyennage temporel
-        if len(self.velocity_history) >= 5:  # Au moins 5 mesures
-            recent_velocities = self.velocity_history[-5:]  # 5 dernières mesures
+        # Vérification avec moyennage temporel - plus tolérant
+        if len(self.velocity_history) >= 5:
+            recent_velocities = self.velocity_history[-5:]
             avg_velocity = np.mean(recent_velocities)
             max_recent_velocity = np.max(recent_velocities)
             
             # Terminer seulement si instabilité PERSISTANTE
-            velocity_limit = level_config.velocity_limit * 1.5  # 50% plus tolérant
+            tolerance_multiplier = 1.5  # 50% plus tolérant
             
-            if avg_velocity > velocity_limit and max_recent_velocity > velocity_limit * 2:
-                self.logger.warning(f"⚠️ Instabilité persistante détectée - avg: {avg_velocity:.2f}, max: {max_recent_velocity:.2f}")
-                self.monitoring['instability_terminations'] += 1
+            if (avg_velocity > velocity_limit * tolerance_multiplier and 
+                max_recent_velocity > velocity_limit * 2):
+                self.logger.warning(
+                    f"⚠️ Instabilité persistante détectée - "
+                    f"avg: {avg_velocity:.2f}, max: {max_recent_velocity:.2f}"
+                )
+                if hasattr(self.monitoring, 'instability_terminations'):
+                    self.monitoring['instability_terminations'] += 1
                 return True
         
-        # 2. Vérification NaN/Inf (critique)
+        # Vérification NaN/Inf (critique)
         if (np.any(np.isnan(self.data.qpos)) or np.any(np.isinf(self.data.qpos)) or
             np.any(np.isnan(self.data.qvel)) or np.any(np.isinf(self.data.qvel))):
             self.logger.error("❌ NaN/Inf détecté - terminaison critique")
             return True
         
-        # 3. Vérification positions extrêmes (avec plus de marge)
-        for joint_id in self.arm_joint_ids:
-            if joint_id < len(self.data.qpos):
-                joint_pos = self.data.qpos[joint_id]
-                joint_limit = self.model.jnt_range[joint_id]
-                
-                # Marge de sécurité augmentée
-                margin = 0.2  # 20% de marge au lieu de 5%
-                lower_safe = joint_limit[0] + (joint_limit[1] - joint_limit[0]) * margin
-                upper_safe = joint_limit[1] - (joint_limit[1] - joint_limit[0]) * margin
-                
-                if joint_pos < lower_safe or joint_pos > upper_safe:
-                    self.logger.warning(f"⚠️ Joint {joint_id} proche des limites: {joint_pos:.3f}")
-                    # Ne pas terminer immédiatement, juste corriger
-                    self.data.qpos[joint_id] = np.clip(joint_pos, lower_safe, upper_safe)
-                    self.data.qvel[joint_id] *= 0.5  # Réduire la vitesse
-        
-        # 4. Vérification cube tombé (si applicable)
+        # Vérification cube tombé
         cube_pos = self._get_cube_position()
-        if cube_pos[2] < -0.1:  # Cube tombé sous le sol
+        if cube_pos[2] < -0.1:
             self.logger.debug("📦 Cube tombé - episode terminé")
             return True
         
-        # 5. Success conditions (si atteintes)
-        if self.cube_lifted and self.hold_duration > 30:  # Succès maintenu
+        # Success conditions
+        if self.cube_lifted and self.hold_duration > 30:
             self.logger.info("🎉 Succès maintenu - episode terminé")
             return True
         
         return False
-
     def _update_monitoring(self, action, reward, observation):
         """Monitoring avec statistiques de stabilité"""
         # Statistiques de vitesse
@@ -1744,20 +1739,30 @@ class UltraRobustGraspEnv(gym.Env):
             self.performance_history.append(episode_reward)
             self.level_episodes += 1
             
-            level_config = self.curriculum_levels[self.current_level]
+            level_config = self.curriculum_levels.get(self.current_level, {})
+            
+            # ✅ CORRECTION: Utiliser .get() pour tous les attributs
+            success_threshold = level_config.get('success_threshold', 50.0)
+            episodes_required = level_config.get('episodes_required', 3)
+            level_name = level_config.get('name', f'Level_{self.current_level}')
             
             # Vérifier si succès
-            if episode_reward >= level_config.success_threshold:
+            if episode_reward >= success_threshold:
                 self.consecutive_successes += 1
-                self.logger.info(f"✅ Succès niveau {self.current_level}: {self.consecutive_successes}/{level_config.episodes_required}")
+                self.logger.info(
+                    f"✅ Succès niveau {self.current_level}: "
+                    f"{self.consecutive_successes}/{episodes_required}"
+                )
             else:
                 self.consecutive_successes = 0
             
             # Vérifier si on peut passer au niveau suivant
-            if (self.consecutive_successes >= level_config.episodes_required and
+            if (self.consecutive_successes >= episodes_required and
                 self.current_level < len(self.curriculum_levels)):
                 
                 old_level = self.current_level
+                old_name = level_name
+                
                 self.current_level += 1
                 self.consecutive_successes = 0
                 self.level_episodes = 0
@@ -1767,16 +1772,24 @@ class UltraRobustGraspEnv(gym.Env):
                 self._update_phase_config()
                 
                 # Log de la transition
-                new_config = self.curriculum_levels[self.current_level]
+                new_config = self.curriculum_levels.get(self.current_level, {})
+                new_name = new_config.get('name', f'Level_{self.current_level}')
+                new_description = new_config.get('description', 'Description non disponible')
+                new_max_phases = new_config.get('max_phases', 6)
+                new_threshold = new_config.get('success_threshold', 50.0)
+                
                 self.logger.info("🎓" + "="*60)
                 self.logger.info(f"🎓 PASSAGE AU NIVEAU {self.current_level}!")
-                self.logger.info(f"🎓 {old_level}: {level_config.name} → {self.current_level}: {new_config.name}")
-                self.logger.info(f"🎓 Description: {new_config.description}")
-                self.logger.info(f"🎓 Phases disponibles: {new_config.max_phases}")
-                self.logger.info(f"🎓 Objectif: {new_config.success_threshold:.1f} points")
+                self.logger.info(f"🎓 {old_level}: {old_name} → {self.current_level}: {new_name}")
+                self.logger.info(f"🎓 Description: {new_description}")
+                self.logger.info(f"🎓 Phases disponibles: {new_max_phases}")
+                self.logger.info(f"🎓 Objectif: {new_threshold:.1f} points")
                 self.logger.info("🎓" + "="*60)
                 
                 # Enregistrer la transition
+                if not hasattr(self.monitoring, 'curriculum_transitions'):
+                    self.monitoring['curriculum_transitions'] = []
+                    
                 self.monitoring['curriculum_transitions'].append({
                     'timestamp': time.time(),
                     'from_level': old_level,
@@ -1792,8 +1805,6 @@ class UltraRobustGraspEnv(gym.Env):
         except Exception as e:
             self.logger.error(f"❌ Erreur advancement curriculum: {e}")
             return False
-
-
     def get_relaxed_curriculum_levels(self):
         """Configuration curriculum avec limites plus tolérantes"""
         return {
@@ -1806,6 +1817,7 @@ class UltraRobustGraspEnv(gym.Env):
                 'cube_distance': 0.15,
                 'rewards': {'stability': 2.0, 'movement': 0.1},
                 'max_phases': 6,
+                'reward_multiplier': 1.0,
                 'cube_variations': ['standard'],
                 'cube_x': 0.0,
                 'cube_y': 0.0,
@@ -1819,6 +1831,7 @@ class UltraRobustGraspEnv(gym.Env):
                 'success_threshold': 0.4,
                 'timeout': 1200,
                 'cube_distance': 0.12,
+                'reward_multiplier': 1.0,
                 'rewards': {'approach': 3.0, 'stability': 1.5},
                 'max_phases': 6,
                 'cube_variations': ['standard'],
@@ -1834,12 +1847,14 @@ class UltraRobustGraspEnv(gym.Env):
                 'success_threshold': 0.5,
                 'timeout': 1500,
                 'cube_distance': 0.10,
-                'rewards': {'contact': 5.0, 'precision': 2.0}
+                'rewards': {'contact': 5.0, 'precision': 2.0},
+                'reward_multiplier': 1.0
             },
             4: {
                 'name': 'Initial Contact',
                 'description': 'Premier contact avec le cube',
                 'velocity_limit': 15.0,  # ✅ Augmenté de 10.0 à 15.0
+                'reward_multiplier': 1.0,
                 'success_threshold': 0.6,
                 'timeout': 1800,
                 'cube_distance': 0.08,
@@ -1849,6 +1864,7 @@ class UltraRobustGraspEnv(gym.Env):
                 'name': 'Secure Grip',
                 'description': 'Prise sécurisée du cube',
                 'velocity_limit': 18.0,  # ✅ Augmenté de 12.0 à 18.0
+                'reward_multiplier': 1.0,
                 'success_threshold': 0.7,
                 'timeout': 2000,
                 'cube_distance': 0.06,
@@ -1858,6 +1874,7 @@ class UltraRobustGraspEnv(gym.Env):
                 'name': 'Lift Object',
                 'description': 'Soulever le cube',
                 'velocity_limit': 20.0,  # ✅ Augmenté de 15.0 à 20.0
+                'reward_multiplier': 1.0,
                 'success_threshold': 0.8,
                 'timeout': 2500,
                 'cube_distance': 0.05,
@@ -1867,6 +1884,7 @@ class UltraRobustGraspEnv(gym.Env):
                 'name': 'Stable Hold',
                 'description': 'Maintenir le cube en l\'air',
                 'velocity_limit': 25.0,  # ✅ Augmenté de 18.0 à 25.0
+                'reward_multiplier': 1.0,
                 'success_threshold': 0.85,
                 'timeout': 3000,
                 'cube_distance': 0.04,
@@ -1876,6 +1894,7 @@ class UltraRobustGraspEnv(gym.Env):
                 'name': 'Controlled Movement',
                 'description': 'Déplacer le cube avec contrôle',
                 'velocity_limit': 30.0,  # ✅ Augmenté de 20.0 à 30.0
+                'reward_multiplier': 1.0,
                 'success_threshold': 0.9,
                 'timeout': 3500,
                 'cube_distance': 0.03,
@@ -1885,6 +1904,7 @@ class UltraRobustGraspEnv(gym.Env):
                 'name': 'Advanced Manipulation',
                 'description': 'Manipulation avancée du cube',
                 'velocity_limit': 35.0,  # ✅ Augmenté de 25.0 à 35.0
+                'reward_multiplier': 1.0,
                 'success_threshold': 0.95,
                 'timeout': 4000,
                 'cube_distance': 0.02,
@@ -1894,6 +1914,7 @@ class UltraRobustGraspEnv(gym.Env):
                 'name': 'Master Grasping',
                 'description': 'Maîtrise complète du grasping',
                 'velocity_limit': 40.0,  # ✅ Augmenté de 30.0 à 40.0
+                'reward_multiplier': 1.0,
                 'success_threshold': 0.98,
                 'timeout': 5000,
                 'cube_distance': 0.01,
