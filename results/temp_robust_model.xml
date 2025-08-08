@@ -17,15 +17,15 @@
     <geom name="floor" size="0 0 0.05" type="plane" material="groundplane" />
     <body name="table" pos="0.5 0 0.01">
       <inertial pos="0 0 0" mass="10.0" diaginertia="1.0 1.0 0.1" />
-      <geom name="table_top" type="box" size="0.4 0.3 0.02" material="table_mat" friction="5.0 1.0 0.5" contype="1" conaffinity="1" />
-      <geom name="table_leg1" type="box" size="0.02 0.02 0.2" material="table_mat" friction="5.0 1.0 0.5" pos="0.35 0.25 -0.2" contype="1" conaffinity="1" />
-      <geom name="table_leg2" type="box" size="0.02 0.02 0.2" material="table_mat" friction="5.0 1.0 0.5" pos="-0.35 0.25 -0.2" contype="1" conaffinity="1" />
-      <geom name="table_leg3" type="box" size="0.02 0.02 0.2" material="table_mat" friction="5.0 1.0 0.5" pos="0.35 -0.25 -0.2" contype="1" conaffinity="1" />
-      <geom name="table_leg4" type="box" size="0.02 0.02 0.2" material="table_mat" friction="5.0 1.0 0.5" pos="-0.35 -0.25 -0.2" contype="1" conaffinity="1" />
+      <geom name="table_top" type="box" size="0.4 0.3 0.02" material="table_mat" friction="2.0 0.3 0.1" contype="1" conaffinity="1" />
+      <geom name="table_leg1" type="box" size="0.02 0.02 0.2" material="table_mat" friction="2.0 0.3 0.1" pos="0.35 0.25 -0.2" contype="1" conaffinity="1" />
+      <geom name="table_leg2" type="box" size="0.02 0.02 0.2" material="table_mat" friction="2.0 0.3 0.1" pos="-0.35 0.25 -0.2" contype="1" conaffinity="1" />
+      <geom name="table_leg3" type="box" size="0.02 0.02 0.2" material="table_mat" friction="2.0 0.3 0.1" pos="0.35 -0.25 -0.2" contype="1" conaffinity="1" />
+      <geom name="table_leg4" type="box" size="0.02 0.02 0.2" material="table_mat" friction="2.0 0.3 0.1" pos="-0.35 -0.25 -0.2" contype="1" conaffinity="1" />
     </body>
     <body name="cube" pos="0.3 0 0.05">
       <freejoint name="cube_free" />
-      <geom name="cube_geom" type="box" size="0.025 0.025 0.025" material="cube_mat" friction="5.0 1.0 0.5" contype="2" conaffinity="2" />
+      <geom name="cube_geom" type="box" size="0.025 0.025 0.025" material="cube_mat" friction="2.5 0.4 0.2" contype="2" conaffinity="2" />
       <inertial pos="0 0 0" mass="0.05" diaginertia="0.001 0.001 0.001" />
     </body>
   </worldbody>
@@ -46,22 +46,22 @@
     <position name="act_right_wrist_roll_joint" joint="right_wrist_roll_joint" gear="1" kp="120" kv="25" />
     <position name="act_right_wrist_pitch_joint" joint="right_wrist_pitch_joint" gear="1" kp="120" kv="25" />
     <position name="act_right_wrist_yaw_joint" joint="right_wrist_yaw_joint" gear="1" kp="120" kv="25" />
-    <position name="act_left_index_joint_0" joint="left_index_joint_0" gear="1" kp="8" kv="1.5" forcerange="-2 2" />
-    <position name="act_left_index_joint_1" joint="left_index_joint_1" gear="1" kp="6" kv="1" forcerange="-1.5 1.5" />
-    <position name="act_left_middle_joint_0" joint="left_middle_joint_0" gear="1" kp="8" kv="1.5" forcerange="-2 2" />
-    <position name="act_left_middle_joint_1" joint="left_middle_joint_1" gear="1" kp="6" kv="1" forcerange="-1.5 1.5" />
-    <position name="act_left_ring_joint_0" joint="left_ring_joint_0" gear="1" kp="8" kv="1.5" forcerange="-2 2" />
-    <position name="act_left_ring_joint_1" joint="left_ring_joint_1" gear="1" kp="6" kv="1" forcerange="-1.5 1.5" />
-    <position name="act_left_thumb_joint_0" joint="left_thumb_joint_0" gear="1" kp="10" kv="2" forcerange="-2 2" />
-    <position name="act_left_thumb_joint_1" joint="left_thumb_joint_1" gear="1" kp="8" kv="1.5" forcerange="-2 2" />
-    <position name="act_right_index_joint_0" joint="right_index_joint_0" gear="1" kp="8" kv="1.5" forcerange="-2 2" />
-    <position name="act_right_index_joint_1" joint="right_index_joint_1" gear="1" kp="6" kv="1" forcerange="-1.5 1.5" />
-    <position name="act_right_middle_joint_0" joint="right_middle_joint_0" gear="1" kp="8" kv="1.5" forcerange="-2 2" />
-    <position name="act_right_middle_joint_1" joint="right_middle_joint_1" gear="1" kp="6" kv="1" forcerange="-1.5 1.5" />
-    <position name="act_right_ring_joint_0" joint="right_ring_joint_0" gear="1" kp="8" kv="1.5" forcerange="-2 2" />
-    <position name="act_right_ring_joint_1" joint="right_ring_joint_1" gear="1" kp="6" kv="1" forcerange="-1.5 1.5" />
-    <position name="act_right_thumb_joint_0" joint="right_thumb_joint_0" gear="1" kp="10" kv="2" forcerange="-2 2" />
-    <position name="act_right_thumb_joint_1" joint="right_thumb_joint_1" gear="1" kp="8" kv="1.5" forcerange="-2 2" />
+    <position name="act_left_index_joint_0" joint="left_index_joint_0" gear="1" kp="8" kv="1.5" forcerange="-5 5" />
+    <position name="act_left_index_joint_1" joint="left_index_joint_1" gear="1" kp="6" kv="1" forcerange="-3 3" />
+    <position name="act_left_middle_joint_0" joint="left_middle_joint_0" gear="1" kp="8" kv="1.5" forcerange="-5 5" />
+    <position name="act_left_middle_joint_1" joint="left_middle_joint_1" gear="1" kp="6" kv="1" forcerange="-3 3" />
+    <position name="act_left_ring_joint_0" joint="left_ring_joint_0" gear="1" kp="8" kv="1.5" forcerange="-5 5" />
+    <position name="act_left_ring_joint_1" joint="left_ring_joint_1" gear="1" kp="6" kv="1" forcerange="-3 3" />
+    <position name="act_left_thumb_joint_0" joint="left_thumb_joint_0" gear="1" kp="10" kv="2" forcerange="-6 6" />
+    <position name="act_left_thumb_joint_1" joint="left_thumb_joint_1" gear="1" kp="8" kv="1.5" forcerange="-4 4" />
+    <position name="act_right_index_joint_0" joint="right_index_joint_0" gear="1" kp="8" kv="1.5" forcerange="-5 5" />
+    <position name="act_right_index_joint_1" joint="right_index_joint_1" gear="1" kp="6" kv="1" forcerange="-3 3" />
+    <position name="act_right_middle_joint_0" joint="right_middle_joint_0" gear="1" kp="8" kv="1.5" forcerange="-5 5" />
+    <position name="act_right_middle_joint_1" joint="right_middle_joint_1" gear="1" kp="6" kv="1" forcerange="-3 3" />
+    <position name="act_right_ring_joint_0" joint="right_ring_joint_0" gear="1" kp="8" kv="1.5" forcerange="-5 5" />
+    <position name="act_right_ring_joint_1" joint="right_ring_joint_1" gear="1" kp="6" kv="1" forcerange="-3 3" />
+    <position name="act_right_thumb_joint_0" joint="right_thumb_joint_0" gear="1" kp="10" kv="2" forcerange="-6 6" />
+    <position name="act_right_thumb_joint_1" joint="right_thumb_joint_1" gear="1" kp="8" kv="1.5" forcerange="-4 4" />
   </actuator>
   <sensor>
     <jointpos name="pos_left_shoulder_pitch_joint" joint="left_shoulder_pitch_joint" />
@@ -124,5 +124,7 @@
     <jointvel name="vel_right_thumb_joint_0" joint="right_thumb_joint_0" />
     <jointpos name="pos_right_thumb_joint_1" joint="right_thumb_joint_1" />
     <jointvel name="vel_right_thumb_joint_1" joint="right_thumb_joint_1" />
+    <framepos name="cube_pos" objtype="body" objname="cube" />
+    <framequat name="cube_quat" objtype="body" objname="cube" />
   </sensor>
 </mujoco>
