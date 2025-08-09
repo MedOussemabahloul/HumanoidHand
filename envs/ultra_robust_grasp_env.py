@@ -77,7 +77,7 @@ class UltraRobustGraspEnv(gym.Env):
         
         # Configuration principale
         self.render_mode = render_mode
-        self.model_path_str = model_path or "/home/oussema/Documents/project/results/g1_combined.xml"
+        self.model_path_str = model_path or "/workspace/results/g1_combined.xml"
         self.enable_curriculum = enable_curriculum
         self.enable_mujoco_viewer = enable_mujoco_viewer
         
