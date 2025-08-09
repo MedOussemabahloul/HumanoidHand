@@ -2374,3 +2374,18 @@ ERROR: mj_copyDataVisual: attempting to copy mjData while stack is in use
 Fri Aug  8 11:57:16 2025
 ERROR: mj_copyDataVisual: attempting to copy mjData while stack is in use
 
+Sat Aug  9 21:49:22 2025
+WARNING: Nan, Inf or huge value in QPOS at DOF 5. The simulation is unstable. Time = 0.0950.
+
+Sat Aug  9 21:49:22 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 2. The simulation is unstable. Time = 0.0350.
+
+Sat Aug  9 21:49:22 2025
+WARNING: Nan, Inf or huge value in QPOS at DOF 4. The simulation is unstable. Time = 0.0550.
+
+Sat Aug  9 21:49:22 2025
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 0.0400.
+
+Sat Aug  9 21:49:22 2025
+WARNING: Nan, Inf or huge value in QVEL at DOF 0. The simulation is unstable. Time = 0.1450.
+
