@@ -18,13 +18,15 @@ except Exception:
     gcolab_files = None
 
 from envs.ultra_robust_grasp_env import make_ultra_robust_grasp_env
+from envs.simple_right_hand_env import make_simple_right_hand_env
 from utils.alternative_video_recorder import AlternativeVideoRecorder
 
 os.environ["IMAGEIO_FFMPEG_EXE"] = imageio_ffmpeg.get_ffmpeg_exe()
 
 
 def parse_args():
-    p = argparse.ArgumentParser(description="Evaluate and export video from UltraRobustGraspEnv")
+    p = argparse.ArgumentParser(description="Evaluate and export video from grasp envs")
+    p.add_argument("--env", type=str, choices=["ultra", "simple"], default="simple")
     p.add_argument("--timesteps", type=int, default=600)
     p.add_argument("--fps", type=int, default=30)
     p.add_argument("--seed", type=int, default=0)
@@ -38,12 +40,19 @@ def main():
     args = parse_args()
     args.out.parent.mkdir(parents=True, exist_ok=True)
 
-    env = make_ultra_robust_grasp_env(
-        model_path=args.model_path,
-        render_mode="rgb_array",
-        enable_curriculum=False,
-        enable_mujoco_viewer=not args.no_viewer,
-    )
+    # Create chosen env
+    if args.env == "ultra":
+        env = make_ultra_robust_grasp_env(
+            model_path=args.model_path,
+            render_mode="rgb_array",
+            enable_curriculum=False,
+            enable_mujoco_viewer=not args.no_viewer,
+        )
+    else:
+        env = make_simple_right_hand_env(
+            model_path=args.model_path,
+            render_mode="rgb_array",
+        )
 
     obs, _ = env.reset(seed=args.seed)
 
