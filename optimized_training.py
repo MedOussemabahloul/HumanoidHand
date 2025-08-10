@@ -292,6 +292,8 @@ class OptimizedTrainingCallback(BaseCallback):
             self.custom_logger.error(f"❌ Erreur sauvegarde: {e}")
 
 
+# Dans optimized_training.py, modifiez la section de création de l'environnement :
+
 def main():
     """
     🚀 TRAINING PRINCIPAL OPTIMISÉ
@@ -299,13 +301,13 @@ def main():
     
     # Configuration inspirée du collègue mais équilibrée
     config = {
-        'total_timesteps': 100_000,  # Comme le collègue mais plus long
-        'learning_rate': 3e-4,       # Comme le collègue
-        'batch_size': 256,           # Comme le collègue
-        'buffer_size': 1_000_000,    # Comme le collègue
-        'gamma': 0.98,               # Comme le collègue
-        'tau': 0.02,                 # Comme le collègue
-        'noise_std': 0.3,            # Comme le collègue
+        'total_timesteps': 100_000,
+        'learning_rate': 3e-4,
+        'batch_size': 256,
+        'buffer_size': 1_000_000,
+        'gamma': 0.98,
+        'tau': 0.02,
+        'noise_std': 0.3,
         'results_dir': "optimized_results"
     }
     
@@ -316,15 +318,45 @@ def main():
         print(f"   {key}: {value}")
     print("=" * 50)
     
-    # Créer environnement principal
+    # Créer environnement principal - VERSION SIMPLIFIÉE
     print("🏗️ Création de l'environnement...")
     try:
-        env = OptimizedGraspEnv(render_mode="rgb_array")
-        env = Monitor(env)  # Monitoring comme SB3
+        # Vérifier si le modèle existe
+        model_path = "/home/oussema/Documents/project/results/g1_combined.xml"
+        print(f"🔍 Vérification du modèle: {model_path}")
+        
+        if os.path.exists(model_path):
+            print(f"✅ Modèle trouvé: {model_path}")
+        else:
+            print(f"⚠️ Modèle non trouvé, utilisation du modèle par défaut")
+            model_path = None
+        
+        # Créer l'environnement
+        env = OptimizedGraspEnv(
+            model_path=model_path,
+            render_mode="rgb_array",
+            max_episode_steps=500,
+            curriculum_level=1,
+            enable_smooth_movements=True
+        )
         print("✅ Environnement créé avec succès")
+        
+        # Wrapping avec Monitor
+        env = Monitor(env)
+        print("✅ Monitor appliqué")
+        
     except Exception as e:
         print(f"❌ Erreur création environnement: {e}")
-        return
+        print("🔧 Tentative avec paramètres par défaut...")
+        
+        try:
+            # Tentative avec paramètres minimaux
+            env = OptimizedGraspEnv()
+            env = Monitor(env)
+            print("✅ Environnement créé avec paramètres par défaut")
+        except Exception as e2:
+            print(f"❌ Échec total: {e2}")
+            return
     
     # Configuration du bruit comme le collègue
     print("🔧 Configuration du bruit d'action...")
@@ -363,6 +395,7 @@ def main():
         results_dir=config['results_dir']
     )
     
+    # Le reste du code reste identique...
     # TRAINING PRINCIPAL
     print("🎯 DÉBUT DU TRAINING OPTIMISÉ")
     print("=" * 50)
@@ -414,7 +447,6 @@ def main():
         except:
             pass
         print("🧹 Nettoyage terminé")
-
 
 def final_evaluation(model, env, results_dir: str):
     """
