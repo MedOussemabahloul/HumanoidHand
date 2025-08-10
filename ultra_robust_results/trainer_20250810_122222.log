@@ -1,0 +1,22 @@
+2025-08-10 12:22:22,580 - UltraRobustTrainer - INFO - 🎯 UltraRobustTrainer initialisé
+2025-08-10 12:22:22,580 - UltraRobustTrainer - INFO - 🚀 DÉBUT DE L'ENTRAÎNEMENT ULTRA-ROBUSTE
+2025-08-10 12:22:22,580 - UltraRobustTrainer - INFO - ================================================================================
+2025-08-10 12:22:22,580 - UltraRobustTrainer - INFO - 🏗️ Création de l'environnement d'entraînement...
+2025-08-10 12:22:22,602 - UltraRobustGrasp - INFO - ✅ Modèle MuJoCo chargé: 19 DOFs, 12 actuateurs
+2025-08-10 12:22:22,602 - UltraRobustGrasp - INFO - ✅ Composants configurés: 12 actuateurs
+2025-08-10 12:22:22,603 - UltraRobustGrasp - INFO - ✅ Espaces configurés: Action (12,), Obs (46,)
+2025-08-10 12:22:22,603 - UltraRobustGrasp - INFO - 🤖 Environnement ultra-robuste initialisé avec succès
+2025-08-10 12:22:22,603 - UltraRobustTrainer - INFO - ✅ Environnement créé avec succès
+2025-08-10 12:22:22,603 - UltraRobustTrainer - INFO -    Action space: Box(-1.0, 1.0, (12,), float32)
+2025-08-10 12:22:22,603 - UltraRobustTrainer - INFO -    Observation space: Box(-inf, inf, (46,), float32)
+2025-08-10 12:22:22,604 - UltraRobustTrainer - INFO - 🧠 Création du modèle TD3...
+2025-08-10 12:22:23,422 - UltraRobustTrainer - INFO - ✅ Modèle TD3 créé avec succès
+2025-08-10 12:22:23,422 - UltraRobustTrainer - INFO -    Device: cpu
+2025-08-10 12:22:23,422 - UltraRobustTrainer - INFO -    Architecture: [400, 300]
+2025-08-10 12:22:23,422 - UltraRobustTrainer - INFO -    Buffer size: 1,000,000
+2025-08-10 12:22:23,422 - UltraRobustTrainer - INFO -    Learning rate: 0.0003
+2025-08-10 12:22:23,422 - UltraRobustTrainer - INFO - 🔄 Configuration des callbacks...
+2025-08-10 12:22:23,422 - UltraRobustTrainer - ERROR - ❌ Erreur configuration callbacks: can't set attribute 'logger'
+2025-08-10 12:22:23,422 - UltraRobustTrainer - ERROR - ❌ Erreur pendant l'entraînement: can't set attribute 'logger'
+2025-08-10 12:22:23,424 - UltraRobustGrasp - INFO - 🔒 Environnement fermé proprement
+2025-08-10 12:22:23,424 - UltraRobustTrainer - INFO - 🧹 Nettoyage terminé
