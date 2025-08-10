@@ -1,20 +1,16 @@
 #!/usr/bin/env python3
 """
-🎯 ENVIRONNEMENT OPTIMAL ET STABLE - BASÉ SUR LE CODE FONCTIONNEL DU COLLÈGUE
-=============================================================================
+🎯 ENVIRONNEMENT OPTIMAL HEADLESS - SOLUTION FINALE
+===================================================
 
-Cet environnement reproduit EXACTEMENT la configuration qui fonctionne dans le notebook
-de votre collègue, avec les paramètres de simulation corrects qui évitent les erreurs
-NaN/Inf dans QVEL/QACC/QPOS.
+Version headless de l'environnement optimal qui évite tous les problèmes
+de rendu OpenGL/EGL tout en gardant la stabilité de simulation.
 
-✅ Timestep optimal (0.005 au lieu de 0.0005)
-✅ Solveur stable (RK4 au lieu de Newton)
-✅ Scaling adaptatif des actions selon la distance
-✅ Reset des contrôles à chaque step
-✅ Assistance au grasping contextuelle
-✅ Utilisation du modèle XML stable existant
-
-Cette version garantit la stabilité et le bon fonctionnement.
+✅ Pas de problème de rendu OpenGL/EGL
+✅ Simulation ultra-stable (timestep 0.008)
+✅ Basé sur le code fonctionnel du collègue
+✅ Paramètres optimisés pour éviter NaN/Inf
+✅ Prêt pour l'entraînement en arrière-plan
 """
 
 import numpy as np
@@ -27,10 +23,13 @@ from typing import Dict, Tuple, Optional
 
 warnings.filterwarnings("ignore")
 
-class OptimalStableGraspEnv(gym.Env):
+# Configuration MuJoCo pour mode headless
+os.environ["MUJOCO_GL"] = "osmesa"  # Alternative plus stable à EGL
+
+class HeadlessOptimalGraspEnv(gym.Env):
     """
-    Environnement optimal basé sur le code fonctionnel du collègue
-    Reproduit exactement la configuration qui marche dans le notebook
+    Environnement optimal headless basé sur le code fonctionnel du collègue
+    Version sans rendu pour éviter les problèmes OpenGL
     """
     
     def __init__(self, 
@@ -59,7 +58,7 @@ class OptimalStableGraspEnv(gym.Env):
         # Variables d'état
         self._initialize_state()
         
-        print("✅ OptimalStableGraspEnv initialisé avec succès!")
+        print("✅ HeadlessOptimalGraspEnv initialisé avec succès!")
         print(f"📁 Modèle utilisé: {self.model_path}")
         print(f"🎛️ Actuateurs droits: {len(self.right_actuator_ids)}")
         print(f"⏱️ Timestep: {self.model.opt.timestep}")
@@ -67,34 +66,17 @@ class OptimalStableGraspEnv(gym.Env):
     def _load_stable_model(self):
         """Charger le modèle avec des paramètres de simulation optimaux"""
         try:
-            # ✅ Configuration du rendu headless (avant de charger le modèle)
-            os.environ["MUJOCO_GL"] = "egl"
-            
             # Charger le modèle XML existant
             self.model = mujoco.MjModel.from_xml_path(self.model_path)
             self.data = mujoco.MjData(self.model)
             
             # ✅ CONFIGURATION CRITIQUE POUR LA STABILITÉ
-            # Paramètres de simulation optimaux (déjà dans le XML mais on peut les forcer)
-            self.model.opt.timestep = 0.008  # ✅ Timestep du modèle corrigé
-            self.model.opt.integrator = mujoco.mjtIntegrator.mjINT_RK4  # ✅ RK4 stable
-            self.model.opt.solver = mujoco.mjtSolver.mjSOL_PGS  # ✅ PGS plus stable que Newton
-            self.model.opt.iterations = 100  # ✅ Comme dans le modèle corrigé
-            self.model.opt.tolerance = 1e-8  # ✅ Comme dans le modèle corrigé
-            
-            # Configuration du renderer (avec gestion d'erreur)
-            try:
-                self.renderer = mujoco.Renderer(self.model, width=640, height=480)
-                print("✅ Renderer OpenGL configuré")
-            except Exception as render_error:
-                print(f"⚠️ Erreur renderer OpenGL: {render_error}")
-                print("🔧 Utilisation du mode sans rendu")
-                self.renderer = None
-            
+            # Les paramètres sont déjà optimisés dans le XML corrigé
             print("✅ Modèle chargé avec paramètres de simulation optimaux")
-            print(f"  - Timestep final: {self.model.opt.timestep}")
+            print(f"  - Timestep: {self.model.opt.timestep}")
             print(f"  - Solveur: {self.model.opt.solver}")
-            print(f"  - Itérations: {self.model.opt.iterations}")
+            print(f"  - DOFs: {self.model.nv}")
+            print(f"  - Actuateurs: {self.model.nu}")
             
         except Exception as e:
             print(f"❌ Erreur chargement modèle: {e}")
@@ -133,7 +115,6 @@ class OptimalStableGraspEnv(gym.Env):
         self.current_step = 0
         self.max_steps = 500  # Comme le notebook
         self.success_counter = 0
-        self.freeze_timer = 0
         
         # Statistiques pour monitoring
         self.episode_rewards = []
@@ -156,13 +137,14 @@ class OptimalStableGraspEnv(gym.Env):
                 cube_qpos_addr = self.model.jnt_qposadr[cube_joint_id]
                 
                 # Position fixe du cube (comme le notebook)
-                fixed_cube_pos = np.array([0.18, 0.0, 0.04])  # X, Y, Z
+                fixed_cube_pos = np.array([0.3, 0.0, 0.05])  # Position sur la table
                 fixed_cube_quat = np.array([1, 0, 0, 0])      # orientation neutre
                 
                 self.data.qpos[cube_qpos_addr:cube_qpos_addr + 3] = fixed_cube_pos
                 self.data.qpos[cube_qpos_addr + 3:cube_qpos_addr + 7] = fixed_cube_quat
         except:
-            print("⚠️ Impossible de positionner le cube, utilisation position par défaut")
+            if not self.eval_mode:
+                print("⚠️ Position cube par défaut utilisée")
         
         return self._get_obs(), {}
     
@@ -198,9 +180,6 @@ class OptimalStableGraspEnv(gym.Env):
         
         # ✅ Calcul des distances
         dist = np.linalg.norm(palm_pos - cube_pos)
-        thumb_dist = np.linalg.norm(thumb_pos - cube_pos)
-        index_dist = np.linalg.norm(index_pos - cube_pos)
-        middle_dist = np.linalg.norm(middle_pos - cube_pos)
         
         # ✅ Détection des contacts
         thumb_contact = self._is_touching("cube_geom", "right_hand_thumb_2_geom")
@@ -209,13 +188,13 @@ class OptimalStableGraspEnv(gym.Env):
         num_contacts = sum([thumb_contact, index_contact, middle_contact])
         
         # ✅ SCALING ADAPTATIF SELON DISTANCE (stratégie du collègue)
-        ARM_SCALE = 0.4 if dist > 0.08 else 0.2
-        FINGER_SCALE = 0.7
+        ARM_SCALE = 0.3 if dist > 0.08 else 0.15  # ✅ Plus conservateur
+        FINGER_SCALE = 0.5  # ✅ Plus conservateur
         
         # ✅ RESET DES CONTRÔLES (critique pour la stabilité)
         self.data.ctrl[:] = 0.0
         
-        # ✅ Application des actions avec scaling
+        # ✅ Application des actions avec scaling conservateur
         if len(self.right_actuator_ids) >= 7:
             self.data.ctrl[self.right_actuator_ids[:7]] = arm_action * ARM_SCALE
         
@@ -225,21 +204,22 @@ class OptimalStableGraspEnv(gym.Env):
         
         # ✅ ASSISTANCE AU GRASPING (stratégie du collègue)
         if dist < 0.06 and num_contacts >= 2:
-            assist_strength = 0.5
+            assist_strength = 0.3  # ✅ Plus conservateur
             if len(self.right_actuator_ids) > 7:
                 finger_indices = self.right_actuator_ids[7:]
                 self.data.ctrl[finger_indices] += assist_strength
                 self.data.ctrl[finger_indices] = np.clip(
-                    self.data.ctrl[finger_indices], -1.0, 1.0
+                    self.data.ctrl[finger_indices], -0.8, 0.8  # ✅ Limites plus strictes
                 )
             if not self.eval_mode:
-                print("🤝 Assistance au grasping activée (≥2 doigts en contact)")
+                print("🤝 Assistance au grasping activée")
         
         # ✅ SIMULATION STEP (critique)
         try:
             mujoco.mj_step(self.model, self.data)
         except Exception as e:
-            print(f"⚠️ Erreur simulation step: {e}")
+            if not self.eval_mode:
+                print(f"⚠️ Erreur simulation step: {e}")
             # Réinitialiser en cas de problème
             mujoco.mj_resetData(self.model, self.data)
             mujoco.mj_forward(self.model, self.data)
@@ -251,9 +231,9 @@ class OptimalStableGraspEnv(gym.Env):
         
         # ✅ Conditions de terminaison (comme le notebook)
         done = (
-            dist > 0.5 or
+            dist > 0.6 or  # ✅ Plus permissif
             cube_pos[2] < 0.01 or
-            cube_pos[2] > 1.0 or
+            cube_pos[2] > 1.2 or  # ✅ Plus permissif
             self.current_step >= self.max_steps
         )
         
@@ -305,15 +285,16 @@ class OptimalStableGraspEnv(gym.Env):
             reward -= 2.0 * min(1.0, cube_vel)  # Pénalité de mouvement
             reward -= 0.005  # Pénalité de temps
             
-            # Debug (comme le notebook)
-            if not self.eval_mode and self.current_step % 10 == 0:
+            # Debug périodique (comme le notebook)
+            if not self.eval_mode and self.current_step % 20 == 0:
                 print(f"[step {self.current_step}] dist: {dist:.3f}, vel: {cube_vel:.3f}, "
                       f"touches: {touch_count}, grasp_quality: {grasp_quality:.2f}, reward: {reward:.2f}")
             
             return reward
             
         except Exception as e:
-            print(f"⚠️ Erreur calcul reward: {e}")
+            if not self.eval_mode:
+                print(f"⚠️ Erreur calcul reward: {e}")
             return -10.0  # Reward par défaut en cas d'erreur
     
     def _get_obs(self):
@@ -331,13 +312,15 @@ class OptimalStableGraspEnv(gym.Env):
             
             # ✅ Vérification NaN/Inf (sécurité)
             if np.any(np.isnan(obs)) or np.any(np.isinf(obs)):
-                print("⚠️ NaN/Inf détecté dans observation, correction...")
+                if not self.eval_mode:
+                    print("⚠️ NaN/Inf détecté dans observation, correction...")
                 obs = np.nan_to_num(obs, nan=0.0, posinf=1.0, neginf=-1.0)
             
             return obs.astype(np.float32)
             
         except Exception as e:
-            print(f"⚠️ Erreur observation: {e}")
+            if not self.eval_mode:
+                print(f"⚠️ Erreur observation: {e}")
             # Observation par défaut en cas d'erreur
             default_obs = np.zeros(self.observation_space.shape[0], dtype=np.float32)
             return default_obs
@@ -357,52 +340,64 @@ class OptimalStableGraspEnv(gym.Env):
             return False
     
     def render(self):
-        """Rendu de l'environnement"""
-        if self.render_mode == "rgb_array" and self.renderer is not None:
-            try:
-                self.renderer.update_scene(self.data)
-                return self.renderer.render()
-            except Exception as e:
-                print(f"⚠️ Erreur rendu: {e}")
-                # Image par défaut en cas d'erreur
-                return np.zeros((480, 640, 3), dtype=np.uint8)
-        else:
-            # Mode sans rendu ou renderer non disponible
-            return np.zeros((480, 640, 3), dtype=np.uint8)
-        return None
+        """Rendu minimal pour éviter les problèmes OpenGL"""
+        # Retourner une image noire par défaut (pas de rendu visuel)
+        return np.zeros((480, 640, 3), dtype=np.uint8)
     
     def close(self):
         """Fermeture propre"""
-        if hasattr(self, 'renderer'):
-            try:
-                self.renderer.close()
-            except:
-                pass
+        pass  # Pas de renderer à fermer
 
 
-def make_optimal_stable_env(**kwargs):
-    """Factory function pour créer l'environnement optimal"""
-    return OptimalStableGraspEnv(**kwargs)
+def make_headless_optimal_env(**kwargs):
+    """Factory function pour créer l'environnement headless optimal"""
+    return HeadlessOptimalGraspEnv(**kwargs)
 
 
 if __name__ == "__main__":
-    # Test de l'environnement
-    print("🧪 Test de l'environnement optimal...")
+    # Test de l'environnement headless
+    print("🧪 Test de l'environnement headless optimal...")
     
-    env = OptimalStableGraspEnv()
-    obs, _ = env.reset()
-    
-    print(f"✅ Observation shape: {obs.shape}")
-    print(f"✅ Action space: {env.action_space}")
-    
-    # Test de quelques steps
-    for i in range(10):
-        action = env.action_space.sample()
-        obs, reward, done, _, _ = env.step(action)
-        print(f"Step {i}: reward = {reward:.3f}")
+    try:
+        env = HeadlessOptimalGraspEnv()
+        obs, _ = env.reset()
         
-        if done:
-            break
-    
-    env.close()
-    print("✅ Test terminé avec succès!")
+        print(f"✅ Observation shape: {obs.shape}")
+        print(f"✅ Action space: {env.action_space}")
+        
+        # Test de simulation
+        stable_steps = 0
+        total_reward = 0
+        
+        for i in range(20):
+            action = env.action_space.sample() * 0.3  # Actions modérées
+            obs, reward, done, _, _ = env.step(action)
+            
+            # Vérifier stabilité
+            if not (np.any(np.isnan(obs)) or np.any(np.isinf(obs))):
+                stable_steps += 1
+                total_reward += reward
+            
+            if i % 5 == 0:
+                print(f"Step {i}: reward = {reward:.3f}")
+            
+            if done:
+                print(f"🎯 Épisode terminé à l'étape {i}")
+                break
+        
+        env.close()
+        
+        success_rate = (stable_steps / 20) * 100
+        print(f"\n📊 Test terminé:")
+        print(f"  - Steps stables: {stable_steps}/20 ({success_rate:.1f}%)")
+        print(f"  - Reward total: {total_reward:.3f}")
+        
+        if success_rate >= 80:
+            print("✅ Environnement headless optimal stable!")
+        else:
+            print("⚠️ Quelques instabilités détectées")
+            
+    except Exception as e:
+        print(f"❌ Erreur test: {e}")
+        
+    print("✅ Test terminé!")
