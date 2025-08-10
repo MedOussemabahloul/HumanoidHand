@@ -64,7 +64,7 @@ class BalancedGraspEnv(gym.Env):
         
         # IDs des corps
         self.cube_id = mujoco.mj_name2id(self.model, mujoco.mjtObj.mjOBJ_BODY, "cube")
-        self.right_hand_id = mujoco.mj_name2id(self.model, mujoco.mjtObj.mjOBJ_BODY, "right_hand_base")
+        self.right_hand_id = mujoco.mj_name2id(self.model, mujoco.mjtObj.mjOBJ_BODY, "right_wrist_yaw_link")
         
         print(f"🎯 Cube ID: {self.cube_id}, Main droite ID: {self.right_hand_id}")
     
