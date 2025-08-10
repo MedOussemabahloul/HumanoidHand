@@ -1,36 +1,23 @@
 #!/usr/bin/env python3
 """
-🤖 ENVIRONNEMENT GRASPING OPTIMISÉ - INSPIRÉ DU COLLÈGUE
-========================================================
+🤖 ENVIRONNEMENT GRASPING OPTIMISÉ - VERSION HEADLESS
+======================================================
 
-Environnement qui s'inspire des bonnes pratiques du collègue tout en gardant
-notre propre approche professionnelle:
-
-✅ INSPIRATIONS DU COLLÈGUE:
-- Scaling adaptatif des actions selon la distance
-- Reset des contrôles à chaque step  
-- Position fixe du cube pour stabilité
-- Assistance contextuelle au grasping
-
-✅ NOTRE APPROCHE AMÉLIORÉE:
-- Curriculum learning progressif
-- Gestion robuste des erreurs NaN/inf
-- Récompenses équilibrées et motivantes
-- Mouvements fluides et professionnels
+Version sans rendu pour éviter les problèmes EGL/OpenGL
+Inspiré du collègue avec nos améliorations
 """
 
 import numpy as np
 import mujoco
 import gymnasium as gym
 from gymnasium import spaces
-import tempfile
 import logging
 from typing import Dict, Tuple, Optional, Any
 from pathlib import Path
 
-class OptimizedGraspEnv(gym.Env):
+class HeadlessOptimizedGraspEnv(gym.Env):
     """
-    🤖 Environnement optimisé pour le grasping robotique
+    🤖 Environnement optimisé HEADLESS pour le grasping robotique
     
     INSPIRATIONS DU COLLÈGUE:
     - Scaling adaptatif: ARM_SCALE = 0.4 si dist > 0.08 else 0.2
@@ -43,11 +30,11 @@ class OptimizedGraspEnv(gym.Env):
     - Gestion robuste des NaN/inf
     - Récompenses motivantes et équilibrées
     - Mouvements fluides et naturels
+    - VERSION HEADLESS (pas de problèmes graphiques)
     """
     
     def __init__(self, 
                  model_path: Optional[str] = None,
-                 render_mode: str = "rgb_array",
                  max_episode_steps: int = 500,
                  curriculum_level: int = 1,
                  enable_smooth_movements: bool = True):
@@ -55,16 +42,12 @@ class OptimizedGraspEnv(gym.Env):
         super().__init__()
         
         # Configuration
-        self.render_mode = render_mode
         self.max_episode_steps = max_episode_steps
         self.curriculum_level = curriculum_level
         self.enable_smooth_movements = enable_smooth_movements
         
         # Logger
         self._setup_logging()
-        
-        # Configuration headless comme le collègue
-        self._setup_headless_rendering()
         
         # Modèle MuJoCo optimisé - validation du chemin
         self.model_path = model_path or self._validate_xml_path()
@@ -81,11 +64,11 @@ class OptimizedGraspEnv(gym.Env):
         self.action_history = []
         self.max_action_history = 5
         
-        self.logger.info(f"🤖 Environnement optimisé initialisé (niveau curriculum: {curriculum_level})")
+        self.logger.info(f"🤖 Environnement headless initialisé (curriculum: {curriculum_level})")
     
     def _setup_logging(self):
         """Configure le logging"""
-        self.logger = logging.getLogger("OptimizedGrasp")
+        self.logger = logging.getLogger("HeadlessGrasp")
         self.logger.setLevel(logging.INFO)
         
         if not self.logger.handlers:
@@ -94,120 +77,30 @@ class OptimizedGraspEnv(gym.Env):
             handler.setFormatter(formatter)
             self.logger.addHandler(handler)
     
-    def _setup_headless_rendering(self):
-        """Configure le rendu headless comme le collègue"""
-        import os
-        
-        # Configuration EGL comme le collègue
-        os.environ["MUJOCO_GL"] = "egl"
-        
-        # Autres configurations pour éviter les erreurs graphiques
-        os.environ.setdefault("EGL_DEVICE_ID", "0")
-        
-        self.logger.info("🖥️ Configuration headless activée (EGL)")
-    
     def _validate_xml_path(self) -> str:
         """Valide et retourne le chemin XML approprié"""
         
-        # Essayer d'abord le modèle optimisé
-        optimized_path = "/workspace/results/g1_combined_optimized.xml"
-        if Path(optimized_path).exists():
-            self.logger.info(f"✅ Utilisation du modèle optimisé: {optimized_path}")
-            return optimized_path
+        # Liste des modèles par ordre de préférence
+        xml_candidates = [
+            "/workspace/results/g1_combined_optimized.xml",
+            "/workspace/results/g1_combined_ultra_stable.xml", 
+            "/workspace/results/g1_combined_stable.xml",
+            "/workspace/results/g1_combined_balanced.xml"
+        ]
         
-        # Fallback sur le modèle du collègue
-        colleague_path = "/workspace/results/g1_combined_ultra_stable.xml"
-        if Path(colleague_path).exists():
-            self.logger.info(f"✅ Utilisation du modèle du collègue: {colleague_path}")
-            return colleague_path
+        for xml_path in xml_candidates:
+            if Path(xml_path).exists():
+                self.logger.info(f"✅ Utilisation du modèle: {xml_path}")
+                return xml_path
         
-        # Dernier recours: créer un modèle minimal
-        self.logger.warning("⚠️ Création d'un modèle minimal temporaire")
-        return self._create_minimal_model()
-    
-    def _create_minimal_model(self) -> str:
-        """Crée un modèle minimal sans conflits d'inclusion"""
-        
-        model_xml = '''<?xml version="1.0" encoding="utf-8"?>
-<mujoco model="minimal_grasp">
-    <compiler angle="radian"/>
-    
-    <option timestep="0.002" gravity="0 0 -9.81" integrator="RK4" 
-            solver="PGS" iterations="50" tolerance="1e-10"/>
-    
-    <default>
-        <geom friction="0.8 0.1 0.05"/>
-        <joint damping="1.0"/>
-        <motor ctrllimited="true" ctrlrange="-1 1"/>
-    </default>
-    
-    <worldbody>
-        <light name="light" pos="0 0 2"/>
-        
-        <body name="table" pos="0 0 0.4">
-            <geom type="box" size="0.5 0.5 0.05" rgba="0.8 0.6 0.4 1"/>
-        </body>
-        
-        <body name="cube" pos="0.18 0 0.04">
-            <joint name="cube:joint" type="free"/>
-            <geom name="cube_geom" type="box" size="0.025 0.025 0.025" 
-                  rgba="0.2 0.8 0.2 1" friction="1.0"/>
-            <inertial pos="0 0 0" mass="0.05" diaginertia="0.001 0.001 0.001"/>
-        </body>
-        
-        <body name="robot_base" pos="0 0 0.5">
-            <body name="arm" pos="0 -0.1 0.1">
-                <joint name="shoulder" type="hinge" axis="0 0 1" range="-1.57 1.57"/>
-                <geom type="capsule" size="0.03 0.1" rgba="0.7 0.7 0.7 1"/>
-                
-                <body name="hand" pos="0 0 -0.15">
-                    <joint name="wrist" type="hinge" axis="0 1 0" range="-1.57 1.57"/>
-                    <geom type="box" size="0.02 0.03 0.01" rgba="0.9 0.7 0.5 1"/>
-                    
-                    <body name="finger1" pos="0.02 0.02 0">
-                        <joint name="finger1_joint" type="hinge" axis="0 1 0" range="0 1.57"/>
-                        <geom name="finger1_geom" type="capsule" size="0.008 0.02" 
-                              rgba="0.9 0.7 0.5 1" friction="1.5"/>
-                    </body>
-                    
-                    <body name="finger2" pos="0.02 -0.02 0">
-                        <joint name="finger2_joint" type="hinge" axis="0 1 0" range="0 1.57"/>
-                        <geom name="finger2_geom" type="capsule" size="0.008 0.02" 
-                              rgba="0.9 0.7 0.5 1" friction="1.5"/>
-                    </body>
-                </body>
-            </body>
-        </body>
-    </worldbody>
-    
-    <actuator>
-        <position name="shoulder_motor" joint="shoulder" kp="10" kv="3"/>
-        <position name="wrist_motor" joint="wrist" kp="8" kv="2"/>
-        <position name="finger1_motor" joint="finger1_joint" kp="5" kv="1"/>
-        <position name="finger2_motor" joint="finger2_joint" kp="5" kv="1"/>
-    </actuator>
-</mujoco>'''
-        
-        # Sauvegarder le modèle
-        with tempfile.NamedTemporaryFile(mode='w', suffix='.xml', delete=False) as f:
-            f.write(model_xml)
-            return f.name
+        # Erreur si aucun modèle trouvé
+        raise FileNotFoundError("❌ Aucun modèle XML valide trouvé")
     
     def _load_mujoco_model(self):
-        """Charge le modèle MuJoCo avec gestion d'erreurs"""
+        """Charge le modèle MuJoCo SANS rendu"""
         try:
             self.model = mujoco.MjModel.from_xml_path(self.model_path)
             self.data = mujoco.MjData(self.model)
-            
-            # Configuration du rendu (avec gestion d'erreurs)
-            self.renderer = None
-            if self.render_mode == "rgb_array":
-                try:
-                    self.renderer = mujoco.Renderer(self.model, width=640, height=480)
-                    self.logger.info("✅ Renderer initialisé")
-                except Exception as e:
-                    self.logger.warning(f"⚠️ Impossible d'initialiser le renderer: {e}")
-                    self.render_mode = "none"
             
             self.logger.info(f"✅ Modèle MuJoCo chargé: {self.model.nq} DOFs, {self.model.nu} actuateurs")
             
@@ -225,10 +118,14 @@ class OptimizedGraspEnv(gym.Env):
         for i in range(self.model.nu):
             name = mujoco.mj_id2name(self.model, mujoco.mjtObj.mjOBJ_ACTUATOR, i)
             if name:
-                if any(joint in name for joint in ["shoulder", "elbow", "wrist"]):
+                # Classification basée sur les noms d'actuateurs
+                if any(joint in name.lower() for joint in ["shoulder", "elbow", "wrist", "arm"]):
                     self.arm_actuators.append(i)
-                elif any(finger in name for finger in ["thumb", "index", "middle"]):
+                elif any(finger in name.lower() for finger in ["thumb", "index", "middle", "finger", "hand"]):
                     self.finger_actuators.append(i)
+                else:
+                    # Si incertain, considérer comme bras
+                    self.arm_actuators.append(i)
         
         self.all_actuators = self.arm_actuators + self.finger_actuators
         
@@ -326,6 +223,9 @@ class OptimizedGraspEnv(gym.Env):
         # Lissage des mouvements (notre valeur ajoutée)
         if self.enable_smooth_movements:
             action = self._apply_movement_smoothing(action)
+            # Re-séparer après lissage
+            arm_action = action[:n_arm] if n_arm > 0 else np.array([])
+            finger_action = action[n_arm:] if len(action) > n_arm else np.array([])
         
         # RESET CONTRÔLES comme le collègue (clé du succès!)
         self.data.ctrl[:] = 0.0
@@ -427,7 +327,7 @@ class OptimizedGraspEnv(gym.Env):
             
             smoothed = np.zeros_like(action)
             for i, hist_action in enumerate(self.action_history):
-                if i < len(weights):
+                if i < len(weights) and i < len(self.action_history):
                     smoothed += weights[i] * hist_action
             
             return smoothed
@@ -536,16 +436,6 @@ class OptimizedGraspEnv(gym.Env):
         
         contact_count = 0
         
-        # Géométries possibles selon le modèle
-        finger_geom_candidates = [
-            # Modèle complet
-            ["right_hand_thumb_2_geom", "right_hand_index_1_geom", "right_hand_middle_1_geom"],
-            # Modèle minimal
-            ["finger1_geom", "finger2_geom"],
-            # Fallback - toute géométrie contenant "finger"
-            []
-        ]
-        
         for i in range(self.data.ncon):
             contact = self.data.contact[i]
             try:
@@ -559,26 +449,12 @@ class OptimizedGraspEnv(gym.Env):
                 cube_involved = name1 == "cube_geom" or name2 == "cube_geom"
                 finger_involved = False
                 
-                # Essayer les différents patterns de doigts
-                for candidates in finger_geom_candidates:
-                    if candidates:
-                        finger_involved = any(
-                            name1 in candidates or name2 in candidates
-                            for candidates in [candidates]
-                        )
-                        if finger_involved:
-                            break
-                
-                # Fallback - chercher "finger" dans le nom
-                if not finger_involved:
-                    finger_involved = ("finger" in name1.lower() or 
-                                     "finger" in name2.lower() or
-                                     "thumb" in name1.lower() or 
-                                     "thumb" in name2.lower() or
-                                     "index" in name1.lower() or 
-                                     "index" in name2.lower() or
-                                     "middle" in name1.lower() or 
-                                     "middle" in name2.lower())
+                # Chercher patterns de doigts
+                finger_keywords = ["finger", "thumb", "index", "middle", "hand"]
+                finger_involved = any(
+                    keyword in name1.lower() or keyword in name2.lower()
+                    for keyword in finger_keywords
+                )
                 
                 if cube_involved and finger_involved:
                     contact_count += 1
@@ -735,31 +611,12 @@ class OptimizedGraspEnv(gym.Env):
         return False
     
     def render(self):
-        """Rendu de l'environnement"""
-        if self.render_mode == "rgb_array" and self.renderer is not None:
-            try:
-                self.renderer.update_scene(self.data)
-                return self.renderer.render()
-            except Exception as e:
-                self.logger.warning(f"⚠️ Erreur rendu: {e}")
+        """Pas de rendu en mode headless"""
         return None
     
     def close(self):
         """Fermeture propre"""
-        if hasattr(self, 'renderer'):
-            try:
-                self.renderer.close()
-            except:
-                pass
-        
-        # Nettoyage du fichier temporaire
-        if hasattr(self, 'model_path') and self.model_path:
-            try:
-                Path(self.model_path).unlink(missing_ok=True)
-            except:
-                pass
-        
-        self.logger.info("🔒 Environnement fermé proprement")
+        self.logger.info("🔒 Environnement headless fermé proprement")
     
     def advance_curriculum_level(self, episode_reward: float) -> bool:
         """Avance le niveau de curriculum si performance suffisante"""
@@ -783,6 +640,6 @@ class OptimizedGraspEnv(gym.Env):
         return False
 
 
-def make_optimized_grasp_env(**kwargs):
-    """Factory pour créer l'environnement optimisé"""
-    return OptimizedGraspEnv(**kwargs)
+def make_headless_optimized_grasp_env(**kwargs):
+    """Factory pour créer l'environnement optimisé headless"""
+    return HeadlessOptimizedGraspEnv(**kwargs)
