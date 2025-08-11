@@ -13,418 +13,230 @@ avec corrections des problèmes de stagnation identifiés.
 - Assistance grasping intelligente
 """
 
-import numpy as np
 import mujoco
+from mujoco import MjModel, MjData
+import numpy as np
 import gymnasium as gym
 from gymnasium import spaces
-import tempfile
 import logging
-from typing import Dict, Tuple, Optional, Any
-from pathlib import Path
 import os
 
 class OptimizedGraspEnv1(gym.Env):
-    """
-    🤖 Environnement de grasping optimisé - Version qui fonctionne!
-    
-    Inspiré des bonnes pratiques du collègue:
-    - Reset contrôles: self.data.ctrl[:] = 0.0 (CRITIQUE!)
-    - Scaling adaptatif: ARM_SCALE selon distance
-    - Position cube accessible: [0.15, 0.0, 0.04]
-    - Assistance grasp: aide quand >= 2 doigts touchent
-    - Rewards bien calibrés pour convergence
-    """
-    
-    def __init__(self, 
-                 model_path: Optional[str] = None,
-                 render_mode: str = "rgb_array",
-                 max_episode_steps: int = 500):
+    def __init__(self, model_path=None, render_mode="rgb_array", max_episode_steps=500):
         super().__init__()
         
-        # Configuration
-        self.render_mode = render_mode
-        self.max_episode_steps = max_episode_steps
-        
-        # Logger
+        # Logger simple
         logging.basicConfig(level=logging.INFO)
         self.logger = logging.getLogger(__name__)
         
-        # Modèle XML optimisé avec fallback robuste
+        # Modèle XML - utiliser celui qui marche
         if model_path is None:
-            # Essayer les modèles dans l'ordre de préférence
-            model_candidates = [
-                "results/g1_combined.xml",
-                "results/g1_combined_balanced.xml"
-            ]
-            
-            model_path = None
-            for candidate in model_candidates:
-                if os.path.exists(candidate):
-                    model_path = candidate
-                    self.logger.info(f"✅ Modèle trouvé: {candidate}")
-                    break
-            
-            if model_path is None:
-                raise FileNotFoundError("❌ Aucun modèle XML trouvé dans results/")
-            
-        self.model_path = model_path
+            model_path = "results/g1_combined.xml"
         
-        # Charger modèle MuJoCo avec fallback
-        model_loaded = False
-        for attempt, candidate in enumerate([model_path] + [
-            "results/g1_combined.xml", 
-            "results/g1_combined_balanced.xml"
-        ]):
-            if not os.path.exists(candidate):
-                continue
-                
-            try:
-                self.model = mujoco.MjModel.from_xml_path(candidate)
-                self.data = mujoco.MjData(self.model)
-                self.model_path = candidate
-                self.logger.info(f"✅ Modèle chargé: {candidate}")
-                model_loaded = True
-                break
-            except Exception as e:
-                self.logger.warning(f"⚠️ Échec chargement {candidate}: {e}")
-                continue
-        
-        if not model_loaded:
-            raise RuntimeError("❌ Impossible de charger un modèle XML valide")
-        
-        # Configuration renderer
-        self.renderer = mujoco.Renderer(self.model, width=640, height=480)
-        
-        # ACTUATORS: Focus sur main droite seulement (comme le collègue)
-        self._setup_actuators()
-        
-        # Spaces
-        self._setup_spaces()
-        
-        # Variables d'état
-        self.reset_episode_vars()
-        
-        self.logger.info(f"🤖 Environnement optimisé initialisé - {len(self.right_actuator_ids)} actuators")
-    
-    def _setup_actuators(self):
-        """Configuration des actuators selon approche du collègue"""
-        
-        # Trouver actuators main droite
+        self.model = MjModel.from_xml_path(model_path)
+        self.data = MjData(self.model)
+
+        # Actuators: right side only (EXACTEMENT comme l'ami)
         right_actuators = []
         for i in range(self.model.nu):
             name = mujoco.mj_id2name(self.model, mujoco.mjtObj.mjOBJ_ACTUATOR, i)
-            if name is not None and "right_" in name:
+            if name is not None and name.startswith("right_"):
                 right_actuators.append(i)
-        
         self.right_actuator_ids = np.array(right_actuators, dtype=np.int32)
-        
-        # Séparer bras et doigts
-        self.arm_actuators = []
-        self.finger_actuators = []
-        
-        for actuator_id in self.right_actuator_ids:
-            name = mujoco.mj_id2name(self.model, mujoco.mjtObj.mjOBJ_ACTUATOR, actuator_id)
-            if any(joint in name for joint in ["shoulder", "elbow", "wrist"]):
-                self.arm_actuators.append(actuator_id)
-            else:
-                self.finger_actuators.append(actuator_id)
-        
-        self.arm_actuators = np.array(self.arm_actuators)
-        self.finger_actuators = np.array(self.finger_actuators)
-        
-        self.logger.info(f"Actuators bras: {len(self.arm_actuators)}, doigts: {len(self.finger_actuators)}")
-    
-    def _setup_spaces(self):
-        """Configuration des espaces d'action et observation"""
-        
-        # Action space: tous les actuators main droite
+
         self.action_space = spaces.Box(
             low=-1.0, high=1.0,
             shape=(len(self.right_actuator_ids),),
             dtype=np.float32
         )
-        
-        # Observation space: qpos + qvel + cube_pos + palm_pos + relative_pos
-        obs_dim = self.model.nq + self.model.nv + 9  # +9 pour positions
+
+        self.renderer = mujoco.Renderer(self.model, width=640, height=480)
+
+        obs_dim = self.model.nq + self.model.nv + 9
         self.observation_space = spaces.Box(
-            low=-np.inf, high=np.inf,
+            low=-1e10, high=1e10,
             shape=(obs_dim,),
             dtype=np.float32
         )
-    
-    def reset_episode_vars(self):
-        """Reset variables d'épisode"""
+
         self.current_step = 0
+        self.max_steps = max_episode_steps
         self.success_counter = 0
-        self.best_distance = float('inf')
-        self.total_reward = 0.0
-    
+        self.freeze_timer = 0
+
+        self.logger.info(f"🤖 Environnement initialisé - {len(self.right_actuator_ids)} actuators")
+
     def reset(self, seed=None, options=None):
-        """Reset environnement avec position cube optimisée"""
-        
-        if seed is not None:
-            np.random.seed(seed)
-        
-        # Reset MuJoCo
+        super().reset(seed=seed)
         mujoco.mj_resetData(self.model, self.data)
         mujoco.mj_forward(self.model, self.data)
-        
-        # Reset variables
-        self.reset_episode_vars()
-        
-        # POSITION CUBE COMME L'AMI (qui marche!)
-        try:
-            cube_joint_id = mujoco.mj_name2id(self.model, mujoco.mjtObj.mjOBJ_JOINT, "cube_free")
-            if cube_joint_id >= 0:
-                cube_qpos_addr = self.model.jnt_qposadr[cube_joint_id]
-                
-                # Position exacte de l'ami qui fonctionne
-                fixed_cube_pos = np.array([0.18, 0.0, 0.04])
-                
-                # Appliquer position
-                start = cube_qpos_addr
-                end = min(cube_qpos_addr + 3, len(self.data.qpos))
-                self.data.qpos[start:end] = fixed_cube_pos[:end-start]
-                
-                # Orientation
-                if cube_qpos_addr + 7 <= len(self.data.qpos):
-                    fixed_cube_quat = np.array([1, 0, 0, 0])
-                    start = cube_qpos_addr + 3
-                    end = cube_qpos_addr + 7
-                    self.data.qpos[start:end] = fixed_cube_quat
-                    
-        except Exception as e:
-            self.logger.warning(f"Erreur positionnement cube: {e}")
-        
-        # Forward kinematics
-        mujoco.mj_forward(self.model, self.data)
-        
+
+        self.current_step = 0
+
+        # Position cube EXACTEMENT comme l'ami
+        cube_joint_id = mujoco.mj_name2id(self.model, mujoco.mjtObj.mjOBJ_JOINT, "cube_free")
+        cube_qpos_addr = self.model.jnt_qposadr[cube_joint_id]
+
+        fixed_cube_pos = np.array([0.18, 0.0, 0.04])
+        start = cube_qpos_addr
+        end = cube_qpos_addr + 3
+        if end <= len(self.data.qpos):
+            self.data.qpos[start:end] = fixed_cube_pos
+        else:
+            size = len(self.data.qpos) - start
+            if size > 0:
+                self.data.qpos[start:start + size] = fixed_cube_pos[:size]
+
+        fixed_cube_quat = np.array([1, 0, 0, 0])
+        start = cube_qpos_addr + 3
+        end = cube_qpos_addr + 7
+        if end <= len(self.data.qpos):
+            self.data.qpos[start:end] = fixed_cube_quat
+        else:
+            size = len(self.data.qpos) - start
+            if size > 0:
+                self.data.qpos[start:start + size] = fixed_cube_quat[:size]
+
         obs = self._get_obs()
         return obs, {}
-    
+
     def step(self, action):
-        """Step avec approche optimisée du collègue"""
-        
-        # Validation action
-        action = np.array(action, dtype=np.float32)
-        action = np.clip(action, -1.0, 1.0)
-        
-        # Séparation bras/doigts
-        n_arm = len(self.arm_actuators)
-        arm_action = action[:n_arm] if n_arm > 0 else np.array([])
-        finger_action = action[n_arm:] if len(action) > n_arm else np.array([])
-        
-        # Calcul positions et distances
-        positions = self._get_positions()
-        dist = positions['palm_to_cube_dist']
-        
-        # SCALING ADAPTATIF (méthode du collègue qui marche!)
+        # Split action EXACTEMENT comme l'ami
+        arm_action = action[:7]
+        finger_action = action[7:]
+
+        # Get positions EXACTEMENT comme l'ami
+        cube_id = mujoco.mj_name2id(self.model, mujoco.mjtObj.mjOBJ_BODY, "cube")
+        cube_pos = self.data.xpos[cube_id]
+        palm_pos = self.data.body("right_hand_index_1_link").xpos
+        thumb_pos = self.data.body("right_hand_thumb_2_link").xpos
+        index_pos = self.data.body("right_hand_index_1_link").xpos
+        middle_pos = self.data.body("right_hand_middle_1_link").xpos
+
+        # Distances
+        dist = np.linalg.norm(palm_pos - cube_pos)
+        thumb_dist = np.linalg.norm(thumb_pos - cube_pos)
+        index_dist = np.linalg.norm(index_pos - cube_pos)
+        middle_dist = np.linalg.norm(middle_pos - cube_pos)
+
+        # Contact detection EXACTEMENT comme l'ami
+        thumb_contact = self._is_touching("cube_geom", "right_hand_thumb_2_geom")
+        index_contact = self._is_touching("cube_geom", "right_hand_index_1_geom")
+        middle_contact = self._is_touching("cube_geom", "right_hand_middle_1_geom")
+        num_contacts = sum([thumb_contact, index_contact, middle_contact])
+
+        # Scale actions EXACTEMENT comme l'ami
         ARM_SCALE = 0.4 if dist > 0.08 else 0.2
         FINGER_SCALE = 0.7
-        
-        # RESET CONTRÔLES (CRITIQUE pour éviter accumulation!)
+
+        # Reset controls (CLÉS DU SUCCÈS!)
         self.data.ctrl[:] = 0.0
-        
-        # Application actions avec scaling
-        if len(self.arm_actuators) > 0 and len(arm_action) > 0:
-            self.data.ctrl[self.arm_actuators] = arm_action * ARM_SCALE
-        
-        if len(self.finger_actuators) > 0 and len(finger_action) > 0:
-            self.data.ctrl[self.finger_actuators] = finger_action * FINGER_SCALE
-        
-        # ASSISTANCE GRASPING (comme le collègue)
-        self._apply_grasp_assistance(positions)
-        
+
+        # Apply scaled actions EXACTEMENT comme l'ami
+        self.data.ctrl[self.right_actuator_ids[:7]] = arm_action * ARM_SCALE
+        self.data.ctrl[self.right_actuator_ids[7:]] = finger_action * FINGER_SCALE
+
+        # Grasp assist EXACTEMENT comme l'ami
+        if dist < 0.06 and num_contacts >= 2:
+            assist_strength = 0.5
+            self.data.ctrl[self.right_actuator_ids[7:]] += assist_strength
+            self.data.ctrl[self.right_actuator_ids[7:]] = np.clip(
+                self.data.ctrl[self.right_actuator_ids[7:]], -1.0, 1.0
+            )
+            print("🤝 Grasp assist triggered (≥2 fingers touching)")
+
         # Step simulation
         mujoco.mj_step(self.model, self.data)
-        
-        # Calcul reward et termination
         obs = self._get_obs()
-        reward = self._compute_reward(positions)
-        terminated = self._check_termination(positions)
-        
-        # Mise à jour état
+        reward = self._compute_reward()
         self.current_step += 1
-        self.total_reward += reward
-        
-        # Update best distance
-        if dist < self.best_distance:
-            self.best_distance = dist
-        
+
+        # Termination EXACTEMENT comme l'ami
+        done = (
+            dist > 0.5
+            or cube_pos[2] < 0.01
+            or cube_pos[2] > 1.0
+            or self.current_step >= self.max_steps
+        )
+
         # Info
         info = {
             'distance': dist,
-            'contact_count': positions['contact_count'],
-            'cube_velocity': positions['cube_velocity'],
-            'best_distance': self.best_distance,
-            'total_reward': self.total_reward
+            'contact_count': num_contacts,
+            'cube_velocity': np.linalg.norm(self.data.cvel[cube_id]),
+            'total_reward': reward,
+            'episode_step': self.current_step
         }
-        
-        return obs, reward, terminated, False, info
-    
-    def _get_positions(self):
-        """Calcul positions et métriques clés"""
-        
-        # Positions
+
+        return obs, reward, done, False, info
+
+    def _compute_reward(self):
+        # REWARDS EXACTEMENT comme l'ami
         cube_id = mujoco.mj_name2id(self.model, mujoco.mjtObj.mjOBJ_BODY, "cube")
-        cube_pos = self.data.xpos[cube_id].copy()
-        
-        # Palm position (utiliser index comme référence)
-        try:
-            palm_pos = self.data.body("right_hand_index_1_link").xpos.copy()
-        except:
-            # Fallback si nom différent
-            palm_pos = np.array([0.0, 0.0, 0.0])
-        
-        # Distances
-        palm_to_cube_dist = np.linalg.norm(palm_pos - cube_pos)
-        
-        # Vélocité cube
-        cube_velocity = np.linalg.norm(self.data.cvel[cube_id]) if cube_id >= 0 else 0.0
-        
-        # Contacts (méthode du collègue)
-        contact_count = self._count_finger_contacts()
-        
-        return {
-            'cube_pos': cube_pos,
-            'palm_pos': palm_pos,
-            'palm_to_cube_dist': palm_to_cube_dist,
-            'cube_velocity': cube_velocity,
-            'contact_count': contact_count
-        }
-    
-    def _count_finger_contacts(self):
-        """Compte contacts doigts-cube (méthode du collègue)"""
-        
+        cube_pos = self.data.xpos[cube_id]
+        palm_pos = self.data.body("right_hand_index_1_link").xpos
+
+        dist = np.linalg.norm(palm_pos - cube_pos)
+        cube_vel = np.linalg.norm(self.data.cvel[cube_id])
+
+        # Count how many fingers are touching the cube
         fingers = [
-            "right_hand_thumb_2_geom",
-            "right_hand_index_1_geom", 
-            "right_hand_middle_1_geom"
+            "right_hand_thumb_2_link",
+            "right_hand_index_1_link",
+            "right_hand_middle_1_link"
         ]
-        
-        contact_count = 0
-        for finger in fingers:
-            if self._is_touching("cube_geom", finger):
-                contact_count += 1
-        
-        return contact_count
-    
-    def _is_touching(self, geom1, geom2):
-        """Détection contact entre géométries"""
-        
-        for i in range(self.data.ncon):
-            contact = self.data.contact[i]
-            name1 = mujoco.mj_id2name(self.model, mujoco.mjtObj.mjOBJ_GEOM, contact.geom1)
-            name2 = mujoco.mj_id2name(self.model, mujoco.mjtObj.mjOBJ_GEOM, contact.geom2)
-            
-            if (geom1 in (name1, name2)) and (geom2 in (name1, name2)):
-                return True
-        
-        return False
-    
-    def _apply_grasp_assistance(self, positions):
-        """Assistance grasping intelligente (du collègue)"""
-        
-        dist = positions['palm_to_cube_dist']
-        contact_count = positions['contact_count']
-        
-        # Assistance quand >= 2 doigts touchent et proche
-        if dist < 0.06 and contact_count >= 2:
-            assist_strength = 0.5
-            
-            if len(self.finger_actuators) > 0:
-                # Ajouter assistance fermeture
-                self.data.ctrl[self.finger_actuators] += assist_strength
-                self.data.ctrl[self.finger_actuators] = np.clip(
-                    self.data.ctrl[self.finger_actuators], -1.0, 1.0
-                )
-                
-                print(f"🤝 Assistance grasping activée! ({contact_count} doigts)")
-    
-    def _compute_reward(self, positions):
-        """Système de reward optimisé (inspiré du collègue)"""
-        
-        dist = positions['palm_to_cube_dist']
-        cube_vel = positions['cube_velocity']
-        contact_count = positions['contact_count']
-        
-        # Grasp quality heuristic (du collègue)
-        if contact_count == 0:
+        touch_count = sum(self._is_touching(f, "cube") for f in fingers)
+
+        # Grasp quality heuristic EXACTEMENT comme l'ami
+        if touch_count == 0:
             grasp_quality = -1.0
-        elif contact_count == 1:
+        elif touch_count == 1:
             grasp_quality = 0.1
-        elif contact_count == 2:
+        elif touch_count == 2:
             grasp_quality = 0.4
         else:  # 3+
             grasp_quality = 0.9 if cube_vel < 0.05 else 0.5
-        
-        # Composants reward (calibrés pour convergence)
-        reward = 0.0
-        
-        # REWARDS EXACTEMENT COMME L'AMI
+
+        # Reward components EXACTEMENT comme l'ami
+        reward = 0
         reward += 5.0 / (1.0 + 20 * dist)
         reward += 2.0 if dist < 0.06 else 0
         reward += 10.0 * grasp_quality
         reward -= 2.0 * min(1.0, cube_vel)
-        reward -= 0.005
-        
-        # Bonus succès (grasp stable)
-        if contact_count >= 2 and dist < 0.05 and cube_vel < 0.02:
-            reward += 20.0
-            self.success_counter += 1
-        
+        reward -= 0.005  # time penalty
+
         return reward
-    
-    def _check_termination(self, positions):
-        """Conditions de terminaison"""
-        
-        dist = positions['palm_to_cube_dist']
-        cube_pos = positions['cube_pos']
-        
-        # TERMINATION COMME L'AMI
-        terminated = (
-            dist > 0.5 or
-            cube_pos[2] < 0.01 or
-            cube_pos[2] > 1.0 or
-            self.current_step >= self.max_episode_steps
-        )
-        
-        return terminated
-    
+
     def _get_obs(self):
-        """Observation selon format du collègue"""
-        
-        # Positions de base
-        base_state = np.concatenate([self.data.qpos, self.data.qvel])
-        
-        # Positions spécifiques
-        positions = self._get_positions()
-        cube_pos = positions['cube_pos']
-        palm_pos = positions['palm_pos']
+        # Observations EXACTEMENT comme l'ami
+        cube_pos = self.data.body("cube").xpos.copy()
+        palm_pos = self.data.body("right_hand_index_1_link").xpos.copy()
         relative_pos = cube_pos - palm_pos
-        
-        # Observation complète
+        base_state = np.concatenate([self.data.qpos, self.data.qvel])
         obs = np.concatenate([base_state, cube_pos, palm_pos, relative_pos])
-        obs = obs.astype(np.float32)
-        
-        # Ajustement taille
         expected_dim = self.observation_space.shape[0]
         fixed_obs = np.zeros(expected_dim, dtype=np.float32)
+        obs = obs.astype(np.float32)
+
         fixed_obs[:min(expected_dim, obs.shape[0])] = obs[:min(expected_dim, obs.shape[0])]
-        
         return fixed_obs
-    
+
+    def _is_touching(self, geom1, geom2):
+        # Contact detection EXACTEMENT comme l'ami
+        for i in range(self.data.ncon):
+            contact = self.data.contact[i]
+            name1 = mujoco.mj_id2name(self.model, mujoco.mjtObj.mjOBJ_GEOM, contact.geom1)
+            name2 = mujoco.mj_id2name(self.model, mujoco.mjtObj.mjOBJ_GEOM, contact.geom2)
+            if (geom1 in (name1, name2)) and (geom2 in (name1, name2)):
+                return True
+        return False
+
     def render(self):
-        """Rendu visuel"""
-        
         if self.render_mode == "rgb_array":
             self.renderer.update_scene(self.data)
             return self.renderer.render()
-        
         return None
-    
+
     def close(self):
-        """Nettoyage ressources"""
-        
         if hasattr(self, 'renderer'):
             self.renderer.close()

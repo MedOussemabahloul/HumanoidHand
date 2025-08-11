@@ -90,25 +90,16 @@ class GraspingProgressCallback(BaseCallback):
         return True
 
 def create_optimized_env():
-    """
-    🏭 Création de l'environnement optimisé
-    
-    Configure l'environnement avec les paramètres
-    qui ont fait leurs preuves chez le collègue.
-    """
-    
     print("🔧 Création environnement optimisé...")
     
-    # Création environnement de base
+    # EXACTEMENT comme l'ami
     env = OptimizedGraspEnv1(
-        model_path="results/g1_combined_fixed.xml",
+        model_path="results/g1_combined.xml",
         render_mode="rgb_array",
-        max_episode_steps=300  # Plus court pour apprentissage rapide
+        max_episode_steps=500  # Comme l'ami
     )
     
-    # Wrapper monitoring
     env = Monitor(env)
-    
     print(f"✅ Environnement créé - Action space: {env.action_space.shape}")
     
     return env
