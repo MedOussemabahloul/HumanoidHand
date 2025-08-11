@@ -92,9 +92,26 @@ class GraspingProgressCallback(BaseCallback):
 def create_optimized_env():
     print("🔧 Création environnement optimisé...")
     
-    # EXACTEMENT comme l'ami
+    # EXACTEMENT comme l'ami - utiliser SON XML
+    model_candidates = [
+        "results/g1_combined_ultra_stable.xml",
+        "results/g1_combined.xml", 
+        "results/g1_combined_fixed.xml"
+    ]
+    
+    model_path = None
+    for candidate in model_candidates:
+        if os.path.exists(candidate):
+            model_path = candidate
+            break
+    
+    if model_path is None:
+        raise FileNotFoundError("❌ Aucun modèle XML trouvé")
+    
+    print(f"🎯 Utilisation modèle: {model_path}")
+    
     env = OptimizedGraspEnv1(
-        model_path="results/g1_combined.xml",
+        model_path=model_path,
         render_mode="rgb_array",
         max_episode_steps=500  # Comme l'ami
     )

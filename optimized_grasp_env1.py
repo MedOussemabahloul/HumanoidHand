@@ -73,7 +73,7 @@ class OptimizedGraspEnv1(gym.Env):
 
         self.current_step = 0
 
-        # Position cube EXACTEMENT comme l'ami
+        # Position cube pour VOTRE XML
         cube_joint_id = mujoco.mj_name2id(self.model, mujoco.mjtObj.mjOBJ_JOINT, "cube_free")
         cube_qpos_addr = self.model.jnt_qposadr[cube_joint_id]
 
@@ -105,7 +105,7 @@ class OptimizedGraspEnv1(gym.Env):
         arm_action = action[:7]
         finger_action = action[7:]
 
-        # Get positions avec les VRAIS noms du XML
+        # Get positions pour VOTRE XML
         cube_id = mujoco.mj_name2id(self.model, mujoco.mjtObj.mjOBJ_BODY, "cube")
         cube_pos = self.data.xpos[cube_id]
         palm_pos = self.data.body("right_index_1").xpos
@@ -119,7 +119,7 @@ class OptimizedGraspEnv1(gym.Env):
         index_dist = np.linalg.norm(index_pos - cube_pos)
         middle_dist = np.linalg.norm(middle_pos - cube_pos)
 
-        # Contact detection avec les VRAIS noms
+        # Contact detection pour VOTRE XML
         thumb_contact = self._is_touching("cube_geom", "right_thumb_1_geom")
         index_contact = self._is_touching("cube_geom", "right_index_1_geom")
         middle_contact = self._is_touching("cube_geom", "right_middle_1_geom")
@@ -171,7 +171,7 @@ class OptimizedGraspEnv1(gym.Env):
         return obs, reward, done, False, info
 
     def _compute_reward(self):
-        # REWARDS avec les VRAIS noms
+        # REWARDS pour VOTRE XML
         cube_id = mujoco.mj_name2id(self.model, mujoco.mjtObj.mjOBJ_BODY, "cube")
         cube_pos = self.data.xpos[cube_id]
         palm_pos = self.data.body("right_index_1").xpos
@@ -181,9 +181,9 @@ class OptimizedGraspEnv1(gym.Env):
 
         # Count how many fingers are touching the cube
         fingers = [
-            "right_thumb_1",
-            "right_index_1", 
-            "right_middle_1"
+            "right_hand_thumb_2_link",
+            "right_hand_index_1_link",
+            "right_hand_middle_1_link"
         ]
         touch_count = sum(self._is_touching(f, "cube") for f in fingers)
 
@@ -208,9 +208,9 @@ class OptimizedGraspEnv1(gym.Env):
         return reward
 
     def _get_obs(self):
-        # Observations avec les VRAIS noms
+        # Observations EXACTEMENT comme l'ami
         cube_pos = self.data.body("cube").xpos.copy()
-        palm_pos = self.data.body("right_index_1").xpos.copy()
+        palm_pos = self.data.body("right_hand_index_1_link").xpos.copy()
         relative_pos = cube_pos - palm_pos
         base_state = np.concatenate([self.data.qpos, self.data.qvel])
         obs = np.concatenate([base_state, cube_pos, palm_pos, relative_pos])
