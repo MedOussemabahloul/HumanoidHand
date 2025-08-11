@@ -137,18 +137,19 @@ class OptimizedTrainingCallback(BaseCallback):
     def _on_step(self) -> bool:
         """Appelé à chaque step"""
         
-        # Logging périodique simple
+        # Logging périodique simple avec distance
         if self.n_calls % 1000 == 0:
             try:
                 infos = self.locals.get('infos', [{}])
                 if infos and len(infos) > 0:
                     info = infos[0]
                     
-                    # Log métriques de base
+                    # Log métriques de base avec distance visible
                     dist = info.get('distance', 0)
                     contacts = info.get('contact_count', 0)
                     curriculum = info.get('curriculum_level', 1)
                     
+                    print(f"📊 Step {self.n_calls}: DISTANCE={dist:.3f}m, contacts={contacts}, curriculum={curriculum}")
                     self.custom_logger.info(
                         f"Step {self.n_calls}: dist={dist:.3f}, "
                         f"contacts={contacts}, curriculum={curriculum}"

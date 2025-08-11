@@ -415,6 +415,9 @@ class OptimizedGraspEnv(gym.Env):
         # Reset de l'état interne
         self._reset_episode_vars()
         
+        # Reset MuJoCo simulation
+        mujoco.mj_resetData(self.model, self.data)
+        
         # RANDOMISER POSITION INITIALE pour éviter blocage local
         try:
             # Position cube légèrement aléatoire autour de [0.18, 0.0, 0.04]
