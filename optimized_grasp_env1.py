@@ -172,14 +172,14 @@ class OptimizedGraspEnv1(gym.Env):
         # Reset variables
         self.reset_episode_vars()
         
-        # POSITION CUBE OPTIMISÉE (plus proche et accessible)
+        # POSITION CUBE COMME L'AMI (qui marche!)
         try:
             cube_joint_id = mujoco.mj_name2id(self.model, mujoco.mjtObj.mjOBJ_JOINT, "cube_free")
             if cube_joint_id >= 0:
                 cube_qpos_addr = self.model.jnt_qposadr[cube_joint_id]
                 
-                # Position de base plus accessible
-                fixed_cube_pos = np.array([0.15, 0.0, 0.04])
+                # Position exacte de l'ami qui fonctionne
+                fixed_cube_pos = np.array([0.18, 0.0, 0.04])
                 
                 # Appliquer position
                 start = cube_qpos_addr
@@ -361,20 +361,11 @@ class OptimizedGraspEnv1(gym.Env):
         # Composants reward (calibrés pour convergence)
         reward = 0.0
         
-        # Reward distance (encourage approche)
+        # REWARDS EXACTEMENT COMME L'AMI
         reward += 5.0 / (1.0 + 20 * dist)
-        
-        # Bonus proximité
-        if dist < 0.06:
-            reward += 2.0
-        
-        # Reward grasping
+        reward += 2.0 if dist < 0.06 else 0
         reward += 10.0 * grasp_quality
-        
-        # Pénalité vélocité cube
         reward -= 2.0 * min(1.0, cube_vel)
-        
-        # Pénalité temps (légère)
         reward -= 0.005
         
         # Bonus succès (grasp stable)
@@ -390,12 +381,12 @@ class OptimizedGraspEnv1(gym.Env):
         dist = positions['palm_to_cube_dist']
         cube_pos = positions['cube_pos']
         
-        # Terminaison si:
+        # TERMINATION COMME L'AMI
         terminated = (
-            dist > 0.5 or                        # Trop loin
-            cube_pos[2] < 0.01 or               # Cube tombé
-            cube_pos[2] > 1.0 or                # Cube trop haut
-            self.current_step >= self.max_episode_steps  # Max steps
+            dist > 0.5 or
+            cube_pos[2] < 0.01 or
+            cube_pos[2] > 1.0 or
+            self.current_step >= self.max_episode_steps
         )
         
         return terminated
