@@ -197,6 +197,8 @@ def main():
     SAVE_FREQ = 5000
     EVAL_FREQ = 2000
     
+    env = None  # Initialisation pour éviter UnboundLocalError
+    
     try:
         # 1. Création environnement
         print("\n📍 ÉTAPE 1: Création environnement")
@@ -249,10 +251,15 @@ def main():
     except Exception as e:
         logger.error(f"Erreur durant l'entraînement: {e}")
         print(f"❌ Erreur: {e}")
-        raise
+        print("\n🔧 Solutions possibles:")
+        print("   1. Vérifier que le fichier XML existe")
+        print("   2. Utiliser le modèle XML de base si g1_combined_fixed.xml pose problème")
+        print("   3. Installer les dépendances MuJoCo manquantes")
+        return False
     
     finally:
-        env.close()
+        if env is not None:
+            env.close()
 
 def evaluate_model(model, env, episodes=5):
     """

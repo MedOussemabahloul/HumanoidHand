@@ -49,24 +49,49 @@ class OptimizedGraspEnv1(gym.Env):
         logging.basicConfig(level=logging.INFO)
         self.logger = logging.getLogger(__name__)
         
-        # Modèle XML optimisé
+        # Modèle XML optimisé avec fallback robuste
         if model_path is None:
-            model_path = "results/g1_combined_fixed.xml"
-        
-        if not os.path.exists(model_path):
-            self.logger.warning(f"Modèle {model_path} introuvable, utilisation du modèle de base")
-            model_path = "results/g1_combined.xml"
+            # Essayer les modèles dans l'ordre de préférence
+            model_candidates = [
+                "results/g1_combined_fixed.xml",
+                "results/g1_combined.xml",
+                "results/g1_combined_balanced.xml"
+            ]
+            
+            model_path = None
+            for candidate in model_candidates:
+                if os.path.exists(candidate):
+                    model_path = candidate
+                    self.logger.info(f"✅ Modèle trouvé: {candidate}")
+                    break
+            
+            if model_path is None:
+                raise FileNotFoundError("❌ Aucun modèle XML trouvé dans results/")
             
         self.model_path = model_path
         
-        # Charger modèle MuJoCo
-        try:
-            self.model = mujoco.MjModel.from_xml_path(model_path)
-            self.data = mujoco.MjData(self.model)
-            self.logger.info(f"✅ Modèle chargé: {model_path}")
-        except Exception as e:
-            self.logger.error(f"❌ Erreur chargement modèle: {e}")
-            raise
+        # Charger modèle MuJoCo avec fallback
+        model_loaded = False
+        for attempt, candidate in enumerate([model_path] + [
+            "results/g1_combined.xml", 
+            "results/g1_combined_balanced.xml"
+        ]):
+            if not os.path.exists(candidate):
+                continue
+                
+            try:
+                self.model = mujoco.MjModel.from_xml_path(candidate)
+                self.data = mujoco.MjData(self.model)
+                self.model_path = candidate
+                self.logger.info(f"✅ Modèle chargé: {candidate}")
+                model_loaded = True
+                break
+            except Exception as e:
+                self.logger.warning(f"⚠️ Échec chargement {candidate}: {e}")
+                continue
+        
+        if not model_loaded:
+            raise RuntimeError("❌ Impossible de charger un modèle XML valide")
         
         # Configuration renderer
         self.renderer = mujoco.Renderer(self.model, width=640, height=480)
