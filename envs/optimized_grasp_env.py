@@ -334,10 +334,16 @@ class OptimizedGraspEnv(gym.Env):
                 end = min(cube_qpos_addr + 3, len(self.data.qpos))
                 self.data.qpos[start:end] = random_pos[:end-start]
             
-            # RANDOMISER POSITION ROBOT aussi
+            # POSITIONNER ROBOT VERS LE CUBE
             if len(self.data.qpos) > 7:  # Si on a des joints de robot
-                for i in range(min(4, len(self.data.qpos) - 7)):  # Premiers joints
-                    self.data.qpos[7 + i] += np.random.normal(0, 0.3)  # Variation importante
+                # Position initiale orientée vers le cube
+                self.data.qpos[7] = 0.3   # Shoulder pitch - bras vers l'avant
+                self.data.qpos[8] = 0.0   # Shoulder roll
+                self.data.qpos[9] = 0.0   # Shoulder yaw
+                self.data.qpos[10] = -0.5 # Elbow - plié vers le cube
+                # Petites variations aléatoires
+                for i in range(min(4, len(self.data.qpos) - 7)):
+                    self.data.qpos[7 + i] += np.random.normal(0, 0.1)  # Petite variation
                     
         except Exception as e:
             self.logger.warning(f"Randomisation position échouée: {e}")
@@ -577,54 +583,51 @@ class OptimizedGraspEnv(gym.Env):
                     self.logger.info(f"🤝 Assistance grasping activée (contacts: {contact_count})")
         
     def _compute_reward(self, positions):
-        """Récompense équilibrée pour apprentissage stable"""
+        """Récompense qui FORCE l'approche du cube"""
         
         dist = positions['palm_to_cube_dist']
         cube_vel = positions['cube_velocity']
         contact_count = positions['contact_count']
         
-        reward = 0.0
+        # RÉCOMPENSE BASÉE SUR L'INVERSE DE LA DISTANCE - TOUJOURS POSITIVE POUR APPROCHE
+        base_reward = 20.0 / (1.0 + dist)  # Plus proche = plus de récompense
         
-        # RÉCOMPENSE DISTANCE PROGRESSIVE ET ÉQUILIBRÉE
-        if dist < 0.03:
-            reward += 10.0   # Contact imminent
-        elif dist < 0.05:
-            reward += 5.0    # Très proche
-        elif dist < 0.08:
-            reward += 2.0    # Proche
-        elif dist < 0.12:
-            reward += 1.0    # Assez proche  
-        elif dist < 0.18:
-            reward += 0.5    # Approche
-        else:
-            reward -= 1.0    # Trop loin = petite pénalité
-
-        # BONUS CONTACT MOTIVANT MAIS RAISONNABLE
+        # BONUS DISTANCE PROGRESSIVE
+        if dist < 0.05:
+            base_reward += 50.0   # Très proche
+        elif dist < 0.10:
+            base_reward += 20.0   # Proche
+        elif dist < 0.20:
+            base_reward += 10.0   # Assez proche
+        elif dist < 0.30:
+            base_reward += 5.0    # En approche
+        
+        # BONUS CONTACT ÉNORME
         if contact_count >= 1:
-            reward += 20.0   # Premier contact = bon bonus
+            base_reward += 100.0   # Premier contact
         if contact_count >= 2:
-            reward += 30.0   # Grasp partiel = excellent
+            base_reward += 200.0   # Grasp partiel
         if contact_count >= 3:
-            reward += 50.0   # Grasp complet = parfait
+            base_reward += 500.0   # Grasp complet
 
-        # Bonus amélioration modéré avec limite
+        # BONUS AMÉLIORATION MAJEUR
         if dist < self.best_distance:
             improvement = self.best_distance - dist
-            reward += min(5.0, improvement * 10.0)  # Limiter à 5.0 max
+            base_reward += improvement * 100.0  # Forte récompense pour amélioration
             self.best_distance = dist
+        
+        # PÉNALITÉ LÉGÈRE pour vitesse excessive
+        base_reward -= min(1.0, cube_vel)
 
-        # Pénalité vitesse douce
-        reward -= min(2.0, cube_vel * 2.0)
+        # PÉNALITÉ TEMPS MINIMALE
+        base_reward -= 0.1
 
-        # Pénalité temps très faible
-        reward -= 0.01
-
-        # LIMITER STRICTEMENT la récompense pour éviter inf/nan
-        reward = np.clip(reward, -100.0, 100.0)
+        # LIMITER la récompense
+        reward = np.clip(base_reward, -10.0, 1000.0)
         
         # Vérifier NaN/inf
         if not np.isfinite(reward):
-            reward = -1.0  # Récompense par défaut si problème
+            reward = 1.0  # Récompense positive par défaut
         
         return float(reward)
 
