@@ -133,31 +133,23 @@ def create_td3_agent(env, learning_rate=3e-4):
     
     print("🧠 Configuration agent TD3...")
     
-    # Bruit d'exploration (important pour grasping!)
+    # EXACTEMENT comme l'ami qui marche!
     action_noise = NormalActionNoise(
         mean=np.zeros(env.action_space.shape[0]), 
-        sigma=0.1 * np.ones(env.action_space.shape[0])
+        sigma=0.3 * np.ones(env.action_space.shape[0])  # 0.3 comme l'ami!
     )
     
-    # Configuration TD3 optimisée
+    # Configuration TD3 EXACTEMENT comme l'ami
     model = TD3(
         "MlpPolicy",
         env,
-        learning_rate=learning_rate,
-        buffer_size=100000,
-        learning_starts=1000,
-        batch_size=256,
-        tau=0.005,
-        gamma=0.99,
-        train_freq=1,
-        gradient_steps=1,
-        action_noise=action_noise,
-        policy_kwargs=dict(
-            net_arch=[512, 512, 256, 256],  # Architecture robuste
-            activation_fn=nn.ReLU
-        ),
         verbose=1,
-        device="auto"
+        learning_rate=3e-4,
+        batch_size=256,
+        buffer_size=1_000_000,  # 1M comme l'ami!
+        gamma=0.98,  # 0.98 comme l'ami!
+        tau=0.02,    # 0.02 comme l'ami!
+        action_noise=action_noise
     )
     
     print(f"✅ Agent TD3 configuré - Device: {model.device}")

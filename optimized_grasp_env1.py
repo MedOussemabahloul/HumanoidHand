@@ -77,7 +77,7 @@ class OptimizedGraspEnv1(gym.Env):
         cube_joint_id = mujoco.mj_name2id(self.model, mujoco.mjtObj.mjOBJ_JOINT, "cube_free")
         cube_qpos_addr = self.model.jnt_qposadr[cube_joint_id]
 
-        fixed_cube_pos = np.array([0.18, 0.0, 0.04])
+        fixed_cube_pos = np.array([0.35, 0.0, 0.04])  # Plus proche de votre robot!
         start = cube_qpos_addr
         end = cube_qpos_addr + 3
         if end <= len(self.data.qpos):
@@ -101,9 +101,15 @@ class OptimizedGraspEnv1(gym.Env):
         return obs, {}
 
     def step(self, action):
-        # Split action EXACTEMENT comme l'ami
-        arm_action = action[:7]
-        finger_action = action[7:]
+        # Split action selon VOS actuators
+        if len(self.right_actuator_ids) == 7:
+            # Comme l'ami : seulement 7 actuators arm
+            arm_action = action[:7] 
+            finger_action = np.array([])
+        else:
+            # Votre config : 7 arm + doigts
+            arm_action = action[:7]
+            finger_action = action[7:] if len(action) > 7 else np.array([])
 
         # Get positions pour VOTRE XML
         cube_id = mujoco.mj_name2id(self.model, mujoco.mjtObj.mjOBJ_BODY, "cube")
@@ -132,18 +138,29 @@ class OptimizedGraspEnv1(gym.Env):
         # Reset controls (CLÉS DU SUCCÈS!)
         self.data.ctrl[:] = 0.0
 
-        # Apply scaled actions EXACTEMENT comme l'ami
-        self.data.ctrl[self.right_actuator_ids[:7]] = arm_action * ARM_SCALE
-        self.data.ctrl[self.right_actuator_ids[7:]] = finger_action * FINGER_SCALE
+        # Apply scaled actions selon VOS actuators  
+        if len(self.right_actuator_ids) == 7:
+            # Comme l'ami : seulement arm
+            self.data.ctrl[self.right_actuator_ids] = arm_action * ARM_SCALE
+        else:
+            # Votre config : arm + doigts
+            self.data.ctrl[self.right_actuator_ids[:7]] = arm_action * ARM_SCALE
+            if len(finger_action) > 0 and len(self.right_actuator_ids) > 7:
+                self.data.ctrl[self.right_actuator_ids[7:]] = finger_action * FINGER_SCALE
 
-        # Grasp assist EXACTEMENT comme l'ami
+        # Grasp assist adapté à VOS actuators
         if dist < 0.06 and num_contacts >= 2:
             assist_strength = 0.5
-            self.data.ctrl[self.right_actuator_ids[7:]] += assist_strength
-            self.data.ctrl[self.right_actuator_ids[7:]] = np.clip(
-                self.data.ctrl[self.right_actuator_ids[7:]], -1.0, 1.0
-            )
-            print("🤝 Grasp assist triggered (≥2 fingers touching)")
+            if len(self.right_actuator_ids) > 7:
+                # Vous avez des doigts séparés
+                self.data.ctrl[self.right_actuator_ids[7:]] += assist_strength
+                self.data.ctrl[self.right_actuator_ids[7:]] = np.clip(
+                    self.data.ctrl[self.right_actuator_ids[7:]], -1.0, 1.0
+                )
+                print("🤝 Grasp assist triggered (≥2 fingers touching)")
+            else:
+                # Comme l'ami : pas de doigts séparés
+                print("🤝 Grasp detected but no separate finger actuators")
 
         # Step simulation
         mujoco.mj_step(self.model, self.data)
@@ -204,6 +221,9 @@ class OptimizedGraspEnv1(gym.Env):
         reward += 10.0 * grasp_quality
         reward -= 2.0 * min(1.0, cube_vel)
         reward -= 0.005  # time penalty
+
+        # Debug comme l'ami
+        print(f"[step {self.current_step}] dist: {dist:.3f}, vel: {cube_vel:.3f}, touches: {touch_count}, grasp_quality: {grasp_quality:.2f}, reward: {reward:.2f}")
 
         return reward
 
