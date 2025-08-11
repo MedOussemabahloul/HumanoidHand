@@ -137,23 +137,27 @@ class OptimizedTrainingCallback(BaseCallback):
     def _on_step(self) -> bool:
         """Appelé à chaque step"""
         
-        # Logging périodique simple avec distance
-        if self.n_calls % 1000 == 0:
+        # Logging périodique avec métriques dans TensorBoard
+        if self.n_calls % 500 == 0:  # Plus fréquent pour voir la progression
             try:
                 infos = self.locals.get('infos', [{}])
                 if infos and len(infos) > 0:
                     info = infos[0]
                     
-                    # Log métriques de base avec distance visible
+                    # Extraire métriques
                     dist = info.get('distance', 0)
                     contacts = info.get('contact_count', 0)
                     curriculum = info.get('curriculum_level', 1)
                     
+                    # AJOUTER LES MÉTRIQUES À TENSORBOARD/LOGS SB3
+                    if hasattr(self, 'logger') and self.logger:
+                        self.logger.record("train/distance", dist)
+                        self.logger.record("train/contacts", contacts)
+                        self.logger.record("train/curriculum_level", curriculum)
+                    
+                    # Affichage console visible
                     print(f"📊 Step {self.n_calls}: DISTANCE={dist:.3f}m, contacts={contacts}, curriculum={curriculum}")
-                    self.custom_logger.info(
-                        f"Step {self.n_calls}: dist={dist:.3f}, "
-                        f"contacts={contacts}, curriculum={curriculum}"
-                    )
+                    
             except Exception as e:
                 self.custom_logger.warning(f"Erreur logging: {e}")
         

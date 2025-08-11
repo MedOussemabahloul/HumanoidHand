@@ -495,15 +495,17 @@ class OptimizedGraspEnv(gym.Env):
         self.current_step += 1
         self.episode_reward += reward
         
-        # Info pour debugging
+        # Info pour debugging - TOUJOURS retourner les métriques clés
         info = {
-            'distance': dist,
-            'contact_count': positions['contact_count'],
-            'cube_velocity': positions['cube_velocity'],
-            'episode_step': self.current_step,
-            'curriculum_level': self.curriculum_level,
-            'arm_scale': arm_scale,
-            'finger_scale': finger_scale
+            'distance': float(dist),
+            'contact_count': int(positions['contact_count']),
+            'cube_velocity': float(positions['cube_velocity']),
+            'episode_step': int(self.current_step),
+            'curriculum_level': int(self.curriculum_level),
+            'arm_scale': float(arm_scale),
+            'finger_scale': float(finger_scale),
+            'episode_reward': float(self.episode_reward),
+            'cube_pos_z': float(positions['cube_pos'][2])
         }
         
         return obs, reward, terminated, False, info
