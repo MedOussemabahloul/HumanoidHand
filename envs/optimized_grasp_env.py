@@ -583,51 +583,49 @@ class OptimizedGraspEnv(gym.Env):
                     self.logger.info(f"🤝 Assistance grasping activée (contacts: {contact_count})")
         
     def _compute_reward(self, positions):
-        """Récompense qui FORCE l'approche du cube"""
+        """Récompense stable et équilibrée pour apprentissage progressif"""
         
         dist = positions['palm_to_cube_dist']
         cube_vel = positions['cube_velocity']
         contact_count = positions['contact_count']
         
-        # RÉCOMPENSE BASÉE SUR L'INVERSE DE LA DISTANCE - TOUJOURS POSITIVE POUR APPROCHE
-        base_reward = 20.0 / (1.0 + dist)  # Plus proche = plus de récompense
+        # RÉCOMPENSE SIMPLE ET STABLE basée sur la distance
+        # Objectif : distance cible = 0.05m (5cm)
+        target_dist = 0.05
+        distance_error = abs(dist - target_dist)
         
-        # BONUS DISTANCE PROGRESSIVE
-        if dist < 0.05:
-            base_reward += 50.0   # Très proche
-        elif dist < 0.10:
-            base_reward += 20.0   # Proche
-        elif dist < 0.20:
-            base_reward += 10.0   # Assez proche
+        # Récompense principale : plus proche de la cible = mieux
+        if dist < 0.10:
+            reward = 10.0 - distance_error * 50.0  # Forte récompense si proche
         elif dist < 0.30:
-            base_reward += 5.0    # En approche
+            reward = 5.0 - distance_error * 10.0   # Récompense modérée
+        else:
+            reward = 1.0 - dist * 2.0              # Encouragement à approcher
         
-        # BONUS CONTACT ÉNORME
+        # BONUS CONTACT RAISONNABLE
         if contact_count >= 1:
-            base_reward += 100.0   # Premier contact
+            reward += 20.0   # Premier contact
         if contact_count >= 2:
-            base_reward += 200.0   # Grasp partiel
+            reward += 30.0   # Grasp partiel
         if contact_count >= 3:
-            base_reward += 500.0   # Grasp complet
+            reward += 50.0   # Grasp complet
 
-        # BONUS AMÉLIORATION MAJEUR
+        # Bonus amélioration MODÉRÉ
         if dist < self.best_distance:
             improvement = self.best_distance - dist
-            base_reward += improvement * 100.0  # Forte récompense pour amélioration
+            reward += min(5.0, improvement * 20.0)  # Max 5 points
             self.best_distance = dist
         
-        # PÉNALITÉ LÉGÈRE pour vitesse excessive
-        base_reward -= min(1.0, cube_vel)
+        # Pénalités légères
+        reward -= min(2.0, cube_vel * 0.5)  # Vitesse excessive
+        reward -= 0.1  # Temps
 
-        # PÉNALITÉ TEMPS MINIMALE
-        base_reward -= 0.1
-
-        # LIMITER la récompense
-        reward = np.clip(base_reward, -10.0, 1000.0)
+        # LIMITER STRICTEMENT pour éviter fluctuations
+        reward = np.clip(reward, -5.0, 50.0)
         
-        # Vérifier NaN/inf
+        # Vérifier stabilité
         if not np.isfinite(reward):
-            reward = 1.0  # Récompense positive par défaut
+            reward = 0.0
         
         return float(reward)
 
