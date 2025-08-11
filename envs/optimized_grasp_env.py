@@ -67,16 +67,13 @@ class OptimizedGraspEnv(gym.Env):
         # Logger
         self._setup_logging()
             
-        # CORRECTION: Utiliser le modèle unique disponible
+        # FORCER l'utilisation du modèle g1_combined.xml
         if model_path is None:
-            # Chercher le modèle g1_combined dans results/
             model_path = "/home/oussema/Documents/project/results/g1_combined.xml"
                 
-            # Vérifier si le modèle existe
+        # Vérifier si le modèle existe - OBLIGATOIRE
         if not os.path.exists(model_path):
-            self.logger.error(f"❌ Modèle introuvable: {model_path}")
-            # Créer un modèle minimal qui fonctionne
-            model_path = self._create_minimal_working_model()
+            raise FileNotFoundError(f"❌ Modèle g1_combined.xml OBLIGATOIRE introuvable: {model_path}")
             
         self.model_path = model_path
         self.logger.info(f"🔧 Utilisation du modèle: {model_path}")
@@ -708,10 +705,10 @@ class OptimizedGraspEnv(gym.Env):
         if contact_count >= 3:
             reward += 50.0   # Grasp complet = parfait
 
-        # Bonus amélioration modéré
+        # Bonus amélioration modéré avec limite
         if dist < self.best_distance:
             improvement = self.best_distance - dist
-            reward += improvement * 10.0  # Encouragement modéré
+            reward += min(5.0, improvement * 10.0)  # Limiter à 5.0 max
             self.best_distance = dist
 
         # Pénalité vitesse douce
@@ -720,6 +717,13 @@ class OptimizedGraspEnv(gym.Env):
         # Pénalité temps très faible
         reward -= 0.01
 
+        # LIMITER STRICTEMENT la récompense pour éviter inf/nan
+        reward = np.clip(reward, -100.0, 100.0)
+        
+        # Vérifier NaN/inf
+        if not np.isfinite(reward):
+            reward = -1.0  # Récompense par défaut si problème
+        
         return float(reward)
 
 
