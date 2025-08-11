@@ -1,0 +1,7 @@
+2025-08-11 14:05:51,530 - INFO - Début entraînement optimisé
+2025-08-11 14:05:51,531 - ERROR - ❌ Erreur chargement modèle: XML Error: Schema violation: unrecognized attribute: 'friction'
+Element 'material', line 13
+
+2025-08-11 14:05:51,532 - ERROR - Erreur durant l'entraînement: XML Error: Schema violation: unrecognized attribute: 'friction'
+Element 'material', line 13
+
