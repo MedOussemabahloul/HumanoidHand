@@ -53,7 +53,6 @@ class OptimizedGraspEnv1(gym.Env):
         if model_path is None:
             # Essayer les modèles dans l'ordre de préférence
             model_candidates = [
-                "results/g1_combined_working.xml",
                 "results/g1_combined.xml",
                 "results/g1_combined_balanced.xml"
             ]
