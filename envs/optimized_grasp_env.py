@@ -770,16 +770,16 @@ class OptimizedGraspEnv(gym.Env):
             return np.zeros(self.observation_space.shape[0], dtype=np.float32)
     
     def _check_termination(self, positions):
-        """Vérification de fin d'épisode comme le collègue"""
+        """Vérification de fin d'épisode - conditions plus permissives"""
         
         dist = positions['palm_to_cube_dist']
         cube_pos = positions['cube_pos']
         
-        # Conditions de terminaison comme le collègue
-        if (dist > 0.5 or 
-            cube_pos[2] < 0.01 or 
-            cube_pos[2] > 1.0 or 
-            self.current_step >= self.max_episode_steps):
+        # Conditions de terminaison moins strictes pour permettre l'apprentissage
+        if (dist > 1.0 or                          # Distance très éloignée
+            cube_pos[2] < -0.1 or                  # Cube tombé très bas
+            cube_pos[2] > 2.0 or                   # Cube trop haut
+            self.current_step >= self.max_episode_steps):  # Limite de temps
             return True
         
         return False
