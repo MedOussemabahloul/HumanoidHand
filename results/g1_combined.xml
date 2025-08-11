@@ -28,10 +28,10 @@
       <geom name="table_leg4" type="box" size="0.02 0.02 0.38" material="table_mat" friction="2.0 0.5 0.1" pos="-0.25 -0.15 -0.38" contype="1" conaffinity="1" />
     </body>
     
-    <!-- Cube proche du robot pour réduire la distance initiale -->
-    <body name="cube" pos="0.35 0 0.44">
+    <!-- Cube EXACTEMENT comme le collègue -->
+    <body name="cube" pos="0.18 0 0.04">
       <freejoint name="cube_free" />
-      <geom name="cube_geom" type="box" size="0.02 0.02 0.02" material="cube_mat" friction="2.0 0.5 0.1" contype="2" conaffinity="2" density="300" />
+      <geom name="cube_geom" type="box" size="0.02 0.02 0.02" material="cube_mat" friction="2.0 0.5 0.1" contype="2" conaffinity="2" />
       <inertial pos="0 0 0" mass="0.05" diaginertia="0.0005 0.0005 0.0005" />
     </body>
   </worldbody>

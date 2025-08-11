@@ -319,31 +319,28 @@ class OptimizedGraspEnv(gym.Env):
         
         # RANDOMISER POSITION INITIALE pour éviter blocage local
         try:
-            # Position cube proche du robot pour réduire distance initiale
+            # POSITION CUBE FIXE comme le collègue - CLÉS DU SUCCÈS
             cube_joint_id = mujoco.mj_name2id(self.model, mujoco.mjtObj.mjOBJ_JOINT, "cube_free")
             if cube_joint_id >= 0:
                 cube_qpos_addr = self.model.jnt_qposadr[cube_joint_id]
                 
-                # Position proche et stable - cohérente avec g1_combined.xml
-                base_pos = np.array([0.35, 0.0, 0.44])  # Sur la table
-                random_offset = np.random.normal(0, 0.01, 3)  # Très petite variation
-                random_pos = base_pos + random_offset
+                # POSITION EXACTE DU COLLÈGUE - PAS DE RANDOMISATION
+                fixed_cube_pos = np.array([0.18, 0.0, 0.04])  # EXACTEMENT comme lui
                 
-                # Appliquer position
+                # Appliquer position FIXE
                 start = cube_qpos_addr
                 end = min(cube_qpos_addr + 3, len(self.data.qpos))
-                self.data.qpos[start:end] = random_pos[:end-start]
+                self.data.qpos[start:end] = fixed_cube_pos[:end-start]
+                
+                # Orientation fixe aussi
+                fixed_cube_quat = np.array([1, 0, 0, 0])
+                quat_start = cube_qpos_addr + 3
+                quat_end = min(cube_qpos_addr + 7, len(self.data.qpos))
+                if quat_end <= len(self.data.qpos):
+                    self.data.qpos[quat_start:quat_end] = fixed_cube_quat[:quat_end-quat_start]
             
-            # POSITIONNER ROBOT VERS LE CUBE
-            if len(self.data.qpos) > 7:  # Si on a des joints de robot
-                # Position initiale orientée vers le cube
-                self.data.qpos[7] = 0.3   # Shoulder pitch - bras vers l'avant
-                self.data.qpos[8] = 0.0   # Shoulder roll
-                self.data.qpos[9] = 0.0   # Shoulder yaw
-                self.data.qpos[10] = -0.5 # Elbow - plié vers le cube
-                # Petites variations aléatoires
-                for i in range(min(4, len(self.data.qpos) - 7)):
-                    self.data.qpos[7 + i] += np.random.normal(0, 0.1)  # Petite variation
+            # PAS DE RANDOMISATION ROBOT - comme le collègue
+            # Le collègue ne randomise PAS la position du robot
                     
         except Exception as e:
             self.logger.warning(f"Randomisation position échouée: {e}")
@@ -428,33 +425,18 @@ class OptimizedGraspEnv(gym.Env):
         return action
     
     def _get_adaptive_arm_scale(self, distance):
-        """Scaling adaptatif du bras comme le collègue mais plus fluide"""
+        """Scaling EXACTEMENT comme le collègue - SIMPLE ET EFFICACE"""
         
-        # Inspiration du collègue: ARM_SCALE = 0.4 si dist > 0.08 else 0.2
-        # Notre amélioration: transition plus fluide
-        
-        if distance > 0.12:
-            return 0.5  # Mouvement rapide pour approche lointaine
-        elif distance > 0.08:
-            return 0.4  # Comme le collègue
-        elif distance > 0.05:
-            return 0.2  # Comme le collègue
-        else:
-            return 0.1  # Très fin pour positionnement précis
+        # FORMULE EXACTE DU COLLÈGUE
+        ARM_SCALE = 0.4 if distance > 0.08 else 0.2
+        return ARM_SCALE
     
     def _get_adaptive_finger_scale(self, distance, positions):
-        """Scaling adaptatif des doigts selon contexte"""
+        """Scaling des doigts EXACTEMENT comme le collègue"""
         
-        base_scale = 0.7  # Comme le collègue
-        
-        # Ajustement selon curriculum
-        curriculum_factor = min(1.0, self.curriculum_level * 0.2)
-        
-        # Réduction si très proche pour finesse
-        if distance < 0.04:
-            base_scale *= 0.6
-        
-        return base_scale * curriculum_factor
+        # VALEUR FIXE DU COLLÈGUE - PAS DE COMPLICATIONS
+        FINGER_SCALE = 0.7
+        return FINGER_SCALE
     
     def _apply_movement_smoothing(self, action):
         """Applique un lissage des mouvements pour fluidité"""
@@ -583,49 +565,32 @@ class OptimizedGraspEnv(gym.Env):
                     self.logger.info(f"🤝 Assistance grasping activée (contacts: {contact_count})")
         
     def _compute_reward(self, positions):
-        """Récompense stable et équilibrée pour apprentissage progressif"""
+        """Récompense EXACTEMENT comme le collègue qui fonctionne"""
         
         dist = positions['palm_to_cube_dist']
         cube_vel = positions['cube_velocity']
         contact_count = positions['contact_count']
         
-        # RÉCOMPENSE SIMPLE ET STABLE basée sur la distance
-        # Objectif : distance cible = 0.05m (5cm)
-        target_dist = 0.05
-        distance_error = abs(dist - target_dist)
+        # FORMULE DU COLLÈGUE - SIMPLE ET EFFICACE
+        reward = 0
+        reward += 5.0 / (1.0 + 20 * dist)  # EXACTEMENT comme lui
+        reward += 2.0 if dist < 0.06 else 0  # Bonus proximité
         
-        # Récompense principale : plus proche de la cible = mieux
-        if dist < 0.10:
-            reward = 10.0 - distance_error * 50.0  # Forte récompense si proche
-        elif dist < 0.30:
-            reward = 5.0 - distance_error * 10.0   # Récompense modérée
-        else:
-            reward = 1.0 - dist * 2.0              # Encouragement à approcher
+        # Grasp quality comme le collègue
+        if contact_count == 0:
+            grasp_quality = -1.0
+        elif contact_count == 1:
+            grasp_quality = 0.1
+        elif contact_count == 2:
+            grasp_quality = 0.4
+        else:  # 3+
+            grasp_quality = 0.9 if cube_vel < 0.05 else 0.5
         
-        # BONUS CONTACT RAISONNABLE
-        if contact_count >= 1:
-            reward += 20.0   # Premier contact
-        if contact_count >= 2:
-            reward += 30.0   # Grasp partiel
-        if contact_count >= 3:
-            reward += 50.0   # Grasp complet
-
-        # Bonus amélioration MODÉRÉ
-        if dist < self.best_distance:
-            improvement = self.best_distance - dist
-            reward += min(5.0, improvement * 20.0)  # Max 5 points
-            self.best_distance = dist
+        reward += 10.0 * grasp_quality  # EXACTEMENT comme lui
+        reward -= 2.0 * min(1.0, cube_vel)  # Pénalité vitesse
+        reward -= 0.005  # Pénalité temps
         
-        # Pénalités légères
-        reward -= min(2.0, cube_vel * 0.5)  # Vitesse excessive
-        reward -= 0.1  # Temps
-
-        # LIMITER STRICTEMENT pour éviter fluctuations
-        reward = np.clip(reward, -5.0, 50.0)
-        
-        # Vérifier stabilité
-        if not np.isfinite(reward):
-            reward = 0.0
+        # PAS de bonus amélioration - le collègue n'en a pas
         
         return float(reward)
 
