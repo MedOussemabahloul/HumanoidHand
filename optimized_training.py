@@ -149,14 +149,8 @@ class OptimizedTrainingCallback(BaseCallback):
                     contacts = info.get('contact_count', 0)
                     curriculum = info.get('curriculum_level', 1)
                     
-                    # AJOUTER LES MÉTRIQUES À TENSORBOARD/LOGS SB3
-                    if hasattr(self, 'logger') and self.logger:
-                        self.logger.record("train/distance", dist)
-                        self.logger.record("train/contacts", contacts)
-                        self.logger.record("train/curriculum_level", curriculum)
-                    
-                    # Affichage console visible
-                    print(f"📊 Step {self.n_calls}: DISTANCE={dist:.3f}m, contacts={contacts}, curriculum={curriculum}")
+                    # Affichage simple de la distance pour suivi
+                    print(f"Distance main-cube: {dist:.3f}m | Step: {self.n_calls}")
                     
             except Exception as e:
                 self.custom_logger.warning(f"Erreur logging: {e}")
