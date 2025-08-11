@@ -105,13 +105,13 @@ class OptimizedGraspEnv1(gym.Env):
         arm_action = action[:7]
         finger_action = action[7:]
 
-        # Get positions EXACTEMENT comme l'ami
+        # Get positions avec les VRAIS noms du XML
         cube_id = mujoco.mj_name2id(self.model, mujoco.mjtObj.mjOBJ_BODY, "cube")
         cube_pos = self.data.xpos[cube_id]
-        palm_pos = self.data.body("right_hand_index_1_link").xpos
-        thumb_pos = self.data.body("right_hand_thumb_2_link").xpos
-        index_pos = self.data.body("right_hand_index_1_link").xpos
-        middle_pos = self.data.body("right_hand_middle_1_link").xpos
+        palm_pos = self.data.body("right_index_1").xpos
+        thumb_pos = self.data.body("right_thumb_1").xpos
+        index_pos = self.data.body("right_index_1").xpos
+        middle_pos = self.data.body("right_middle_1").xpos
 
         # Distances
         dist = np.linalg.norm(palm_pos - cube_pos)
@@ -119,10 +119,10 @@ class OptimizedGraspEnv1(gym.Env):
         index_dist = np.linalg.norm(index_pos - cube_pos)
         middle_dist = np.linalg.norm(middle_pos - cube_pos)
 
-        # Contact detection EXACTEMENT comme l'ami
-        thumb_contact = self._is_touching("cube_geom", "right_hand_thumb_2_geom")
-        index_contact = self._is_touching("cube_geom", "right_hand_index_1_geom")
-        middle_contact = self._is_touching("cube_geom", "right_hand_middle_1_geom")
+        # Contact detection avec les VRAIS noms
+        thumb_contact = self._is_touching("cube_geom", "right_thumb_1_geom")
+        index_contact = self._is_touching("cube_geom", "right_index_1_geom")
+        middle_contact = self._is_touching("cube_geom", "right_middle_1_geom")
         num_contacts = sum([thumb_contact, index_contact, middle_contact])
 
         # Scale actions EXACTEMENT comme l'ami
@@ -171,19 +171,19 @@ class OptimizedGraspEnv1(gym.Env):
         return obs, reward, done, False, info
 
     def _compute_reward(self):
-        # REWARDS EXACTEMENT comme l'ami
+        # REWARDS avec les VRAIS noms
         cube_id = mujoco.mj_name2id(self.model, mujoco.mjtObj.mjOBJ_BODY, "cube")
         cube_pos = self.data.xpos[cube_id]
-        palm_pos = self.data.body("right_hand_index_1_link").xpos
+        palm_pos = self.data.body("right_index_1").xpos
 
         dist = np.linalg.norm(palm_pos - cube_pos)
         cube_vel = np.linalg.norm(self.data.cvel[cube_id])
 
         # Count how many fingers are touching the cube
         fingers = [
-            "right_hand_thumb_2_link",
-            "right_hand_index_1_link",
-            "right_hand_middle_1_link"
+            "right_thumb_1",
+            "right_index_1", 
+            "right_middle_1"
         ]
         touch_count = sum(self._is_touching(f, "cube") for f in fingers)
 
@@ -208,9 +208,9 @@ class OptimizedGraspEnv1(gym.Env):
         return reward
 
     def _get_obs(self):
-        # Observations EXACTEMENT comme l'ami
+        # Observations avec les VRAIS noms
         cube_pos = self.data.body("cube").xpos.copy()
-        palm_pos = self.data.body("right_hand_index_1_link").xpos.copy()
+        palm_pos = self.data.body("right_index_1").xpos.copy()
         relative_pos = cube_pos - palm_pos
         base_state = np.concatenate([self.data.qpos, self.data.qvel])
         obs = np.concatenate([base_state, cube_pos, palm_pos, relative_pos])
