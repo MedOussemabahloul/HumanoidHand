@@ -95,6 +95,11 @@ class OptimizedTrainingCallback(BaseCallback):
         self.best_eval_reward = -np.inf
         self.curriculum_history = []
         
+        # Détection de stagnation
+        self.stagnation_counter = 0
+        self.last_improvement_step = 0
+        self.stagnation_threshold = 50000  # Redémarrer si pas d'amélioration en 50k steps
+        
         # Environnement d'évaluation
         self.eval_env = None
         
@@ -132,22 +137,29 @@ class OptimizedTrainingCallback(BaseCallback):
     def _on_step(self) -> bool:
         """Appelé à chaque step"""
         
-        # Logging périodique simple
-        if self.n_calls % 1000 == 0:
+        # Logging périodique avec métriques dans TensorBoard
+        if self.n_calls % 500 == 0:  # Plus fréquent pour voir la progression
             try:
                 infos = self.locals.get('infos', [{}])
                 if infos and len(infos) > 0:
                     info = infos[0]
                     
-                    # Log métriques de base
+                    # Extraire métriques
                     dist = info.get('distance', 0)
                     contacts = info.get('contact_count', 0)
                     curriculum = info.get('curriculum_level', 1)
                     
-                    self.custom_logger.info(
-                        f"Step {self.n_calls}: dist={dist:.3f}, "
-                        f"contacts={contacts}, curriculum={curriculum}"
-                    )
+                    # Affichage complet avec toutes les métriques
+                    reward = info.get('episode_reward', 0)
+                    print(f"📊 Step {self.n_calls}: DISTANCE={dist:.3f}m, contacts={contacts}, reward={reward:.1f}, curriculum={curriculum}")
+                    
+                    # AJOUTER LES MÉTRIQUES À TENSORBOARD/LOGS SB3
+                    if hasattr(self, 'logger') and self.logger:
+                        self.logger.record("train/distance", dist)
+                        self.logger.record("train/contacts", contacts)
+                        self.logger.record("train/curriculum_level", curriculum)
+                        self.logger.record("train/episode_reward", reward)
+                    
             except Exception as e:
                 self.custom_logger.warning(f"Erreur logging: {e}")
         
@@ -206,12 +218,20 @@ class OptimizedTrainingCallback(BaseCallback):
         # Enregistrer dans les logs
         self.eval_rewards.append(mean_reward)
         
-        # Sauvegarder le meilleur modèle
+        # Sauvegarder le meilleur modèle et détecter stagnation
         if mean_reward > self.best_eval_reward:
             self.best_eval_reward = mean_reward
+            self.last_improvement_step = self.n_calls
+            self.stagnation_counter = 0
             best_path = self.results_dir / "models" / "best_model"
             self.model.save(str(best_path))
             self.custom_logger.info(f"💾 Nouveau meilleur modèle: {mean_reward:.2f}")
+        else:
+            self.stagnation_counter += 1
+            
+        # Détection de stagnation et redémarrage adaptatif
+        if (self.n_calls - self.last_improvement_step) > self.stagnation_threshold:
+            self._handle_stagnation()
         
         # Curriculum learning
         self._check_curriculum_advancement(mean_reward)
@@ -245,6 +265,26 @@ class OptimizedTrainingCallback(BaseCallback):
                     
         except Exception as e:
             self.custom_logger.warning(f"Curriculum non disponible: {e}")
+    
+    def _handle_stagnation(self):
+        """Gère la stagnation en augmentant l'exploration"""
+        
+        self.custom_logger.warning(f"⚠️ Stagnation détectée après {self.stagnation_threshold} steps")
+        
+        try:
+            # Augmenter le bruit d'exploration
+            if hasattr(self.model, 'action_noise') and self.model.action_noise is not None:
+                current_sigma = self.model.action_noise.sigma
+                new_sigma = np.minimum(current_sigma * 1.5, 0.5)  # Augmenter mais limiter
+                self.model.action_noise.sigma = new_sigma
+                self.custom_logger.info(f"🔄 Bruit d'exploration augmenté: {current_sigma[0]:.3f} → {new_sigma[0]:.3f}")
+            
+            # Réinitialiser le compteur
+            self.last_improvement_step = self.n_calls
+            self.stagnation_counter = 0
+            
+        except Exception as e:
+            self.custom_logger.error(f"❌ Erreur gestion stagnation: {e}")
     
     def _create_video(self):
         """Création de vidéo comme le collègue"""
@@ -303,13 +343,13 @@ def main():
     # CORRECTION 2: Paramètres training plus agressifs dans optimized_training.py
 
     config = {
-        'total_timesteps': 50_000,     # Plus court pour tester rapidement
-        'learning_rate': 5e-3,         # BEAUCOUP plus élevé
-        'batch_size': 64,              # Plus petit = plus instable
-        'buffer_size': 50_000,         # Plus petit
-        'gamma': 0.9,                  # Moins patient  
-        'tau': 0.1,                    # Mise à jour très rapide
-        'noise_std': 0.8,              # Plus d'exploration!
+        'total_timesteps': 100_000,    # Plus de temps pour converger
+        'learning_rate': 3e-4,         # Learning rate standard et stable
+        'batch_size': 256,             # Batch plus grand pour stabilité
+        'buffer_size': 200_000,        # Buffer plus grand pour diversité
+        'gamma': 0.99,                 # Horizon long pour planification
+        'tau': 0.005,                  # Mise à jour douce des réseaux target
+        'noise_std': 0.2,              # Exploration modérée mais efficace
         'results_dir': "retry_results"
 }
     
@@ -320,54 +360,32 @@ def main():
         print(f"   {key}: {value}")
     print("=" * 50)
     
-    # Créer environnement principal - VERSION SIMPLIFIÉE
-    print("🏗️ Création de l'environnement...")
-    try:
-        # Vérifier si le modèle existe
-        model_path = "/home/oussema/Documents/project/results/g1_combined.xml"
-        print(f"🔍 Vérification du modèle: {model_path}")
-        
-        if os.path.exists(model_path):
-            print(f"✅ Modèle trouvé: {model_path}")
-        else:
-            print(f"⚠️ Modèle non trouvé, utilisation du modèle par défaut")
-            model_path = None
-        
-        # Créer l'environnement
-        env = OptimizedGraspEnv(
-            model_path=model_path,
-            render_mode="rgb_array",
-            max_episode_steps=500,
-            curriculum_level=1,
-            enable_smooth_movements=True
-        )
-        print("✅ Environnement créé avec succès")
-        
-        # Wrapping avec Monitor
-        env = Monitor(env)
-        print("✅ Monitor appliqué")
-        
-    except Exception as e:
-        print(f"❌ Erreur création environnement: {e}")
-        print("🔧 Tentative avec paramètres par défaut...")
-        
-        try:
-            # Tentative avec paramètres minimaux
-            env = OptimizedGraspEnv()
-            env = Monitor(env)
-            print("✅ Environnement créé avec paramètres par défaut")
-        except Exception as e2:
-            print(f"❌ Échec total: {e2}")
-            return
+    # Créer environnement G1 EXCLUSIVEMENT
+    print("🏗️ Création de l'environnement G1...")
+    
+    # FORCER g1_combined.xml - AUCUN FALLBACK
+    model_path = "/home/oussema/Documents/project/results/g1_combined.xml"
+    print(f"🤖 Utilisation EXCLUSIVE de: {model_path}")
+    
+    if not os.path.exists(model_path):
+        print(f"❌ ERREUR CRITIQUE: {model_path} introuvable!")
+        return
+    
+    # Créer l'environnement G1
+    env = OptimizedGraspEnv(
+        model_path=model_path,
+        render_mode="rgb_array",
+        max_episode_steps=500,
+        curriculum_level=1,
+        enable_smooth_movements=True
+    )
+    print("✅ Environnement G1 créé avec succès")
+    
+    # Wrapping avec Monitor
+    env = Monitor(env)
+    print("✅ Monitor appliqué")
     
     # Configuration du bruit comme le collègue
-    print("🔧 Configuration du bruit d'action...")
-    n_actions = env.action_space.shape[0]
-    action_noise = NormalActionNoise(
-        mean=np.zeros(n_actions), 
-        sigma=config['noise_std'] * np.ones(n_actions)
-    )
-        # Configuration du bruit comme le collègue
     print("🔧 Configuration du bruit d'action...")
     n_actions = env.action_space.shape[0]
     action_noise = NormalActionNoise(
@@ -407,10 +425,10 @@ def main():
     # Callback optimisé
     print("🔄 Configuration des callbacks...")
     callback = OptimizedTrainingCallback(
-        eval_freq=25000,
-        video_freq=50000,
-        save_freq=25000,
-        n_eval_episodes=3,
+        eval_freq=10000,   # Évaluation plus fréquente pour détecter stagnation
+        video_freq=25000,  # Vidéos moins fréquentes
+        save_freq=15000,   # Sauvegardes plus fréquentes
+        n_eval_episodes=5, # Plus d'épisodes pour évaluation robuste
         results_dir=config['results_dir']
     )
     
