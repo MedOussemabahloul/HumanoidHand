@@ -319,14 +319,14 @@ class OptimizedGraspEnv(gym.Env):
         
         # RANDOMISER POSITION INITIALE pour éviter blocage local
         try:
-            # Position cube légèrement aléatoire autour de [0.18, 0.0, 0.04]
+            # Position cube proche du robot pour réduire distance initiale
             cube_joint_id = mujoco.mj_name2id(self.model, mujoco.mjtObj.mjOBJ_JOINT, "cube_free")
             if cube_joint_id >= 0:
                 cube_qpos_addr = self.model.jnt_qposadr[cube_joint_id]
                 
-                # Position avec variation aléatoire
-                base_pos = np.array([0.18, 0.0, 0.04])
-                random_offset = np.random.normal(0, 0.02, 3)  # Petite variation
+                # Position proche et stable - cohérente avec g1_combined.xml
+                base_pos = np.array([0.35, 0.0, 0.44])  # Sur la table
+                random_offset = np.random.normal(0, 0.01, 3)  # Très petite variation
                 random_pos = base_pos + random_offset
                 
                 # Appliquer position
