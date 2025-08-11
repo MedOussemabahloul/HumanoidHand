@@ -670,7 +670,7 @@ class OptimizedGraspEnv(gym.Env):
                     self.logger.info(f"🤝 Assistance grasping activée (contacts: {contact_count})")
         
     def _compute_reward(self, positions):
-        """Récompense agressive pour débloquer l'apprentissage"""
+        """Récompense équilibrée pour apprentissage stable"""
         
         dist = positions['palm_to_cube_dist']
         cube_vel = positions['cube_velocity']
@@ -678,36 +678,36 @@ class OptimizedGraspEnv(gym.Env):
         
         reward = 0.0
         
-        # RÉCOMPENSE DISTANCE TRÈS AGRESSIVE
+        # RÉCOMPENSE DISTANCE PROGRESSIVE ET ÉQUILIBRÉE
         if dist < 0.03:
-            reward += 200.0  # Contact imminent
+            reward += 10.0   # Contact imminent
         elif dist < 0.05:
-            reward += 100.0  # Très proche
+            reward += 5.0    # Très proche
         elif dist < 0.08:
-            reward += 50.0   # Proche
+            reward += 2.0    # Proche
         elif dist < 0.12:
-            reward += 20.0   # Assez proche  
+            reward += 1.0    # Assez proche  
         elif dist < 0.18:
-            reward += 5.0    # Approche
+            reward += 0.5    # Approche
         else:
-            reward -= 20.0   # Trop loin = pénalité
+            reward -= 1.0    # Trop loin = petite pénalité
 
-        # BONUS CONTACT ÉNORME
+        # BONUS CONTACT MOTIVANT MAIS RAISONNABLE
         if contact_count >= 1:
-            reward += 500.0    # Premier contact = énorme bonus!
+            reward += 20.0   # Premier contact = bon bonus
         if contact_count >= 2:
-            reward += 1000.0   # Grasp partiel = jackpot!
+            reward += 30.0   # Grasp partiel = excellent
         if contact_count >= 3:
-            reward += 2000.0   # Grasp complet = méga jackpot!
+            reward += 50.0   # Grasp complet = parfait
 
-        # Bonus amélioration
+        # Bonus amélioration modéré
         if dist < self.best_distance:
             improvement = self.best_distance - dist
-            reward += improvement * 200.0  # x200 pour forcer apprentissage
+            reward += improvement * 10.0  # Encouragement modéré
             self.best_distance = dist
 
-        # Pénalité vitesse réduite
-        reward -= min(10.0, cube_vel * 5.0)
+        # Pénalité vitesse douce
+        reward -= min(2.0, cube_vel * 2.0)
 
         # Pénalité temps très faible
         reward -= 0.01
@@ -805,13 +805,13 @@ class OptimizedGraspEnv(gym.Env):
     def advance_curriculum_level(self, episode_reward: float) -> bool:
         """Avance le niveau de curriculum si performance suffisante"""
         
-        # Critères d'avancement progressifs
+        # Critères d'avancement adaptés aux nouvelles récompenses
         thresholds = {
-            1: -20.0,  # Niveau débutant
-            2: -10.0,  # Niveau intermédiaire  
-            3: 0.0,    # Niveau avancé
-            4: 10.0,   # Niveau expert
-            5: 20.0    # Niveau maître
+            1: 10.0,   # Niveau débutant - approche basique
+            2: 30.0,   # Niveau intermédiaire - contact occasionnel
+            3: 60.0,   # Niveau avancé - contacts multiples
+            4: 100.0,  # Niveau expert - grasps stables
+            5: 150.0   # Niveau maître - grasps parfaits
         }
         
         if (self.curriculum_level < 5 and 
