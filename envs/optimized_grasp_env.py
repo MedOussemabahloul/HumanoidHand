@@ -410,7 +410,10 @@ class OptimizedGraspEnv(gym.Env):
     def reset(self, seed=None, options=None):
         """Reset avec positions initiales aléatoires"""
         
-        obs, info = super().reset(seed=seed, options=options)
+        super().reset(seed=seed, options=options)
+        
+        # Reset de l'état interne
+        self._reset_episode_vars()
         
         # RANDOMISER POSITION INITIALE pour éviter blocage local
         try:
