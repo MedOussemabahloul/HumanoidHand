@@ -76,124 +76,26 @@ class OptimizedGraspEnv(gym.Env):
             raise FileNotFoundError(f"❌ Modèle g1_combined.xml OBLIGATOIRE introuvable: {model_path}")
             
         self.model_path = model_path
-        self.logger.info(f"🔧 Utilisation du modèle: {model_path}")
+        self.logger.info(f"🤖 Utilisation EXCLUSIVE du modèle G1: {model_path}")
             
-        try:
-            # Charger le modèle MuJoCo
-            self._load_mujoco_model()
-                
-            # Configuration des composants
-            self._setup_robot_components()
-            self._setup_spaces()
-                
-            # Variables d'état
-            self._reset_episode_vars()
-                
-            # Historique pour mouvements fluides
-            self.action_history = []
-            self.max_action_history = 5
-                
-            self.logger.info(f"🤖 Environnement optimisé initialisé (niveau curriculum: {curriculum_level})")
-                
-        except Exception as e:
-            self.logger.error(f"❌ Erreur initialisation environnement: {e}")
-            raise
+        # Charger le modèle MuJoCo
+        self._load_mujoco_model()
+            
+        # Configuration des composants
+        self._setup_robot_components()
+        self._setup_spaces()
+            
+        # Variables d'état
+        self._reset_episode_vars()
+            
+        # Historique pour mouvements fluides
+        self.action_history = []
+        self.max_action_history = 5
+            
+        self.logger.info(f"🤖 Environnement G1 initialisé (niveau curriculum: {curriculum_level})")
     
     # Le reste du code reste identique...
-    def _create_minimal_working_model(self) -> str:
-        """Crée un modèle XML minimal mais fonctionnel"""
-        
-        model_xml = '''<?xml version="1.0" encoding="utf-8"?>
-    <mujoco model="optimized_grasp_minimal">
-        <compiler angle="radian" coordinate="local" />
-        <option timestep="0.002" gravity="0 0 -9.81" solver="Newton" iterations="20"/>
-        
-        <worldbody>
-            <light pos="0 0 3" dir="0 0 -1"/>
-            <geom name="floor" size="2 2 0.1" type="box" pos="0 0 -0.1" rgba="0.5 0.5 0.5 1"/>
-            
-            <!-- Table stable -->
-            <body name="table" pos="0.3 0 0.4">
-                <geom type="box" size="0.2 0.2 0.02" rgba="0.8 0.6 0.4 1" friction="1.0"/>
-                <inertial pos="0 0 0" mass="50.0" diaginertia="1.0 1.0 0.1"/>
-            </body>
-            
-            <!-- Cube à saisir -->
-            <body name="cube" pos="0.15 0 0.44">
-                <freejoint name="cube:joint"/>
-                <geom name="cube_geom" type="box" size="0.02 0.02 0.02" 
-                    rgba="0.2 0.8 0.2 1" friction="2.0" density="100"/>
-                <inertial pos="0 0 0" mass="0.1" diaginertia="0.001 0.001 0.001"/>
-            </body>
-            
-            <!-- Robot simplifié et stable -->
-            <body name="torso" pos="0 0 0.5">
-                <geom type="box" size="0.05 0.05 0.1" rgba="0.7 0.7 0.7 1"/>
-                <inertial pos="0 0 0" mass="5.0" diaginertia="0.1 0.1 0.1"/>
-                
-                <body name="shoulder" pos="0 -0.1 0.05">
-                    <joint name="shoulder_pan" type="hinge" axis="0 0 1" range="-1.0 1.0" damping="0.5"/>
-                    <joint name="shoulder_tilt" type="hinge" axis="0 1 0" range="-1.0 1.0" damping="0.5"/>
-                    <geom type="capsule" size="0.02 0.05" rgba="0.6 0.6 0.6 1"/>
-                    <inertial pos="0 0 -0.05" mass="0.5" diaginertia="0.01 0.01 0.01"/>
-                    
-                    <body name="elbow" pos="0 0 -0.1">
-                        <joint name="elbow" type="hinge" axis="0 1 0" range="0 2.0" damping="0.3"/>
-                        <geom type="capsule" size="0.015 0.05" rgba="0.5 0.5 0.5 1"/>
-                        <inertial pos="0 0 -0.05" mass="0.3" diaginertia="0.005 0.005 0.005"/>
-                        
-                        <body name="wrist" pos="0 0 -0.1">
-                            <joint name="wrist_pitch" type="hinge" axis="1 0 0" range="-1.0 1.0" damping="0.2"/>
-                            <geom type="capsule" size="0.01 0.03" rgba="0.4 0.4 0.4 1"/>
-                            <inertial pos="0 0 -0.03" mass="0.2" diaginertia="0.002 0.002 0.002"/>
-                            
-                            <body name="right_hand_index_1_link" pos="0 0 -0.04">
-                                <geom name="palm_geom" type="box" size="0.02 0.015 0.01" rgba="0.9 0.7 0.5 1"/>
-                                <inertial pos="0 0 0" mass="0.1" diaginertia="0.001 0.001 0.001"/>
-                                
-                                <body name="right_hand_thumb_2_link" pos="0.015 0.01 0">
-                                    <joint name="right_hand_thumb_base" type="hinge" axis="1 0 0" range="0 0.8" damping="0.1"/>
-                                    <geom name="right_hand_thumb_2_geom" type="capsule" size="0.005 0.015" 
-                                        rgba="0.9 0.7 0.5 1" friction="3.0"/>
-                                    <inertial pos="0 0 0.008" mass="0.01" diaginertia="1e-5 1e-5 1e-5"/>
-                                </body>
-                                
-                                <body name="right_hand_index_2_link" pos="0.02 0.005 0">
-                                    <joint name="right_hand_index_base" type="hinge" axis="0 1 0" range="0 0.8" damping="0.1"/>
-                                    <geom name="right_hand_index_1_geom" type="capsule" size="0.005 0.015" 
-                                        rgba="0.9 0.7 0.5 1" friction="3.0"/>
-                                    <inertial pos="0 0 0.008" mass="0.01" diaginertia="1e-5 1e-5 1e-5"/>
-                                </body>
-                                
-                                <body name="right_hand_middle_1_link" pos="0.02 -0.005 0">
-                                    <joint name="right_hand_middle_base" type="hinge" axis="0 1 0" range="0 0.8" damping="0.1"/>
-                                    <geom name="right_hand_middle_1_geom" type="capsule" size="0.005 0.015" 
-                                        rgba="0.9 0.7 0.5 1" friction="3.0"/>
-                                    <inertial pos="0 0 0.008" mass="0.01" diaginertia="1e-5 1e-5 1e-5"/>
-                                </body>
-                            </body>
-                        </body>
-                    </body>
-                </body>
-            </body>
-        </worldbody>
-        
-        <actuator>
-            <position name="shoulder_pan_motor" joint="shoulder_pan" kp="10" kv="3" forcerange="-5 5"/>
-            <position name="shoulder_tilt_motor" joint="shoulder_tilt" kp="10" kv="3" forcerange="-5 5"/>
-            <position name="elbow_motor" joint="elbow" kp="8" kv="2" forcerange="-3 3"/>
-            <position name="wrist_pitch_motor" joint="wrist_pitch" kp="5" kv="1" forcerange="-2 2"/>
-            <position name="thumb_base_motor" joint="right_hand_thumb_base" kp="3" kv="0.5" forcerange="-1 1"/>
-            <position name="index_base_motor" joint="right_hand_index_base" kp="3" kv="0.5" forcerange="-1 1"/>
-            <position name="middle_base_motor" joint="right_hand_middle_base" kp="3" kv="0.5" forcerange="-1 1"/>
-        </actuator>
-    </mujoco>'''
-        
-        import tempfile
-        with tempfile.NamedTemporaryFile(mode='w', suffix='.xml', delete=False, encoding='utf-8') as f:
-            f.write(model_xml)
-            self.logger.info(f"🔧 Modèle minimal créé: {f.name}")
-            return f.name
+
     def _setup_logging(self):
         """Configure le logging"""
         self.logger = logging.getLogger("OptimizedGrasp")

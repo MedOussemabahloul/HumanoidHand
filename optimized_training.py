@@ -360,45 +360,30 @@ def main():
         print(f"   {key}: {value}")
     print("=" * 50)
     
-    # Créer environnement principal - VERSION SIMPLIFIÉE
-    print("🏗️ Création de l'environnement...")
-    try:
-        # Vérifier si le modèle existe
-        model_path = "/home/oussema/Documents/project/results/g1_combined.xml"
-        print(f"🔍 Vérification du modèle: {model_path}")
-        
-        if os.path.exists(model_path):
-            print(f"✅ Modèle trouvé: {model_path}")
-        else:
-            print(f"⚠️ Modèle non trouvé, utilisation du modèle par défaut")
-            model_path = None
-        
-        # Créer l'environnement
-        env = OptimizedGraspEnv(
-            model_path=model_path,
-            render_mode="rgb_array",
-            max_episode_steps=500,
-            curriculum_level=1,
-            enable_smooth_movements=True
-        )
-        print("✅ Environnement créé avec succès")
-        
-        # Wrapping avec Monitor
-        env = Monitor(env)
-        print("✅ Monitor appliqué")
-        
-    except Exception as e:
-        print(f"❌ Erreur création environnement: {e}")
-        print("🔧 Tentative avec paramètres par défaut...")
-        
-        try:
-            # Tentative avec paramètres minimaux
-            env = OptimizedGraspEnv()
-            env = Monitor(env)
-            print("✅ Environnement créé avec paramètres par défaut")
-        except Exception as e2:
-            print(f"❌ Échec total: {e2}")
-            return
+    # Créer environnement G1 EXCLUSIVEMENT
+    print("🏗️ Création de l'environnement G1...")
+    
+    # FORCER g1_combined.xml - AUCUN FALLBACK
+    model_path = "/home/oussema/Documents/project/results/g1_combined.xml"
+    print(f"🤖 Utilisation EXCLUSIVE de: {model_path}")
+    
+    if not os.path.exists(model_path):
+        print(f"❌ ERREUR CRITIQUE: {model_path} introuvable!")
+        return
+    
+    # Créer l'environnement G1
+    env = OptimizedGraspEnv(
+        model_path=model_path,
+        render_mode="rgb_array",
+        max_episode_steps=500,
+        curriculum_level=1,
+        enable_smooth_movements=True
+    )
+    print("✅ Environnement G1 créé avec succès")
+    
+    # Wrapping avec Monitor
+    env = Monitor(env)
+    print("✅ Monitor appliqué")
     
     # Configuration du bruit comme le collègue
     print("🔧 Configuration du bruit d'action...")
