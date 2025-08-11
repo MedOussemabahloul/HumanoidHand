@@ -1,1 +1,144 @@
 2025-08-10 23:12:58,635 - INFO - ✅ Environnement d'évaluation créé
+2025-08-11 05:05:02,554 - INFO - ✅ Environnement d'évaluation créé
+2025-08-11 05:05:30,154 - INFO - Step 1000: dist=0.541, contacts=0, curriculum=1
+2025-08-11 05:06:00,781 - INFO - Step 2000: dist=0.541, contacts=0, curriculum=1
+2025-08-11 05:06:50,126 - INFO - Step 3000: dist=0.541, contacts=0, curriculum=1
+2025-08-11 05:07:28,172 - INFO - Step 4000: dist=0.541, contacts=0, curriculum=1
+2025-08-11 05:07:57,481 - INFO - Step 5000: dist=0.541, contacts=0, curriculum=1
+2025-08-11 05:08:29,953 - INFO - Step 6000: dist=0.541, contacts=0, curriculum=1
+2025-08-11 05:09:06,370 - INFO - Step 7000: dist=0.541, contacts=0, curriculum=1
+2025-08-11 05:09:44,701 - INFO - Step 8000: dist=0.541, contacts=0, curriculum=1
+2025-08-11 05:10:15,872 - INFO - Step 9000: dist=0.541, contacts=0, curriculum=1
+2025-08-11 05:10:51,262 - INFO - Step 10000: dist=0.541, contacts=0, curriculum=1
+2025-08-11 05:11:20,515 - INFO - Step 11000: dist=0.541, contacts=0, curriculum=1
+2025-08-11 05:11:54,766 - INFO - Step 12000: dist=0.541, contacts=0, curriculum=1
+2025-08-11 05:15:12,032 - INFO - ✅ Environnement d'évaluation créé
+2025-08-11 05:15:21,238 - INFO - Step 1000: dist=0.248, contacts=0, curriculum=1
+2025-08-11 05:15:33,229 - INFO - Step 2000: dist=0.248, contacts=0, curriculum=1
+2025-08-11 05:15:44,934 - INFO - Step 3000: dist=0.249, contacts=0, curriculum=1
+2025-08-11 05:16:12,029 - INFO - Step 4000: dist=0.248, contacts=0, curriculum=1
+2025-08-11 05:16:44,710 - INFO - Step 5000: dist=0.246, contacts=0, curriculum=1
+2025-08-11 05:17:02,314 - INFO - Step 6000: dist=0.248, contacts=0, curriculum=1
+2025-08-11 05:17:18,886 - INFO - Step 7000: dist=0.248, contacts=0, curriculum=1
+2025-08-11 05:17:36,569 - INFO - Step 8000: dist=0.246, contacts=0, curriculum=1
+2025-08-11 05:17:50,410 - INFO - Step 9000: dist=0.248, contacts=0, curriculum=1
+2025-08-11 05:18:05,639 - INFO - Step 10000: dist=0.248, contacts=0, curriculum=1
+2025-08-11 05:18:23,889 - INFO - Step 11000: dist=0.247, contacts=0, curriculum=1
+2025-08-11 05:18:46,052 - INFO - ✅ Environnement d'évaluation créé
+2025-08-11 05:18:55,765 - INFO - Step 1000: dist=0.195, contacts=0, curriculum=1
+2025-08-11 05:19:07,332 - INFO - Step 2000: dist=0.192, contacts=0, curriculum=1
+2025-08-11 05:19:19,249 - INFO - Step 3000: dist=0.193, contacts=0, curriculum=1
+2025-08-11 05:19:31,711 - INFO - Step 4000: dist=0.192, contacts=0, curriculum=1
+2025-08-11 05:19:43,927 - INFO - Step 5000: dist=0.193, contacts=0, curriculum=1
+2025-08-11 05:19:56,400 - INFO - Step 6000: dist=0.193, contacts=0, curriculum=1
+2025-08-11 05:20:08,986 - INFO - Step 7000: dist=0.193, contacts=0, curriculum=1
+2025-08-11 05:20:20,990 - INFO - Step 8000: dist=0.192, contacts=0, curriculum=1
+2025-08-11 05:20:33,224 - INFO - Step 9000: dist=0.194, contacts=0, curriculum=1
+2025-08-11 05:20:45,093 - INFO - Step 10000: dist=0.194, contacts=0, curriculum=1
+2025-08-11 05:20:57,150 - INFO - Step 11000: dist=0.194, contacts=0, curriculum=1
+2025-08-11 05:21:09,485 - INFO - Step 12000: dist=0.195, contacts=0, curriculum=1
+2025-08-11 05:21:21,283 - INFO - Step 13000: dist=0.193, contacts=0, curriculum=1
+2025-08-11 05:21:33,444 - INFO - Step 14000: dist=0.193, contacts=0, curriculum=1
+2025-08-11 05:21:45,930 - INFO - Step 15000: dist=0.192, contacts=0, curriculum=1
+2025-08-11 05:21:58,332 - INFO - Step 16000: dist=0.192, contacts=0, curriculum=1
+2025-08-11 05:22:10,014 - INFO - Step 17000: dist=0.194, contacts=0, curriculum=1
+2025-08-11 05:22:22,370 - INFO - Step 18000: dist=0.193, contacts=0, curriculum=1
+2025-08-11 05:22:34,126 - INFO - Step 19000: dist=0.193, contacts=0, curriculum=1
+2025-08-11 05:22:46,555 - INFO - Step 20000: dist=0.195, contacts=0, curriculum=1
+2025-08-11 05:22:58,186 - INFO - Step 21000: dist=0.194, contacts=0, curriculum=1
+2025-08-11 05:23:10,089 - INFO - Step 22000: dist=0.193, contacts=0, curriculum=1
+2025-08-11 05:23:22,245 - INFO - Step 23000: dist=0.194, contacts=0, curriculum=1
+2025-08-11 05:23:34,086 - INFO - Step 24000: dist=0.193, contacts=0, curriculum=1
+2025-08-11 05:23:47,055 - INFO - Step 25000: dist=0.193, contacts=0, curriculum=1
+2025-08-11 05:23:47,056 - INFO - 📊 Évaluation à 25000 steps...
+2025-08-11 05:23:47,889 - INFO - 💾 Nouveau meilleur modèle: 1741.18
+2025-08-11 05:23:47,889 - INFO -    Reward: 1741.18, Contacts: 0.0, Distance: 0.187
+2025-08-11 05:23:47,907 - INFO - 💾 Modèle sauvegardé: model_25000_20250811-052347
+2025-08-11 05:24:00,111 - INFO - Step 26000: dist=0.195, contacts=0, curriculum=1
+2025-08-11 05:24:12,186 - INFO - Step 27000: dist=0.193, contacts=0, curriculum=1
+2025-08-11 05:24:24,788 - INFO - Step 28000: dist=0.193, contacts=0, curriculum=1
+2025-08-11 05:24:36,576 - INFO - Step 29000: dist=0.195, contacts=0, curriculum=1
+2025-08-11 05:24:48,842 - INFO - Step 30000: dist=0.193, contacts=0, curriculum=1
+2025-08-11 05:25:00,508 - INFO - Step 31000: dist=0.193, contacts=0, curriculum=1
+2025-08-11 05:25:12,355 - INFO - Step 32000: dist=0.194, contacts=0, curriculum=1
+2025-08-11 05:25:23,954 - INFO - Step 33000: dist=0.193, contacts=0, curriculum=1
+2025-08-11 05:25:36,616 - INFO - Step 34000: dist=0.194, contacts=0, curriculum=1
+2025-08-11 05:25:48,309 - INFO - Step 35000: dist=0.195, contacts=0, curriculum=1
+2025-08-11 05:25:59,983 - INFO - Step 36000: dist=0.195, contacts=0, curriculum=1
+2025-08-11 05:26:11,518 - INFO - Step 37000: dist=0.193, contacts=0, curriculum=1
+2025-08-11 05:26:23,621 - INFO - Step 38000: dist=0.194, contacts=0, curriculum=1
+2025-08-11 05:26:35,442 - INFO - Step 39000: dist=0.195, contacts=0, curriculum=1
+2025-08-11 05:26:47,527 - INFO - Step 40000: dist=0.195, contacts=0, curriculum=1
+2025-08-11 05:26:59,632 - INFO - Step 41000: dist=0.192, contacts=0, curriculum=1
+2025-08-11 05:27:11,678 - INFO - Step 42000: dist=0.194, contacts=0, curriculum=1
+2025-08-11 05:27:23,465 - INFO - Step 43000: dist=0.194, contacts=0, curriculum=1
+2025-08-11 05:27:35,762 - INFO - Step 44000: dist=0.195, contacts=0, curriculum=1
+2025-08-11 05:27:49,894 - INFO - Step 45000: dist=0.194, contacts=0, curriculum=1
+2025-08-11 05:28:00,220 - INFO - Step 46000: dist=0.193, contacts=0, curriculum=1
+2025-08-11 05:28:10,962 - INFO - Step 47000: dist=0.195, contacts=0, curriculum=1
+2025-08-11 05:28:21,616 - INFO - Step 48000: dist=0.195, contacts=0, curriculum=1
+2025-08-11 05:28:32,366 - INFO - Step 49000: dist=0.194, contacts=0, curriculum=1
+2025-08-11 05:28:42,549 - INFO - Step 50000: dist=0.192, contacts=0, curriculum=1
+2025-08-11 05:28:42,550 - INFO - 📊 Évaluation à 50000 steps...
+2025-08-11 05:28:43,346 - INFO -    Reward: 1741.18, Contacts: 0.0, Distance: 0.187
+2025-08-11 05:28:43,347 - INFO - 🎥 Création vidéo à 50000 steps...
+2025-08-11 05:28:52,545 - INFO - ✅ Vidéo sauvegardée: eval_50000_20250811-052851.mp4
+2025-08-11 05:28:52,576 - INFO - 💾 Modèle sauvegardé: model_50000_20250811-052852
+2025-08-11 05:29:03,261 - INFO - Step 51000: dist=0.194, contacts=0, curriculum=1
+2025-08-11 05:29:14,780 - INFO - Step 52000: dist=0.192, contacts=0, curriculum=1
+2025-08-11 05:29:25,908 - INFO - Step 53000: dist=0.195, contacts=0, curriculum=1
+2025-08-11 05:29:36,445 - INFO - Step 54000: dist=0.194, contacts=0, curriculum=1
+2025-08-11 05:29:47,186 - INFO - Step 55000: dist=0.194, contacts=0, curriculum=1
+2025-08-11 05:29:57,627 - INFO - Step 56000: dist=0.193, contacts=0, curriculum=1
+2025-08-11 05:30:08,579 - INFO - Step 57000: dist=0.195, contacts=0, curriculum=1
+2025-08-11 05:30:19,536 - INFO - Step 58000: dist=0.194, contacts=0, curriculum=1
+2025-08-11 05:30:31,151 - INFO - Step 59000: dist=0.194, contacts=0, curriculum=1
+2025-08-11 05:30:42,179 - INFO - Step 60000: dist=0.193, contacts=0, curriculum=1
+2025-08-11 05:30:53,150 - INFO - Step 61000: dist=0.193, contacts=0, curriculum=1
+2025-08-11 05:31:04,604 - INFO - Step 62000: dist=0.193, contacts=0, curriculum=1
+2025-08-11 05:31:15,435 - INFO - Step 63000: dist=0.194, contacts=0, curriculum=1
+2025-08-11 05:31:26,220 - INFO - Step 64000: dist=0.194, contacts=0, curriculum=1
+2025-08-11 05:31:37,427 - INFO - Step 65000: dist=0.194, contacts=0, curriculum=1
+2025-08-11 05:31:48,222 - INFO - Step 66000: dist=0.194, contacts=0, curriculum=1
+2025-08-11 05:31:59,260 - INFO - Step 67000: dist=0.194, contacts=0, curriculum=1
+2025-08-11 05:32:10,876 - INFO - Step 68000: dist=0.195, contacts=0, curriculum=1
+2025-08-11 05:32:22,030 - INFO - Step 69000: dist=0.195, contacts=0, curriculum=1
+2025-08-11 05:32:33,923 - INFO - Step 70000: dist=0.193, contacts=0, curriculum=1
+2025-08-11 05:32:45,431 - INFO - Step 71000: dist=0.195, contacts=0, curriculum=1
+2025-08-11 05:32:56,946 - INFO - Step 72000: dist=0.195, contacts=0, curriculum=1
+2025-08-11 05:37:20,548 - INFO - Step 73000: dist=0.194, contacts=0, curriculum=1
+2025-08-11 05:37:36,358 - INFO - Step 74000: dist=0.194, contacts=0, curriculum=1
+2025-08-11 05:37:51,347 - INFO - Step 75000: dist=0.194, contacts=0, curriculum=1
+2025-08-11 05:37:51,348 - INFO - 📊 Évaluation à 75000 steps...
+2025-08-11 05:37:52,157 - INFO -    Reward: 1741.18, Contacts: 0.0, Distance: 0.187
+2025-08-11 05:37:52,183 - INFO - 💾 Modèle sauvegardé: model_75000_20250811-053752
+2025-08-11 05:38:13,328 - INFO - Step 76000: dist=0.196, contacts=0, curriculum=1
+2025-08-11 05:38:33,488 - INFO - Step 77000: dist=0.194, contacts=0, curriculum=1
+2025-08-11 05:38:51,445 - INFO - Step 78000: dist=0.196, contacts=0, curriculum=1
+2025-08-11 05:39:23,621 - INFO - Step 79000: dist=0.194, contacts=0, curriculum=1
+2025-08-11 05:40:24,327 - INFO - Step 80000: dist=0.195, contacts=0, curriculum=1
+2025-08-11 05:40:40,817 - INFO - Step 81000: dist=0.195, contacts=0, curriculum=1
+2025-08-11 05:40:53,942 - INFO - Step 82000: dist=0.195, contacts=0, curriculum=1
+2025-08-11 05:41:07,308 - INFO - Step 83000: dist=0.195, contacts=0, curriculum=1
+2025-08-11 05:41:20,400 - INFO - Step 84000: dist=0.196, contacts=0, curriculum=1
+2025-08-11 05:41:33,353 - INFO - Step 85000: dist=0.195, contacts=0, curriculum=1
+2025-08-11 05:41:46,917 - INFO - Step 86000: dist=0.194, contacts=0, curriculum=1
+2025-08-11 05:42:00,004 - INFO - Step 87000: dist=0.197, contacts=0, curriculum=1
+2025-08-11 05:42:13,385 - INFO - Step 88000: dist=0.194, contacts=0, curriculum=1
+2025-08-11 05:42:26,958 - INFO - Step 89000: dist=0.195, contacts=0, curriculum=1
+2025-08-11 05:42:40,303 - INFO - Step 90000: dist=0.196, contacts=0, curriculum=1
+2025-08-11 05:42:53,989 - INFO - Step 91000: dist=0.194, contacts=0, curriculum=1
+2025-08-11 05:43:07,336 - INFO - Step 92000: dist=0.196, contacts=0, curriculum=1
+2025-08-11 05:43:20,584 - INFO - Step 93000: dist=0.196, contacts=0, curriculum=1
+2025-08-11 05:43:34,387 - INFO - Step 94000: dist=0.196, contacts=0, curriculum=1
+2025-08-11 05:43:47,884 - INFO - Step 95000: dist=0.195, contacts=0, curriculum=1
+2025-08-11 05:44:01,293 - INFO - Step 96000: dist=0.195, contacts=0, curriculum=1
+2025-08-11 05:44:14,802 - INFO - Step 97000: dist=0.197, contacts=0, curriculum=1
+2025-08-11 05:44:28,199 - INFO - Step 98000: dist=0.197, contacts=0, curriculum=1
+2025-08-11 05:44:41,932 - INFO - Step 99000: dist=0.194, contacts=0, curriculum=1
+2025-08-11 05:44:55,810 - INFO - Step 100000: dist=0.196, contacts=0, curriculum=1
+2025-08-11 05:44:55,811 - INFO - 📊 Évaluation à 100000 steps...
+2025-08-11 05:44:56,605 - INFO -    Reward: 1741.18, Contacts: 0.0, Distance: 0.187
+2025-08-11 05:44:56,606 - INFO - 🎥 Création vidéo à 100000 steps...
+2025-08-11 05:45:06,297 - INFO - ✅ Vidéo sauvegardée: eval_100000_20250811-054505.mp4
+2025-08-11 05:45:06,339 - INFO - 💾 Modèle sauvegardé: model_100000_20250811-054506

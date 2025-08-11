@@ -300,16 +300,18 @@ def main():
     """
     
     # Configuration inspirée du collègue mais équilibrée
+    # CORRECTION 2: Paramètres training plus agressifs dans optimized_training.py
+
     config = {
-        'total_timesteps': 100_000,
-        'learning_rate': 3e-4,
-        'batch_size': 256,
-        'buffer_size': 1_000_000,
-        'gamma': 0.98,
-        'tau': 0.02,
-        'noise_std': 0.3,
-        'results_dir': "optimized_results"
-    }
+        'total_timesteps': 50_000,     # Plus court pour tester rapidement
+        'learning_rate': 5e-3,         # BEAUCOUP plus élevé
+        'batch_size': 64,              # Plus petit = plus instable
+        'buffer_size': 50_000,         # Plus petit
+        'gamma': 0.9,                  # Moins patient  
+        'tau': 0.1,                    # Mise à jour très rapide
+        'noise_std': 0.8,              # Plus d'exploration!
+        'results_dir': "retry_results"
+}
     
     print("🚀 DÉMARRAGE DU TRAINING OPTIMISÉ")
     print("=" * 50)
@@ -365,6 +367,23 @@ def main():
         mean=np.zeros(n_actions), 
         sigma=config['noise_std'] * np.ones(n_actions)
     )
+        # Configuration du bruit comme le collègue
+    print("🔧 Configuration du bruit d'action...")
+    n_actions = env.action_space.shape[0]
+    action_noise = NormalActionNoise(
+        mean=np.zeros(n_actions), 
+        sigma=config['noise_std'] * np.ones(n_actions)
+    )
+
+    # ← AJOUTEZ CES LIGNES POUR PRÉ-REMPLIR LE BUFFER
+    print("🎲 Pré-remplissage du buffer avec actions aléatoires...")
+    obs, _ = env.reset()
+    for _ in range(1000):  # 1000 actions aléatoires
+        random_action = env.action_space.sample()
+        obs, _, terminated, _, _ = env.step(random_action)
+        if terminated:
+            obs, _ = env.reset()
+    print("✅ Buffer pré-rempli")
     
     # Créer le modèle TD3 comme le collègue
     print("🧠 Création du modèle TD3...")

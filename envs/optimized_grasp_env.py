@@ -103,7 +103,100 @@ class OptimizedGraspEnv(gym.Env):
             raise
     
     # Le reste du code reste identique...
-    
+    def _create_minimal_working_model(self) -> str:
+        """Crée un modèle XML minimal mais fonctionnel"""
+        
+        model_xml = '''<?xml version="1.0" encoding="utf-8"?>
+    <mujoco model="optimized_grasp_minimal">
+        <compiler angle="radian" coordinate="local" />
+        <option timestep="0.002" gravity="0 0 -9.81" solver="Newton" iterations="20"/>
+        
+        <worldbody>
+            <light pos="0 0 3" dir="0 0 -1"/>
+            <geom name="floor" size="2 2 0.1" type="box" pos="0 0 -0.1" rgba="0.5 0.5 0.5 1"/>
+            
+            <!-- Table stable -->
+            <body name="table" pos="0.3 0 0.4">
+                <geom type="box" size="0.2 0.2 0.02" rgba="0.8 0.6 0.4 1" friction="1.0"/>
+                <inertial pos="0 0 0" mass="50.0" diaginertia="1.0 1.0 0.1"/>
+            </body>
+            
+            <!-- Cube à saisir -->
+            <body name="cube" pos="0.15 0 0.44">
+                <freejoint name="cube:joint"/>
+                <geom name="cube_geom" type="box" size="0.02 0.02 0.02" 
+                    rgba="0.2 0.8 0.2 1" friction="2.0" density="100"/>
+                <inertial pos="0 0 0" mass="0.1" diaginertia="0.001 0.001 0.001"/>
+            </body>
+            
+            <!-- Robot simplifié et stable -->
+            <body name="torso" pos="0 0 0.5">
+                <geom type="box" size="0.05 0.05 0.1" rgba="0.7 0.7 0.7 1"/>
+                <inertial pos="0 0 0" mass="5.0" diaginertia="0.1 0.1 0.1"/>
+                
+                <body name="shoulder" pos="0 -0.1 0.05">
+                    <joint name="shoulder_pan" type="hinge" axis="0 0 1" range="-1.0 1.0" damping="0.5"/>
+                    <joint name="shoulder_tilt" type="hinge" axis="0 1 0" range="-1.0 1.0" damping="0.5"/>
+                    <geom type="capsule" size="0.02 0.05" rgba="0.6 0.6 0.6 1"/>
+                    <inertial pos="0 0 -0.05" mass="0.5" diaginertia="0.01 0.01 0.01"/>
+                    
+                    <body name="elbow" pos="0 0 -0.1">
+                        <joint name="elbow" type="hinge" axis="0 1 0" range="0 2.0" damping="0.3"/>
+                        <geom type="capsule" size="0.015 0.05" rgba="0.5 0.5 0.5 1"/>
+                        <inertial pos="0 0 -0.05" mass="0.3" diaginertia="0.005 0.005 0.005"/>
+                        
+                        <body name="wrist" pos="0 0 -0.1">
+                            <joint name="wrist_pitch" type="hinge" axis="1 0 0" range="-1.0 1.0" damping="0.2"/>
+                            <geom type="capsule" size="0.01 0.03" rgba="0.4 0.4 0.4 1"/>
+                            <inertial pos="0 0 -0.03" mass="0.2" diaginertia="0.002 0.002 0.002"/>
+                            
+                            <body name="right_hand_index_1_link" pos="0 0 -0.04">
+                                <geom name="palm_geom" type="box" size="0.02 0.015 0.01" rgba="0.9 0.7 0.5 1"/>
+                                <inertial pos="0 0 0" mass="0.1" diaginertia="0.001 0.001 0.001"/>
+                                
+                                <body name="right_hand_thumb_2_link" pos="0.015 0.01 0">
+                                    <joint name="right_hand_thumb_base" type="hinge" axis="1 0 0" range="0 0.8" damping="0.1"/>
+                                    <geom name="right_hand_thumb_2_geom" type="capsule" size="0.005 0.015" 
+                                        rgba="0.9 0.7 0.5 1" friction="3.0"/>
+                                    <inertial pos="0 0 0.008" mass="0.01" diaginertia="1e-5 1e-5 1e-5"/>
+                                </body>
+                                
+                                <body name="right_hand_index_2_link" pos="0.02 0.005 0">
+                                    <joint name="right_hand_index_base" type="hinge" axis="0 1 0" range="0 0.8" damping="0.1"/>
+                                    <geom name="right_hand_index_1_geom" type="capsule" size="0.005 0.015" 
+                                        rgba="0.9 0.7 0.5 1" friction="3.0"/>
+                                    <inertial pos="0 0 0.008" mass="0.01" diaginertia="1e-5 1e-5 1e-5"/>
+                                </body>
+                                
+                                <body name="right_hand_middle_1_link" pos="0.02 -0.005 0">
+                                    <joint name="right_hand_middle_base" type="hinge" axis="0 1 0" range="0 0.8" damping="0.1"/>
+                                    <geom name="right_hand_middle_1_geom" type="capsule" size="0.005 0.015" 
+                                        rgba="0.9 0.7 0.5 1" friction="3.0"/>
+                                    <inertial pos="0 0 0.008" mass="0.01" diaginertia="1e-5 1e-5 1e-5"/>
+                                </body>
+                            </body>
+                        </body>
+                    </body>
+                </body>
+            </body>
+        </worldbody>
+        
+        <actuator>
+            <position name="shoulder_pan_motor" joint="shoulder_pan" kp="10" kv="3" forcerange="-5 5"/>
+            <position name="shoulder_tilt_motor" joint="shoulder_tilt" kp="10" kv="3" forcerange="-5 5"/>
+            <position name="elbow_motor" joint="elbow" kp="8" kv="2" forcerange="-3 3"/>
+            <position name="wrist_pitch_motor" joint="wrist_pitch" kp="5" kv="1" forcerange="-2 2"/>
+            <position name="thumb_base_motor" joint="right_hand_thumb_base" kp="3" kv="0.5" forcerange="-1 1"/>
+            <position name="index_base_motor" joint="right_hand_index_base" kp="3" kv="0.5" forcerange="-1 1"/>
+            <position name="middle_base_motor" joint="right_hand_middle_base" kp="3" kv="0.5" forcerange="-1 1"/>
+        </actuator>
+    </mujoco>'''
+        
+        import tempfile
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.xml', delete=False, encoding='utf-8') as f:
+            f.write(model_xml)
+            self.logger.info(f"🔧 Modèle minimal créé: {f.name}")
+            return f.name
     def _setup_logging(self):
         """Configure le logging"""
         self.logger = logging.getLogger("OptimizedGrasp")
@@ -263,7 +356,7 @@ class OptimizedGraspEnv(gym.Env):
         # Créer directement un modèle minimal qui fonctionne
         self.logger.info("🔧 Création directe d'un modèle minimal (bypass du modèle problématique)")
         return None  # Forcer la création d'un modèle minimal
-        def _setup_robot_components(self):
+    def _setup_robot_components(self):
             """Configure les composants du robot"""
             
             # Identifier les actuateurs (inspiré du collègue mais plus robuste)
@@ -282,7 +375,7 @@ class OptimizedGraspEnv(gym.Env):
             
             self.logger.info(f"✅ Composants configurés: {len(self.arm_actuators)} bras, {len(self.finger_actuators)} doigts")
         
-        def _setup_spaces(self):
+    def _setup_spaces(self):
             """Configure les espaces d'action et d'observation"""
             
             # Espace d'action pour tous les actuateurs
@@ -315,43 +408,39 @@ class OptimizedGraspEnv(gym.Env):
         self.stable_grasp_duration = 0
     
     def reset(self, seed=None, options=None):
-        """Reset de l'environnement avec position cube fixe comme le collègue"""
-        super().reset(seed=seed)
+        """Reset avec positions initiales aléatoires"""
         
-        # Reset MuJoCo
-        mujoco.mj_resetData(self.model, self.data)
-        mujoco.mj_forward(self.model, self.data)
+        obs, info = super().reset(seed=seed, options=options)
         
-        # Position cube FIXE comme le collègue: [0.18, 0.0, 0.04]
+        # RANDOMISER POSITION INITIALE pour éviter blocage local
         try:
-            cube_joint_id = mujoco.mj_name2id(self.model, mujoco.mjtObj.mjOBJ_JOINT, "cube:joint")
+            # Position cube légèrement aléatoire autour de [0.18, 0.0, 0.04]
+            cube_joint_id = mujoco.mj_name2id(self.model, mujoco.mjtObj.mjOBJ_JOINT, "cube_free")
             if cube_joint_id >= 0:
                 cube_qpos_addr = self.model.jnt_qposadr[cube_joint_id]
                 
-                # Position fixe
-                fixed_cube_pos = np.array([0.18, 0.0, 0.04])
+                # Position avec variation aléatoire
+                base_pos = np.array([0.18, 0.0, 0.04])
+                random_offset = np.random.normal(0, 0.02, 3)  # Petite variation
+                random_pos = base_pos + random_offset
+                
+                # Appliquer position
                 start = cube_qpos_addr
                 end = min(cube_qpos_addr + 3, len(self.data.qpos))
-                self.data.qpos[start:end] = fixed_cube_pos[:end-start]
-                
-                # Orientation fixe
-                fixed_cube_quat = np.array([1, 0, 0, 0])
-                start = cube_qpos_addr + 3
-                end = min(cube_qpos_addr + 7, len(self.data.qpos))
-                if end > start:
-                    self.data.qpos[start:end] = fixed_cube_quat[:end-start]
+                self.data.qpos[start:end] = random_pos[:end-start]
+            
+            # RANDOMISER POSITION ROBOT aussi
+            if len(self.data.qpos) > 7:  # Si on a des joints de robot
+                for i in range(min(4, len(self.data.qpos) - 7)):  # Premiers joints
+                    self.data.qpos[7 + i] += np.random.normal(0, 0.3)  # Variation importante
                     
         except Exception as e:
-            self.logger.warning(f"⚠️ Impossible de fixer position cube: {e}")
+            self.logger.warning(f"Randomisation position échouée: {e}")
         
-        # Reset variables
-        self._reset_episode_vars()
+        # Forward kinematics
+        mujoco.mj_forward(self.model, self.data)
         
-        # Observation initiale
-        obs = self._get_obs()
-        
-        return obs, {}
-    
+        return self._get_obs(), {}
     def step(self, action):
         """Step inspiré du collègue avec nos améliorations"""
         
@@ -454,193 +543,178 @@ class OptimizedGraspEnv(gym.Env):
         
         return base_scale * curriculum_factor
     
-def _apply_movement_smoothing(self, action):
-    """Applique un lissage des mouvements pour fluidité"""
-    
-    # Ajouter à l'historique
-    self.action_history.append(action.copy())
-    if len(self.action_history) > self.max_action_history:
-        self.action_history.pop(0)
-    
-    # Si on a assez d'historique, appliquer lissage
-    if len(self.action_history) >= 3:
-        # CORRECTION: Créer les poids selon la taille actuelle de l'historique
-        history_size = len(self.action_history)
+    def _apply_movement_smoothing(self, action):
+        """Applique un lissage des mouvements pour fluidité"""
         
-        # Moyenne pondérée simple : plus de poids sur les actions récentes
-        smoothed = np.zeros_like(action)
-        total_weight = 0
+        # Ajouter à l'historique
+        self.action_history.append(action.copy())
+        if len(self.action_history) > self.max_action_history:
+            self.action_history.pop(0)
         
-        # Créer des poids croissants pour les actions plus récentes
-        for i, hist_action in enumerate(self.action_history):
-            weight = i + 1  # Poids croissant (1, 2, 3, 4, 5)
-            smoothed += weight * hist_action
-            total_weight += weight
+        # Si on a assez d'historique, appliquer lissage
+        if len(self.action_history) >= 3:
+            # CORRECTION: Créer les poids selon la taille actuelle de l'historique
+            history_size = len(self.action_history)
+            
+            # Moyenne pondérée simple : plus de poids sur les actions récentes
+            smoothed = np.zeros_like(action)
+            total_weight = 0
+            
+            # Créer des poids croissants pour les actions plus récentes
+            for i, hist_action in enumerate(self.action_history):
+                weight = i + 1  # Poids croissant (1, 2, 3, 4, 5)
+                smoothed += weight * hist_action
+                total_weight += weight
+            
+            # Normaliser
+            smoothed /= total_weight
+            return smoothed
         
-        # Normaliser
-        smoothed /= total_weight
-        return smoothed
-    
-    return action
+        return action
     def _get_positions(self):
-        """Calcule toutes les positions nécessaires"""
-        
-        try:
-            # Positions des objets
-            cube_id = mujoco.mj_name2id(self.model, mujoco.mjtObj.mjOBJ_BODY, "cube")
-            cube_pos = self.data.xpos[cube_id] if cube_id >= 0 else np.zeros(3)
+            """Calcule toutes les positions nécessaires"""
             
-            # Position de la main
             try:
-                palm_pos = self.data.body("right_hand_index_1_link").xpos
-            except:
-                palm_pos = np.array([0.0, 0.0, 0.5])  # Position par défaut
-            
-            # Positions des doigts
-            finger_positions = {}
-            finger_names = ["right_hand_thumb_2_link", "right_hand_index_2_link", "right_hand_middle_1_link"]
-            
-            for name in finger_names:
-                try:
-                    finger_positions[name] = self.data.body(name).xpos
-                except:
-                    finger_positions[name] = palm_pos  # Fallback
-            
-            # Distances
-            palm_to_cube_dist = np.linalg.norm(palm_pos - cube_pos)
-            
-            # Vitesse du cube
-            cube_velocity = np.linalg.norm(self.data.cvel[cube_id]) if cube_id >= 0 else 0.0
-            
-            # Contacts (inspiré du collègue)
-            contact_count = self._count_finger_contacts()
-            
-            return {
-                'cube_pos': cube_pos,
-                'palm_pos': palm_pos,
-                'finger_positions': finger_positions,
-                'palm_to_cube_dist': palm_to_cube_dist,
-                'cube_velocity': cube_velocity,
-                'contact_count': contact_count
-            }
-            
-        except Exception as e:
-            self.logger.warning(f"⚠️ Erreur calcul positions: {e}")
-            # Retour sécurisé
-            return {
-                'cube_pos': np.array([0.18, 0.0, 0.04]),
-                'palm_pos': np.array([0.0, 0.0, 0.5]),
-                'finger_positions': {},
-                'palm_to_cube_dist': 0.5,
-                'cube_velocity': 0.0,
-                'contact_count': 0
-            }
-    
-    def _count_finger_contacts(self):
-        """Compte les contacts des doigts avec le cube (comme le collègue)"""
-        
-        contact_count = 0
-        finger_geoms = ["right_hand_thumb_2_geom", "right_hand_index_1_geom", "right_hand_middle_1_geom"]
-        
-        for i in range(self.data.ncon):
-            contact = self.data.contact[i]
-            try:
-                name1 = mujoco.mj_id2name(self.model, mujoco.mjtObj.mjOBJ_GEOM, contact.geom1)
-                name2 = mujoco.mj_id2name(self.model, mujoco.mjtObj.mjOBJ_GEOM, contact.geom2)
+                # Positions des objets
+                cube_id = mujoco.mj_name2id(self.model, mujoco.mjtObj.mjOBJ_BODY, "cube")
+                cube_pos = self.data.xpos[cube_id] if cube_id >= 0 else np.zeros(3)
                 
-                # Vérifier si c'est un contact doigt-cube
-                if ((name1 == "cube_geom" and name2 in finger_geoms) or
-                    (name2 == "cube_geom" and name1 in finger_geoms)):
-                    contact_count += 1
+                # Position de la main
+                try:
+                    palm_pos = self.data.body("right_hand_index_1_link").xpos
+                except:
+                    palm_pos = np.array([0.0, 0.0, 0.5])  # Position par défaut
+                
+                # Positions des doigts
+                finger_positions = {}
+                finger_names = ["right_hand_thumb_2_link", "right_hand_index_2_link", "right_hand_middle_1_link"]
+                
+                for name in finger_names:
+                    try:
+                        finger_positions[name] = self.data.body(name).xpos
+                    except:
+                        finger_positions[name] = palm_pos  # Fallback
+                
+                # Distances
+                palm_to_cube_dist = np.linalg.norm(palm_pos - cube_pos)
+                
+                # Vitesse du cube
+                cube_velocity = np.linalg.norm(self.data.cvel[cube_id]) if cube_id >= 0 else 0.0
+                
+                # Contacts (inspiré du collègue)
+                contact_count = self._count_finger_contacts()
+                
+                return {
+                    'cube_pos': cube_pos,
+                    'palm_pos': palm_pos,
+                    'finger_positions': finger_positions,
+                    'palm_to_cube_dist': palm_to_cube_dist,
+                    'cube_velocity': cube_velocity,
+                    'contact_count': contact_count
+                }
+                
+            except Exception as e:
+                self.logger.warning(f"⚠️ Erreur calcul positions: {e}")
+                # Retour sécurisé
+                return {
+                    'cube_pos': np.array([0.18, 0.0, 0.04]),
+                    'palm_pos': np.array([0.0, 0.0, 0.5]),
+                    'finger_positions': {},
+                    'palm_to_cube_dist': 0.5,
+                    'cube_velocity': 0.0,
+                    'contact_count': 0
+                }
+        
+    def _count_finger_contacts(self):
+            """Compte les contacts des doigts avec le cube (comme le collègue)"""
+            
+            contact_count = 0
+            finger_geoms = ["right_hand_thumb_2_geom", "right_hand_index_1_geom", "right_hand_middle_1_geom"]
+            
+            for i in range(self.data.ncon):
+                contact = self.data.contact[i]
+                try:
+                    name1 = mujoco.mj_id2name(self.model, mujoco.mjtObj.mjOBJ_GEOM, contact.geom1)
+                    name2 = mujoco.mj_id2name(self.model, mujoco.mjtObj.mjOBJ_GEOM, contact.geom2)
                     
-            except:
-                continue
+                    # Vérifier si c'est un contact doigt-cube
+                    if ((name1 == "cube_geom" and name2 in finger_geoms) or
+                        (name2 == "cube_geom" and name1 in finger_geoms)):
+                        contact_count += 1
+                        
+                except:
+                    continue
+            
+            return contact_count
         
-        return contact_count
-    
     def _apply_grasp_assistance(self, positions):
-        """Assistance au grasping comme le collègue mais paramétrable"""
-        
-        dist = positions['palm_to_cube_dist']
-        contact_count = positions['contact_count']
-        
-        # ASSISTANCE comme le collègue: si dist < 0.06 et 2+ contacts
-        if dist < 0.06 and contact_count >= 2:
-            # Assistance progressive selon curriculum
-            assist_strength = 0.5 * min(1.0, self.curriculum_level * 0.3)
+            """Assistance au grasping comme le collègue mais paramétrable"""
             
-            # Appliquer assistance aux doigts
-            if len(self.finger_actuators) > 0:
-                self.data.ctrl[self.finger_actuators] += assist_strength
-                self.data.ctrl[self.finger_actuators] = np.clip(
-                    self.data.ctrl[self.finger_actuators], -1.0, 1.0
-                )
+            dist = positions['palm_to_cube_dist']
+            contact_count = positions['contact_count']
             
-            # Debug occasionnel
-            if self.current_step % 50 == 0:
-                self.logger.info(f"🤝 Assistance grasping activée (contacts: {contact_count})")
-    
+            # ASSISTANCE comme le collègue: si dist < 0.06 et 2+ contacts
+            if dist < 0.06 and contact_count >= 2:
+                # Assistance progressive selon curriculum
+                assist_strength = 0.5 * min(1.0, self.curriculum_level * 0.3)
+                
+                # Appliquer assistance aux doigts
+                if len(self.finger_actuators) > 0:
+                    self.data.ctrl[self.finger_actuators] += assist_strength
+                    self.data.ctrl[self.finger_actuators] = np.clip(
+                        self.data.ctrl[self.finger_actuators], -1.0, 1.0
+                    )
+                
+                # Debug occasionnel
+                if self.current_step % 50 == 0:
+                    self.logger.info(f"🤝 Assistance grasping activée (contacts: {contact_count})")
+        
     def _compute_reward(self, positions):
-        """Calcul de récompense inspiré du collègue mais équilibré"""
+        """Récompense agressive pour débloquer l'apprentissage"""
         
         dist = positions['palm_to_cube_dist']
         cube_vel = positions['cube_velocity']
         contact_count = positions['contact_count']
         
-        # Base reward structure inspirée du collègue
         reward = 0.0
         
-        # 1. Récompense de proximité (comme le collègue)
-        reward += 5.0 / (1.0 + 20 * dist)
-        
-        # 2. Bonus de proximité (comme le collègue)
-        if dist < 0.06:
-            reward += 2.0
-        
-        # 3. Récompense de contact (inspirée du collègue mais améliorée)
-        if contact_count == 0:
-            grasp_quality = -0.5  # Légère pénalité
-        elif contact_count == 1:
-            grasp_quality = 0.2
-        elif contact_count == 2:
-            grasp_quality = 0.6
-        else:  # 3+ contacts
-            grasp_quality = 1.0 if cube_vel < 0.05 else 0.7
-        
-        reward += 8.0 * grasp_quality
-        
-        # 4. Pénalité vitesse (comme le collègue)
-        reward -= 1.5 * min(1.0, cube_vel)
-        
-        # 5. Notre ajout: bonus curriculum
-        curriculum_bonus = self.curriculum_level * 0.1
-        reward += curriculum_bonus
-        
-        # 6. Pénalité temps modérée
-        reward -= 0.003
-        
-        # 7. Bonus stabilité (notre ajout)
-        if contact_count >= 2 and cube_vel < 0.02:
-            self.stable_grasp_duration += 1
-            if self.stable_grasp_duration > 10:
-                reward += 0.5  # Bonus grasp stable
+        # RÉCOMPENSE DISTANCE TRÈS AGRESSIVE
+        if dist < 0.03:
+            reward += 200.0  # Contact imminent
+        elif dist < 0.05:
+            reward += 100.0  # Très proche
+        elif dist < 0.08:
+            reward += 50.0   # Proche
+        elif dist < 0.12:
+            reward += 20.0   # Assez proche  
+        elif dist < 0.18:
+            reward += 5.0    # Approche
         else:
-            self.stable_grasp_duration = 0
-        
-        # Mise à jour métriques
+            reward -= 20.0   # Trop loin = pénalité
+
+        # BONUS CONTACT ÉNORME
+        if contact_count >= 1:
+            reward += 500.0    # Premier contact = énorme bonus!
+        if contact_count >= 2:
+            reward += 1000.0   # Grasp partiel = jackpot!
+        if contact_count >= 3:
+            reward += 2000.0   # Grasp complet = méga jackpot!
+
+        # Bonus amélioration
         if dist < self.best_distance:
+            improvement = self.best_distance - dist
+            reward += improvement * 200.0  # x200 pour forcer apprentissage
             self.best_distance = dist
-        
-        # Debug occasionnel
-        if self.current_step % 100 == 0:
-            self.logger.info(
-                f"[step {self.current_step}] dist: {dist:.3f}, "
-                f"vel: {cube_vel:.3f}, contacts: {contact_count}, "
-                f"grasp_quality: {grasp_quality:.2f}, reward: {reward:.2f}"
-            )
-        
+
+        # Pénalité vitesse réduite
+        reward -= min(10.0, cube_vel * 5.0)
+
+        # Pénalité temps très faible
+        reward -= 0.01
+
         return float(reward)
-    
+
+
     def _get_obs(self):
         """Observation robuste avec gestion NaN/inf"""
         

@@ -1,8 +1,3 @@
-(cd "$(git revparse showtoplevel)" && git apply 3way <<'EOF'
-diff git a/results/g1_combined_ultra_stable.xml b/results/g1_combined_ultra_stable.xml
- a/results/g1_combined_ultra_stable.xml
-+++ b/results/g1_combined_ultra_stable.xml
-@@ 1,130 +0,0 @@
 <?xml version='1.0' encoding='utf8'?>
 <mujoco model="g1_combined">
   <compiler angle="radian" coordinate="local" />
