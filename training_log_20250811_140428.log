@@ -1,7 +1,0 @@
-2025-08-11 14:04:28,112 - INFO - Début entraînement optimisé
-2025-08-11 14:04:28,116 - ERROR - ❌ Erreur chargement modèle: XML Error: Error opening file '/home/oussema/Documents/project/results/assets/hands/g1_body_fixed.xml': No such file or directory
-Element 'include', line 46
-
-2025-08-11 14:04:28,116 - ERROR - Erreur durant l'entraînement: XML Error: Error opening file '/home/oussema/Documents/project/results/assets/hands/g1_body_fixed.xml': No such file or directory
-Element 'include', line 46
-
