@@ -1,5 +1,8 @@
 <?xml version='1.0' encoding='utf-8'?>
 <mujoco model="g1_fingers">
+  <default class="finger">
+    <!-- Add any default parameters for finger geoms/joints here if needed -->
+  </default>
   <asset>
     <mesh name="left_thumb_0_mesh" file="meshes/left_thumb_1.STL" />
     <mesh name="left_thumb_1_mesh" file="meshes/left_thumb_2.STL" />
