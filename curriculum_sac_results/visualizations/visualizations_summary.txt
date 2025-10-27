@@ -1,0 +1,18 @@
+📊 RÉSUMÉ DES VISUALISATIONS GÉNÉRÉES
+==================================================
+
+Date: 2025-08-06 21:52:58
+Nombre de fichiers: 9
+
+📈 Graphiques générés:
+  📊 curriculum_summary.png (542.7 KB)
+  📊 level_1_analysis.png (330.0 KB)
+  📊 level_2_analysis.png (339.8 KB)
+  📊 level_3_analysis.png (347.1 KB)
+  📊 metrics_progression.png (325.6 KB)
+  📊 rewards_progression.png (411.6 KB)
+  📊 temporal_evolution.png (162.2 KB)
+
+📄 Rapports générés:
+  📋 progression_report.html
+  📋 training_data.json
