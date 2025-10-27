@@ -1,5 +1,9 @@
 <?xml version='1.0' encoding='utf-8'?>
 <mujoco model="g1_fingers">
+  <default>
+    <joint type="hinge" damping="0.01" frictionloss="0.01" range="0 1.5"/>
+    <geom contype="1" conaffinity="1"/>
+  </default>
   <asset>
     <mesh name="left_thumb_0_mesh" file="meshes/left_thumb_1.STL" />
     <mesh name="left_thumb_1_mesh" file="meshes/left_thumb_2.STL" />
